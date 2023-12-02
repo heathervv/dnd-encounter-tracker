@@ -5,6 +5,7 @@ import { createHashRouter, HashRouter } from "react-router-dom";
 import './index.css';
 import { PlayerProvider } from './context/players/players-context'
 import { MonstersProvider } from './context/monsters/monsters-context'
+import { EncountersProvider } from './context/encounters/encounters-context'
 import App from './App';
 
 const router = createHashRouter([
@@ -20,7 +21,9 @@ root.render(
     <HashRouter router={router}>
       <PlayerProvider>
         <MonstersProvider>
-          <App />
+          <EncountersProvider>
+            <App />
+          </EncountersProvider>
         </MonstersProvider>
       </PlayerProvider>
     </HashRouter>

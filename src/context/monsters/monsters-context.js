@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
-export const MonstersContext = createContext([])
+export const MonstersContext = createContext({})
 
 const STORAGE_KEY = 'monsters'
 
