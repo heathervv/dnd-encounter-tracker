@@ -1,0 +1,23 @@
+[
+    {
+        "name": "Euphemia \"Effie\" Silverbreeze (she/her)",
+        "level": 5,
+        "initiative_bonus": 3,
+        "armor_class": 16,
+        "speed": 30
+    },
+    {
+        "name": "Uthal Tearfall Akannathi (he/him)",
+        "level": 5,
+        "initiative_bonus": 1,
+        "armor_class": 15,
+        "speed": 40
+    },
+    {
+        "name": "Sal the Cacophany (she/her)",
+        "level": 5,
+        "initiative_bonus": 2,
+        "armor_class": 13,
+        "speed": 30
+    }
+]
