@@ -2,12 +2,14 @@ import { useCallback, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useEncountersContext } from "../../context/encounters/encounters-context";
 import { usePlayerContext } from "../../context/players/players-context";
+import { useMonstersContext } from "../../context/monsters/monsters-context";
 
 const Monster = () => {
     const { id } = useParams()
     const navigate = useNavigate()
     const { getSingleEncounter, deleteEncounter } = useEncountersContext()
     const { players } = usePlayerContext()
+    const { monsters } = useMonstersContext()
 
     const encounter = useMemo(() => getSingleEncounter?.(id), [id, getSingleEncounter])
 
@@ -27,6 +29,7 @@ const Monster = () => {
                     <button onClick={handleEdit}>Edit</button>
                     <button onClick={handleDelete}>Delete</button>
                     {encounter.name}
+                    {encounter.description}
                     <p>Player characters:</p>
                     <ul>
                         {players.map((player) => (
@@ -36,7 +39,18 @@ const Monster = () => {
                         ))}
                     </ul>
                     <p>Monsters:</p>
-                    Comin' up!
+                    {(encounter.monsters || []).length > 0 ? (
+                        <ul>
+                            {encounter.monsters.map((monsterId) => {
+                                const monster = monsters.find((m) => m.id === monsterId)
+                                return (
+                                    <li key={monsterId}>{monster.name}</li>
+                                )
+                            })}
+                        </ul>
+                    ) : (
+                        <p>Encounter currently has no monsters</p>
+                    )}
                 </>
             ) : (
                 <p>Sorry, the requested encounter could not be found.</p>

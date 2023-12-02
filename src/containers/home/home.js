@@ -17,11 +17,11 @@ const Home = () => {
                 <h1>A custom DND combat creation/tracker tool.</h1>
                 <p>Remaining work (in no particular order):</p>
                 <ul>
-                    <li>Create new encounter - UI, missing fields.</li>
-                    <li>Single encounter view - UI</li>
+                    <li>Create new encounter - UI.</li>
+                    <li>Single encounter view - UI.</li>
                     <li>Create new monster - UI, missing fields.</li>
-                    <li>Single monster view - UI</li>
-                    <li>Basic Combat tracker</li>
+                    <li>Single monster view - UI.</li>
+                    <li>Basic Combat tracker.</li>
                 </ul>
                 <p>NTH work to follow up:</p>
                 <ul>
