@@ -16,7 +16,7 @@ const Home = () => {
                 <li>Single monster view - UI</li>
 
                 <li>Basic Combat tracker</li>
-                <li>Deploy so I can actually use it</li>
+                <li>Update router to use hash instead so gh pages is happy</li>
             </ul>
             <p>NTH work to follow up:</p>
             <ul>
