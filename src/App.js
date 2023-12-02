@@ -16,7 +16,7 @@ const App = () => (
       <Route path="/encounter/create" element={<ModifyEncounter />} />
       <Route path="/encounter/:id" element={<ViewEncounter />} />
       <Route path="/encounter/:id/edit" element={<ModifyEncounter isEdit />} />
-      <Route path="/combat-tracker" element={<CombatTracker />} />
+      <Route path="/combat-tracker/:encounterId" element={<CombatTracker />} />
       <Route path="/monsters" element={<Monsters />} />
       <Route path="/monster/create" element={<ModifyMonster />} />
       <Route path="/monster/:id" element={<ViewMonster />} />

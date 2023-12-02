@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useEncountersContext } from "../../context/encounters/encounters-context";
 import { usePlayerContext } from "../../context/players/players-context";
 import { useMonstersContext } from "../../context/monsters/monsters-context";
@@ -28,6 +28,7 @@ const Monster = () => {
                 <>
                     <button onClick={handleEdit}>Edit</button>
                     <button onClick={handleDelete}>Delete</button>
+                    <Link to={`/combat-tracker/${encounter.id}`}>Combat Tracker</Link>
                     {encounter.name}
                     {encounter.description}
                     <p>Player characters:</p>

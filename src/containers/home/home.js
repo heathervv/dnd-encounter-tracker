@@ -19,7 +19,7 @@ const Home = () => {
                 <ul>
                     <li>Create new encounter - UI.</li>
                     <li>Single encounter view - UI.</li>
-                    <li>Create new monster - UI, missing fields.</li>
+                    <li>Create new monster - UI.</li>
                     <li>Single monster view - UI.</li>
                     <li>Basic Combat tracker.</li>
                 </ul>

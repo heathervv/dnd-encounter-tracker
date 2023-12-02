@@ -2,10 +2,12 @@ import { useCallback, useMemo, useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid';
 import { useMonstersContext } from "../../context/monsters/monsters-context";
+import CheckboxTextField from './checkbox-text-field';
+import CustomList from './custom-list';
 import './modify-monster.css'
 
-// This component is arguably gross, and maybe we'll refactor it.
-// However it's like the least important part of this whole app.
+// This component is arguably gross, and maybe I'll refactor it one day.
+// However I want a functional thing more than I want pretty code.
 
 const ModifyMonster = ({ isEdit }) => {
     const { id } = useParams()
@@ -21,6 +23,12 @@ const ModifyMonster = ({ isEdit }) => {
         reactionsDescription: '',
         monsterCharacteristicsDescription: '',
         bonusActionsDescription: '',
+        isLegendary: false,
+        legendaryActionsDescription: '',
+        isMythic: false,
+        mythicActionsDescription: '',
+        hasLair: false,
+        lairActionsDescription: '',
         armorClass: '',
         armorClassType: '',
         passivePerception: '',
@@ -37,7 +45,10 @@ const ModifyMonster = ({ isEdit }) => {
         savingThrowProficiencies: '',
         damageAdjustments: '',
         conditionImmunities: '',
-        language: ''
+        language: '',
+        senses: [],
+        skills: [],
+        movement: []
     })
 
     const monster = useMemo(() => getSingleMonster?.(id), [id, getSingleMonster])
@@ -49,19 +60,20 @@ const ModifyMonster = ({ isEdit }) => {
     }, [monster])
 
     const handleFieldChange = (e, name) => {
-        setForm({ ...form, [name]: e.target.value })
+        const value = e?.target ? e?.target.value : e
+        setForm({ ...form, [name]: value })
+    }
+
+    const handleListChange = (e, name) => {
+        setForm({ ...form, [name]: e })
     }
 
     const handleSave = useCallback((e) => {
         e?.preventDefault();
-        const form = e?.target
-        const formData = new FormData(form)
-        const formJson = Object.fromEntries(formData.entries())
-
         const id = isEdit ? monster.id : uuidv4()
 
         const monsterData = {
-            ...formJson,
+            ...form,
             id
         }
 
@@ -71,9 +83,8 @@ const ModifyMonster = ({ isEdit }) => {
             createMonster(monsterData)
         }
 
-        form.reset()
         navigate(`/monster/${id}`)
-    }, [isEdit, monster, createMonster, updateMonster, navigate])
+    }, [isEdit, monster, form, createMonster, updateMonster, navigate])
 
     return (
         <section>
@@ -97,7 +108,7 @@ const ModifyMonster = ({ isEdit }) => {
                     </select>
                 </label>
                 <label>
-                    Alignment: <input name="alignment" value={form.alignment} onChange={(e) => handleFieldChange(e, 'aligment')} />
+                    Alignment: <input name="alignment" value={form.alignment} onChange={(e) => handleFieldChange(e, 'alignment')} />
                 </label>
                 <hr />
                 <label>
@@ -115,9 +126,30 @@ const ModifyMonster = ({ isEdit }) => {
                 <label>
                     Bonus Actions description: <textarea name="bonusActionsDescription" value={form.bonusActionsDescription} onChange={(e) => handleFieldChange(e, 'bonusActionsDescription')} />
                 </label>
-                {/* @todo: isLegendary */}
-                {/* @todo: isMythic */}
-                {/* @todo: hasLair */}
+                <CheckboxTextField
+                    checkboxFieldName="Is Legendary"
+                    checkboxFieldValue={form.isLegendary}
+                    checkboxFieldOnChange={() => handleFieldChange(!form.isLegendary, 'isLegendary')}
+                    textFieldName="Legendary Actions Description"
+                    textFieldOnChange={(e) => handleFieldChange(e, 'legendaryActionsDescription')}
+                    textFieldValue={form.legendaryActionsDescription}
+                />
+                <CheckboxTextField
+                    checkboxFieldName="Is Mythic"
+                    checkboxFieldValue={form.isMythic}
+                    checkboxFieldOnChange={() => handleFieldChange(!form.isMythic, 'isMythic')}
+                    textFieldName="Mythic Actions Description"
+                    textFieldOnChange={(e) => handleFieldChange(e, 'mythicActionsDescription')}
+                    textFieldValue={form.mythicActionsDescription}
+                />
+                <CheckboxTextField
+                    checkboxFieldName="Has Lair"
+                    checkboxFieldValue={form.hasLair}
+                    checkboxFieldOnChange={() => handleFieldChange(!form.hasLair, 'hasLair')}
+                    textFieldName="Lair Actions Description"
+                    textFieldOnChange={(e) => handleFieldChange(e, 'lairActionsDescription')}
+                    textFieldValue={form.lairActionsDescription}
+                />
                 <label>
                     Armor Class*: <input type="number" required name="armorClass" value={form.armorClass} onChange={(e) => handleFieldChange(e, 'armorClass')} />
                 </label>
@@ -171,14 +203,38 @@ const ModifyMonster = ({ isEdit }) => {
                     Condition immunities: <textarea name="conditionImmunities" value={form.conditionImmunities} onChange={(e) => handleFieldChange(e, 'conditionImmunities')} />
                 </label>
                 <hr />
-                <p>Add each language your monster can speak, read, or write in a comma-separated list.</p>
-                <label>
-                    Language: <textarea name="language" value={form.language} onChange={(e) => handleFieldChange(e, 'language')} />
-                </label>
+                <CustomList
+                    title="Languages"
+                    description="Add each language your monster can speak, read, or write."
+                    fieldKey="language"
+                    values={form.language || []}
+                    onValueChange={(e) => handleListChange(e, 'language')}
+                />
                 <hr />
-                {/* @todo(): senses */}
-                {/* @todo(): skills */}
-                {/* @todo(): movement */}
+                <CustomList
+                    title="Senses"
+                    description="Add any special senses your monster possesses."
+                    fieldKey="senses"
+                    values={form.senses || []}
+                    onValueChange={(e) => handleListChange(e, 'senses')}
+                />
+                <hr />
+                <CustomList
+                    title="Skills"
+                    description="Add any skill bonuses your monster possesses."
+                    fieldKey="skills"
+                    values={form.skills || []}
+                    onValueChange={(e) => handleListChange(e, 'skills')}
+                />
+                <hr />
+                <CustomList
+                    title="Movement"
+                    description="Add any speed types and values your monster possesses."
+                    fieldKey="movement"
+                    values={form.movement || []}
+                    onValueChange={(e) => handleListChange(e, 'movement')}
+                />
+                <hr />
                 <button type="submit">Save</button>
             </form>
         </section>
