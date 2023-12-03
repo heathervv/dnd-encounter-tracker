@@ -1,0 +1,88 @@
+.monster-card {
+    padding: 16px;
+    border-radius: 3px;
+    background-color: #fff;
+    border: 1px solid #d0d7de;
+    box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.25);
+
+    @media (min-width: 768px) {
+        column-count: 2;   
+    }
+}
+
+.monster-card > ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.card-header {
+    padding-bottom: 16px;
+    border-bottom: 1px solid #d0d7de;
+}
+
+.name {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.subtitle {
+    font-size: 16px;
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.section {
+    border-bottom: 1px solid #d0d7de;
+    margin: 8px 0;
+    padding: 16px 0;
+
+    & li {
+        display: flex;
+    }
+}
+
+.section.abilities {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    & li {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+.section.stats {
+    & li {
+        margin-bottom: 2px;
+
+        & > *:first-child {
+            margin-right: 4px;
+        }
+    }
+}
+
+.grouped-stat {
+    & > div {
+        display: flex;
+
+        &:first-child {
+            margin-right: 32px !important;
+        }
+
+        & > *:first-child {
+            margin-right: 4px;
+        }
+    }
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 16px 0 8px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #d0d7de;
+}

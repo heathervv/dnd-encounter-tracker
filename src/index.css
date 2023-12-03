@@ -108,3 +108,19 @@ hr {
   border-radius: 3px;
   font-weight: 500;
 }
+
+.bold {
+  font-weight: 600;
+}
+
+.wmde-markdown {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.wmde-markdown p {
+  color: #000;
+}

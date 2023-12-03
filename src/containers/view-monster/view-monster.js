@@ -33,7 +33,7 @@ const Monster = () => {
                         </div>
                     </div>
                     {monster.monsterCharacteristicsDescription && (
-                        <div>
+                        <div className="monster-description">
                             <MDEditor.Markdown source={monster.monsterCharacteristicsDescription} />
                         </div>
                     )}

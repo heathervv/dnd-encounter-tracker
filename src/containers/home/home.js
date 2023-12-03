@@ -18,7 +18,6 @@ const Home = () => {
                 <p>Remaining work (in no particular order):</p>
                 <ul>
                     <li>Single encounter view - UI.</li>
-                    <li>Single monster view - UI.</li>
                     <li>Basic Combat tracker.</li>
                 </ul>
                 <p>NTH work to follow up:</p>

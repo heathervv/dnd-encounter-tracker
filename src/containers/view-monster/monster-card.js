@@ -50,91 +50,93 @@ const MonsterCard = ({ monster }) => {
     }, [monster, mapProficiencyBonus])
 
     return (
-        <div>
-            <p className="name">{monster.name}</p>
-            <p className="subtitle">{monster.size} {monster.type}{monster.alignment ? `, ${monster.alignment}` : ''}</p>
-            <ul>
+        <div className="monster-card">
+            <div className="card-header">
+                <p className="name">{monster.name}</p>
+                <p className="subtitle">{monster.size} {monster.type}{monster.alignment ? `, ${monster.alignment}` : ''}</p>
+            </div>
+            <ul className="section stats">
                 <li>
-                    <p>Armor class:</p>
+                    <p className="bold">Armor class:</p>
                     <p>{monster.armorClass} {monster.armorClassType}</p>
                 </li>
                 <li>
-                    <p>Hit points:</p>
+                    <p className="bold">Hit points:</p>
                     <p>{monster.averageHitPoints} ({monster.hitPointsDieCount}{monster.hitPointsDieValue} + {monster.hitPointsDieModifier})</p>
                 </li>
                 <li>
-                    <p>Speed:</p>
+                    <p className="bold">Speed:</p>
                     <p>{mapMovement()}
                     </p>
                 </li>
             </ul>
-            <ul>
+            <ul className="section abilities">
                 <li>
-                    <p>STR</p>
+                    <p className="bold">STR</p>
                     <p>{monster.strength} ({mapPrettyAbilityScore(monster.strength)})</p>
                 </li>
                 <li>
-                    <p>DEX</p>
+                    <p className="bold">DEX</p>
                     <p>{monster.dexterity} ({mapPrettyAbilityScore(monster.dexterity)})</p>
                 </li>
                 <li>
-                    <p>CON</p>
+                    <p className="bold">CON</p>
                     <p>{monster.constitution} ({mapPrettyAbilityScore(monster.constitution)})</p>
                 </li>
                 <li>
-                    <p>INT</p>
+                    <p className="bold">INT</p>
                     <p>{monster.intelligence} ({mapPrettyAbilityScore(monster.intelligence)})</p>
                 </li>
                 <li>
-                    <p>WIS</p>
+                    <p className="bold">WIS</p>
                     <p>{monster.wisdom} ({mapPrettyAbilityScore(monster.wisdom)})</p>
                 </li>
                 <li>
-                    <p>CHA</p>
+                    <p className="bold">CHA</p>
                     <p>{monster.charisma} ({mapPrettyAbilityScore(monster.charisma)})</p>
                 </li>
             </ul>
-            <ul>
+            <ul className="section stats">
                 {monster.savingThrowProficiencies &&
                     <li>
-                        <p>Saving throws</p>
+                        <p className="bold">Saving throws</p>
                         <p>{mapSavingThrowProficiencies()}</p>
                     </li>
                 }
                 {
                     monster.skills &&
                     <li>
-                        <p>Skills</p>
+                        <p className="bold">Skills</p>
                         <p>{mapList(monster.skills)}</p>
                     </li>
                 }
                 {monster.damageVulnerabilities &&
                     <li>
-                        <p>Damage Vulnerabilities</p>
+                        <p className="bold">Damage Vulnerabilities</p>
                         <p>{monster.damageVulnerabilities}</p>
                     </li>
                 }
                 {monster.damageResistances &&
                     <li>
-                        <p>Damage Resistances</p>
+                        <p className="bold">Damage Resistances</p>
                         <p>{monster.damageResistances}</p>
                     </li>
                 }
                 {monster.damageImmunities &&
                     <li>
-                        <p>Damage Immunities</p>
+                        <p className="bold">Damage Immunities</p>
                         <p>{monster.damageImmunities}</p>
                     </li>
                 }
                 {
                     monster.conditionImmunities &&
                     <li>
-                        <p>Condition Immunities</p>
+                        <p className="bold">Condition Immunities</p>
                         <p>{monster.conditionImmunities}</p>
                     </li>
                 }
                 <li>
-                    <p>Senses</p>
+                    <p className="bold">Senses</p>
                     <p>
                         {(monster.senses || []).length > 0 &&
                             mapList(monster.senses)
@@ -143,51 +145,54 @@ const MonsterCard = ({ monster }) => {
                 </li>
                 {(monster.language || []).length > 0 &&
                     <li>
-                        <p>Languages</p>
+                        <p className="bold">Languages</p>
                         <p>{mapList(monster.language)}</p>
                     </li>
                 }
-                <li>
-                    <p>Challenge</p>
-                    <p>{monster.challengeRating}</p>
-                </li>
-                <li>
-                    <p>Proficiency Bonus</p>
-                    <p>+{mapProficiencyBonus()}</p>
+                <li className="grouped-stat">
+                    <div>
+                        <p className="bold">Challenge</p>
+                        <p>{monster.challengeRating}</p>
+                    </div>
+                    <div>
+                        <p className="bold">Proficiency Bonus</p>
+                        <p>+{mapProficiencyBonus()}</p>
+                    </div>
                 </li>
             </ul>
             {monster.specialTraits &&
                 <div>
-                    <MDEditor.Markdown source={monster.specialTraits} />
+                    <div className="wmde-markdown-var"> </div>
+                    <MDEditor.Markdown source={monster.specialTraits} className="markdown-block" />
                 </div>
             }
             {monster.actionsDescription &&
                 <div>
-                    <h3>Actions</h3>
+                    <h3 className="section-title">Actions</h3>
                     <MDEditor.Markdown source={monster.actionsDescription} />
                 </div>
             }
             {monster.bonusActionsDescription &&
                 <div>
-                    <h3>Bonus Actions</h3>
+                    <h3 className="section-title">Bonus Actions</h3>
                     <MDEditor.Markdown source={monster.bonusActionsDescription} />
                 </div>
             }
             {monster.reactionsDescription &&
                 <div>
-                    <h3>Reactions</h3>
+                    <h3 className="section-title">Reactions</h3>
                     <MDEditor.Markdown source={monster.reactionsDescription} />
                 </div>
             }
             {monster.isLegendary && monster.legendaryActionsDescription &&
                 <div>
-                    <h3>Legendary Actions</h3>
+                    <h3 className="section-title">Legendary Actions</h3>
                     <MDEditor.Markdown source={monster.legendaryActionsDescription} />
                 </div>
             }
             {monster.isMythic && monster.mythicActionsDescription &&
                 <div>
-                    <h3>Mythical Actions</h3>
+                    <h3 className="section-title">Mythical Actions</h3>
                     <MDEditor.Markdown source={monster.mythicActionsDescription} />
                 </div>
             }

@@ -12,3 +12,7 @@
 .buttons > button:not(:last-child) {
     margin: 0 8px;
 }
+
+.monster-description {
+    margin-bottom: 24px;
+}
