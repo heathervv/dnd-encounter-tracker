@@ -16,8 +16,9 @@ export const MonstersProvider = ({ children }) => {
     }, [])
 
     const saveMonsters = useCallback((monsters) => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(monsters))
-        setMonsters(monsters)
+        const sorted = monsters.sort((a, b) => a.name.localeCompare(b.name))
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sorted))
+        setMonsters(sorted)
     }, [setMonsters])
 
     return (

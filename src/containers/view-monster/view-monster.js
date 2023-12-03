@@ -1,7 +1,9 @@
 import { useCallback, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import MDEditor from '@uiw/react-md-editor/nohighlight'
 import { useMonstersContext } from "../../context/monsters/monsters-context";
 import MonsterCard from './monster-card'
+import './view-monster.css'
 
 const Monster = () => {
     const { id } = useParams()
@@ -20,12 +22,22 @@ const Monster = () => {
     }, [monster, deleteMonster, navigate])
 
     return (
-        <section>
+        <section data-color-mode="light">
             {monster ? (
                 <>
-                    <button onClick={handleEdit}>Edit</button>
-                    <button className="delete" onClick={handleDelete}>Delete</button>
-                    <MonsterCard name={monster.name} />
+                    <div className="header">
+                        <h1>{monster.name}</h1>
+                        <div className="buttons">
+                            <button type="button" onClick={handleEdit}>Edit</button>
+                            <button type="button" className="delete" onClick={handleDelete}>Delete</button>
+                        </div>
+                    </div>
+                    {monster.monsterCharacteristicsDescription && (
+                        <div>
+                            <MDEditor.Markdown source={monster.monsterCharacteristicsDescription} />
+                        </div>
+                    )}
+                    <MonsterCard monster={monster} />
                 </>
             ) : (
                 <p>Sorry, the requested monster could not be found.</p>

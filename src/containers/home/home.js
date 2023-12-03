@@ -34,10 +34,14 @@ const Home = () => {
                     <button onClick={handleCreateNew}>Create new</button>
                 </div>
                 {encounters.length > 0 ? (
-                    <ul>
+                    <ul className="encounters-list">
                         {encounters.map((encounter) => (
                             <li key={encounter.id}>
-                                <Link to={`/encounter/${encounter.id}`}>{encounter.name}</Link>
+                                <Link to={`/encounter/${encounter.id}`}>
+                                    <div className="encounter-link">
+                                        <p className="encounter-name">{encounter.name}</p>
+                                    </div>
+                                </Link>
                             </li>
                         ))}
                     </ul>

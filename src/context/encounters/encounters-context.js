@@ -16,8 +16,9 @@ export const EncountersProvider = ({ children }) => {
     }, [])
 
     const saveEncounters = useCallback((encounters) => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(encounters))
-        setEncounters(encounters)
+        const sorted = encounters.sort((a, b) => a.name.localeCompare(b.name))
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sorted))
+        setEncounters(sorted)
     }, [setEncounters])
 
     return (

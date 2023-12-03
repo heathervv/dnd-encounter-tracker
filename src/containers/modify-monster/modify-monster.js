@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useMonstersContext } from "../../context/monsters/monsters-context";
 import CheckboxTextField from './checkbox-text-field';
 import CustomList from './custom-list';
+import SavingThrows from './saving-throws';
 import './modify-monster.css'
 
 // This component is arguably gross, and maybe I'll refactor it one day.
@@ -19,6 +20,7 @@ const ModifyMonster = ({ isEdit }) => {
         type: '',
         size: '-',
         aligment: '',
+        challengeRating: '',
         specialTraits: '',
         actionsDescription: '',
         reactionsDescription: '',
@@ -43,8 +45,10 @@ const ModifyMonster = ({ isEdit }) => {
         intelligence: '',
         wisdom: '',
         charisma: '',
-        savingThrowProficiencies: '',
-        damageAdjustments: '',
+        savingThrowProficiencies: [],
+        damageVulnerabilities: '',
+        damageResistances: '',
+        damageImmunities: '',
         conditionImmunities: '',
         language: '',
         senses: [],
@@ -114,6 +118,9 @@ const ModifyMonster = ({ isEdit }) => {
                     </label>
                     <label>
                         Alignment: <input type="text" name="alignment" value={form.alignment} onChange={(e) => handleFieldChange(e, 'alignment')} />
+                    </label>
+                    <label>
+                        Challenge Rating*: <input type="number" required name="challengeRating" value={form.challengeRating} onChange={(e) => handleFieldChange(e, 'challengeRating')} />
                     </label>
                 </div>
                 <hr />
@@ -208,7 +215,15 @@ const ModifyMonster = ({ isEdit }) => {
                         Hit Points Die Count*: <input type="number" required name="hitPointsDieCount" value={form.hitPointsDieCount} onChange={(e) => handleFieldChange(e, 'hitPointsDieCount')} />
                     </label>
                     <label>
-                        Hit Points Die Value*: <input type="number" required name="hitPointsDieValue" value={form.hitPointsDieValue} onChange={(e) => handleFieldChange(e, 'hitPointsDieValue')} />
+                        Hit Points Die Value*: <select required name="hitPointsDieValue" value={form.hitPointsDieValue} onChange={(e) => handleFieldChange(e, 'hitPointsDieValue')}>
+                            <option disabled value="-">-</option>
+                            <option value="d4">d4</option>
+                            <option value="d6">d6</option>
+                            <option value="d8">d8</option>
+                            <option value="d10">d10</option>
+                            <option value="d12">d12</option>
+                            <option value="d20">d20</option>
+                        </select>
                     </label>
                     <label>
                         Hit Points Modifier*: <input type="number" required name="hitPointsDieModifier" value={form.hitPointsDieModifier} onChange={(e) => handleFieldChange(e, 'hitPointsDieModifier')} />
@@ -245,15 +260,26 @@ const ModifyMonster = ({ isEdit }) => {
                 <p className="helper">For the following fields, write comma-separated options.</p>
                 <div className="row">
                     <label>
-                        Saving Throw Proficiences: <input type="text" name="savingThrowProficiencies" value={form.savingThrowProficiencies} onChange={(e) => handleFieldChange(e, 'savingThrowProficiencies')} />
+                        Damage Vulnerabilities: <input type="text" name="damageVulnerabilities" value={form.damageVulnerabilities} onChange={(e) => handleFieldChange(e, 'damageVulnerabilities')} />
                     </label>
                     <label>
-                        Damage adjustments: <input type="text" name="damageAdjustments" value={form.damageAdjustments} onChange={(e) => handleFieldChange(e, 'damageAdjustments')} />
-                    </label>
-                    <label>
-                        Condition immunities: <input type="text" name="conditionImmunities" value={form.conditionImmunities} onChange={(e) => handleFieldChange(e, 'conditionImmunities')} />
+                        Damage Resistances: <input type="text" name="damageResistances" value={form.damageResistances} onChange={(e) => handleFieldChange(e, 'damageResistances')} />
                     </label>
                 </div>
+                <div className="row">
+                    <label>
+                        Damage Immunities: <input type="text" name="damageImmunities" value={form.damageImmunities} onChange={(e) => handleFieldChange(e, 'damageImmunities')} />
+                    </label>
+                    <label>
+                        Condition Immunities: <input type="text" name="conditionImmunities" value={form.conditionImmunities} onChange={(e) => handleFieldChange(e, 'conditionImmunities')} />
+                    </label>
+                </div>
+                <hr />
+                <SavingThrows
+                    fieldKey="savingThrowProficiencies"
+                    values={form.savingThrowProficiencies || []}
+                    onValueChange={(e) => handleListChange(e, 'savingThrowProficiencies')}
+                />
                 <hr />
                 <CustomList
                     title="Languages"

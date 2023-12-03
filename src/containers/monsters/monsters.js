@@ -18,10 +18,15 @@ const Monsters = () => {
                 <button onClick={handleCreateNew}>Create new</button>
             </div>
             {monsters.length > 0 ? (
-                <ul>
+                <ul className="monster-list">
                     {monsters.map((monster) => (
                         <li key={monster.id}>
-                            <Link to={`/monster/${monster.id}`}>{monster.name}</Link>
+                            <Link to={`/monster/${monster.id}`}>
+                                <div className="monster-link">
+                                    <p className="monster-name">{monster.name}</p>
+                                    <p className="monster-type">{monster.size} {monster.type}{monster.alignment ? `, ${monster.alignment}` : ''}</p>
+                                </div>
+                            </Link>
                         </li>
                     ))}
                 </ul>
