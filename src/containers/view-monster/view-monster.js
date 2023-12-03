@@ -24,7 +24,7 @@ const Monster = () => {
             {monster ? (
                 <>
                     <button onClick={handleEdit}>Edit</button>
-                    <button onClick={handleDelete}>Delete</button>
+                    <button className="delete" onClick={handleDelete}>Delete</button>
                     <MonsterCard name={monster.name} />
                 </>
             ) : (

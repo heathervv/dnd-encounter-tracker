@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import MDEditor from '@uiw/react-md-editor/nohighlight'
 import { v4 as uuidv4 } from 'uuid';
 import { useEncountersContext } from "../../context/encounters/encounters-context";
 import { useMonstersContext } from "../../context/monsters/monsters-context";
@@ -28,10 +29,6 @@ const ModifyEncounter = ({ isEdit }) => {
     const handleNameChange = useCallback((e) => {
         setName(e.target.value)
     }, [setName])
-
-    const handleDescriptionChange = useCallback((e) => {
-        setDescription(e.target.value)
-    }, [setDescription])
 
     const handleMonsterSelect = useCallback((e) => {
         if (selectedMonsters.includes(e.target.value)) {
@@ -63,23 +60,29 @@ const ModifyEncounter = ({ isEdit }) => {
     }, [isEdit, encounter, name, description, selectedMonsters, createEncounter, updateEncounter, navigate])
 
     return (
-        <section>
+        <section data-color-mode="light">
+            <h1>{isEdit ? `Edit ${encounter?.name}` : 'Create encounter'}</h1>
             <form onSubmit={handleSave}>
                 <label>
-                    Name*: <input required name="name" value={name} onChange={handleNameChange} />
+                    Name*: <input required type="text" name="name" value={name} onChange={handleNameChange} />
                 </label>
                 <label>
-                    Description: <input name="description" value={description} onChange={handleDescriptionChange} />
+                    Description:
+                    <MDEditor
+                        value={description}
+                        onChange={setDescription}
+                    />
                 </label>
                 <fieldset>
                     <legend>Monsters</legend>
                     {monsters.map((monster) => (
-                        <React.Fragment key={monster.id}>
+                        <div className="option" key={monster.id}>
                             <input type="checkbox" checked={selectedMonsters.includes(monster.id)} name={monster.name} value={monster.id} onChange={handleMonsterSelect} />{monster.name}
-                        </React.Fragment>
+                        </div>
                     ))}
                 </fieldset>
-                <button type="submit">Save</button>
+                <hr />
+                <button className="save" type="submit">{isEdit ? 'Save changes' : 'Create encounter'}</button>
             </form>
         </section>
     )

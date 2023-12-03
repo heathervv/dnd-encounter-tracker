@@ -27,7 +27,7 @@ const Monster = () => {
             {encounter ? (
                 <>
                     <button onClick={handleEdit}>Edit</button>
-                    <button onClick={handleDelete}>Delete</button>
+                    <button className="delete" onClick={handleDelete}>Delete</button>
                     <Link to={`/combat-tracker/${encounter.id}`}>Combat Tracker</Link>
                     {encounter.name}
                     {encounter.description}

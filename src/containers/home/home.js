@@ -17,9 +17,7 @@ const Home = () => {
                 <h1>A custom DND combat creation/tracker tool.</h1>
                 <p>Remaining work (in no particular order):</p>
                 <ul>
-                    <li>Create new encounter - UI.</li>
                     <li>Single encounter view - UI.</li>
-                    <li>Create new monster - UI.</li>
                     <li>Single monster view - UI.</li>
                     <li>Basic Combat tracker.</li>
                 </ul>
@@ -32,7 +30,7 @@ const Home = () => {
             </section>
             <section>
                 <div className="header">
-                    <h1>List of encounters</h1>
+                    <h3>List of encounters</h3>
                     <button onClick={handleCreateNew}>Create new</button>
                 </div>
                 {encounters.length > 0 ? (

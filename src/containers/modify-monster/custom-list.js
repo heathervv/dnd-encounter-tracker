@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid';
+import './custom-list.css'
 
 const CustomList = ({ title, description, fieldKey, values, onValueChange }) => {
     const [createNew, setCreateNew] = useState(false)
@@ -33,30 +34,41 @@ const CustomList = ({ title, description, fieldKey, values, onValueChange }) => 
 
     return (
         <div>
-            <h4>{title}</h4>
-            <p>{description}.</p>
-            <button onClick={handleAdd} type="button">Add option</button>
-            <ul>
+            <div className="row">
+                <div>
+                    <h4>{title}</h4>
+                    <p>{description}</p>
+                </div>
+                <button onClick={handleAdd} type="button">Add option</button>
+            </div>
+            <ul className="list-table">
                 <li>
                     <p>Name</p>
                     <p>Note</p>
+                    <p></p>
                 </li>
-                {values.map((value) => (
+                {values.length > 0 ? values.map((value) => (
                     <li key={value.id}>
                         <p>{value.name}</p>
                         <p>{value.note}</p>
-                        <button type="button" onClick={() => handleDelete(value.id)}>Remove</button>
+                        <div className="button-wrapper">
+                            <button className="delete" type="button" onClick={() => handleDelete(value.id)}>Remove</button>
+                        </div>
                     </li>
-                ))}
+                )) : (
+                    <li><p>No options added yet.</p></li>
+                )}
                 {createNew && (
                     <li>
                         <label>
-                            Name: <input type="text" name={`${fieldKey}-new-name`} value={newItemName} onChange={(e) => setNewItemName(e.target.value)} />
+                            <input aria-label="name" type="text" name={`${fieldKey}-new-name`} value={newItemName} onChange={(e) => setNewItemName(e.target.value)} />
                         </label>
                         <label>
-                            Note: <input type="text" name={`${fieldKey}-new-note`} value={newItemNote} onChange={(e) => setNewItemNote(e.target.value)} />
+                            <input aria-label="note" type="text" name={`${fieldKey}-new-note`} value={newItemNote} onChange={(e) => setNewItemNote(e.target.value)} />
                         </label>
-                        <button type="button" onClick={handleSave}>Add</button>
+                        <div className="button-wrapper">
+                            <button type="button" onClick={handleSave}>Add</button>
+                        </div>
                     </li>
                 )}
             </ul>
