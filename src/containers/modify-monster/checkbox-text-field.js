@@ -1,4 +1,4 @@
-import MDEditor from '@uiw/react-md-editor/nohighlight'
+// import MDEditor from '@uiw/react-md-editor/nohighlight'
 
 const CheckboxTextField = ({ checkboxFieldName, checkboxFieldOnChange, checkboxFieldValue, textFieldName, textFieldOnChange, textFieldValue }) => {
     return (
@@ -9,10 +9,10 @@ const CheckboxTextField = ({ checkboxFieldName, checkboxFieldOnChange, checkboxF
             {checkboxFieldValue && (
                 <label>
                     {textFieldName}
-                    <MDEditor
+                    {/* <MDEditor
                         value={textFieldValue}
                         onChange={textFieldOnChange}
-                    />
+                    /> */}
                 </label>
             )}
         </div>

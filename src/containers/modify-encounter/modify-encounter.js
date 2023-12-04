@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import MDEditor from '@uiw/react-md-editor/nohighlight'
+// import MDEditor from '@uiw/react-md-editor/nohighlight'
 import { v4 as uuidv4 } from 'uuid';
 import { useEncountersContext } from "../../context/encounters/encounters-context";
 import { useMonstersContext } from "../../context/monsters/monsters-context";
@@ -86,10 +86,10 @@ const ModifyEncounter = ({ isEdit }) => {
                 </label>
                 <label>
                     Description:
-                    <MDEditor
+                    {/* <MDEditor
                         value={description}
                         onChange={setDescription}
-                    />
+                    /> */}
                 </label>
                 <fieldset>
                     <legend>Monsters</legend>
