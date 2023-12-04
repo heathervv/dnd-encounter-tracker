@@ -15,6 +15,7 @@ const ModifyEncounter = ({ isEdit }) => {
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [selectedMonsters, setSelectedMonsters] = useState([])
+    const [amounts, setAmounts] = useState({}) // encounter?.amounts?.[monsterId]
 
     const encounter = useMemo(() => getSingleEncounter?.(id), [id, getSingleEncounter])
 
@@ -23,6 +24,7 @@ const ModifyEncounter = ({ isEdit }) => {
             setName(encounter.name)
             setDescription(encounter.description || '')
             setSelectedMonsters(encounter.monsters || [])
+            setAmounts(encounter.amounts || {})
         }
     }, [encounter])
 
@@ -34,10 +36,25 @@ const ModifyEncounter = ({ isEdit }) => {
         if (selectedMonsters.includes(e.target.value)) {
             const updatedList = selectedMonsters.filter((monsterId) => monsterId !== e.target.value)
             setSelectedMonsters(updatedList)
+            setAmounts({
+                ...amounts,
+                [e.target.value]: 0
+            })
         } else {
             setSelectedMonsters([...selectedMonsters, e.target.value])
+            setAmounts({
+                ...amounts,
+                [e.target.value]: 1
+            })
         }
-    }, [selectedMonsters, setSelectedMonsters])
+    }, [selectedMonsters, amounts, setSelectedMonsters, setAmounts])
+
+    const handleMonsterAmount = useCallback((e, monsterId) => {
+        setAmounts({
+            ...amounts,
+            [monsterId]: e.target.value
+        })
+    }, [amounts, setAmounts])
 
     const handleSave = useCallback((e) => {
         e?.preventDefault();
@@ -47,7 +64,8 @@ const ModifyEncounter = ({ isEdit }) => {
             id,
             name,
             description,
-            monsters: selectedMonsters
+            monsters: selectedMonsters,
+            amounts
         }
 
         if (isEdit) {
@@ -57,7 +75,7 @@ const ModifyEncounter = ({ isEdit }) => {
         }
 
         navigate(`/encounter/${id}`)
-    }, [isEdit, encounter, name, description, selectedMonsters, createEncounter, updateEncounter, navigate])
+    }, [isEdit, encounter, name, description, selectedMonsters, amounts, createEncounter, updateEncounter, navigate])
 
     return (
         <section className="wrapper" data-color-mode="light">
@@ -78,6 +96,9 @@ const ModifyEncounter = ({ isEdit }) => {
                     {monsters.map((monster) => (
                         <div className="option" key={monster.id}>
                             <input type="checkbox" checked={selectedMonsters.includes(monster.id)} name={monster.name} value={monster.id} onChange={handleMonsterSelect} />{monster.name}
+                            {selectedMonsters.includes(monster.id) && (
+                                <input type="number" min="1" name={`${monster.name}-amount`} value={amounts?.[monster.id]} onChange={(e) => handleMonsterAmount(e, monster.id)} />
+                            )}
                         </div>
                     ))}
                 </fieldset>

@@ -15,18 +15,10 @@ const Home = () => {
         <div className="wrapper">
             <section>
                 <h1>A custom DND combat creation/tracker tool.</h1>
-                <p>Remaining work (in no particular order):</p>
-                <ul>
-                    <li>Manage number of monsters in an encounter.</li>
-                    <li>Basic Combat tracker.</li>
-                </ul>
-                <p>NTH work to follow up:</p>
-                <ul>
-                    <li>General sort of UI polish ??</li>
-                    <li>Add dynamic links to spells/conditions/other curious things</li>
-                    <li>Images (for players and monsters)</li>
-                </ul>
+                <p>Made for fun with love so that I can run encounters at my table without relying on third party vendors.</p>
+                <p>Or pen and paper, god forbid.</p>
             </section>
+            <hr />
             <section>
                 <div className="header">
                     <h3>List of encounters</h3>
@@ -47,6 +39,14 @@ const Home = () => {
                 ) : (
                     <p>No encounters added yet!</p>
                 )}
+            </section>
+            <section>
+                <p>Remaining work I'd like to get to (in no particular order):</p>
+                <ul>
+                    <li>Basic Combat tracker</li>
+                    <li>Add dynamic links to spells/conditions/other curious things</li>
+                    <li>Images (for players and monsters)</li>
+                </ul>
             </section>
         </div>
     )

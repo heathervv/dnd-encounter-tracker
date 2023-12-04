@@ -30,8 +30,6 @@ const Monster = () => {
         navigate('/encounters')
     }, [encounter, deleteEncounter, navigate])
 
-    const x = 3
-
     return (
         <section className="view-encounter wrapper-large" data-color-mode="light">
             {encounter ? (
@@ -90,10 +88,12 @@ const Monster = () => {
                             <button type="button" className="run-combat" onClick={navigateToCombatTracker}>Run encounter</button>
                         </div>
                         <div className="width-sixty">
-                            <div className="encounter-description">
-                                <h3 className="title">Encounter description</h3>
-                                <MDEditor.Markdown source={encounter.description} />
-                            </div>
+                            {encounter.description &&
+                                <div className="encounter-description">
+                                    <h3 className="title">Encounter description</h3>
+                                    <MDEditor.Markdown source={encounter.description} />
+                                </div>
+                            }
                             {monsterCard && <MonsterCard monster={monsterCard} />}
                         </div>
                     </div>
