@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-// import MDEditor from '@uiw/react-md-editor/nohighlight'
+import MDEditor from '@uiw/react-md-editor/nohighlight'
 import './monster-card.css'
 
 const MonsterCard = ({ monster }) => {
@@ -163,37 +163,37 @@ const MonsterCard = ({ monster }) => {
             {monster.specialTraits &&
                 <div>
                     <div className="wmde-markdown-var"> </div>
-                    {/* <MDEditor.Markdown source={monster.specialTraits} className="markdown-block" /> */}
+                    <MDEditor.Markdown source={monster.specialTraits} className="markdown-block" />
                 </div>
             }
             {monster.actionsDescription &&
                 <div>
                     <h3 className="section-title">Actions</h3>
-                    {/* <MDEditor.Markdown source={monster.actionsDescription} /> */}
+                    <MDEditor.Markdown source={monster.actionsDescription} />
                 </div>
             }
             {monster.bonusActionsDescription &&
                 <div>
                     <h3 className="section-title">Bonus Actions</h3>
-                    {/* <MDEditor.Markdown source={monster.bonusActionsDescription} /> */}
+                    <MDEditor.Markdown source={monster.bonusActionsDescription} />
                 </div>
             }
             {monster.reactionsDescription &&
                 <div>
                     <h3 className="section-title">Reactions</h3>
-                    {/* <MDEditor.Markdown source={monster.reactionsDescription} /> */}
+                    <MDEditor.Markdown source={monster.reactionsDescription} />
                 </div>
             }
             {monster.isLegendary && monster.legendaryActionsDescription &&
                 <div>
                     <h3 className="section-title">Legendary Actions</h3>
-                    {/* <MDEditor.Markdown source={monster.legendaryActionsDescription} /> */}
+                    <MDEditor.Markdown source={monster.legendaryActionsDescription} />
                 </div>
             }
             {monster.isMythic && monster.mythicActionsDescription &&
                 <div>
                     <h3 className="section-title">Mythical Actions</h3>
-                    {/* <MDEditor.Markdown source={monster.mythicActionsDescription} /> */}
+                    <MDEditor.Markdown source={monster.mythicActionsDescription} />
                 </div>
             }
         </div>

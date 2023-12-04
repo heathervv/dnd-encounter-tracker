@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-// import MDEditor from '@uiw/react-md-editor/nohighlight'
+import MDEditor from '@uiw/react-md-editor/nohighlight'
 import { v4 as uuidv4 } from 'uuid';
 import { useMonstersContext } from "../../context/monsters/monsters-context";
 import CheckboxTextField from './checkbox-text-field';
@@ -127,46 +127,46 @@ const ModifyMonster = ({ isEdit }) => {
                 <div className="row">
                     <label>
                         Special Traits:
-                        {/* <MDEditor
+                        <MDEditor
                             value={form.specialTraits}
                             onChange={(e) => handleFieldChange(e, 'specialTraits')}
-                        /> */}
+                        />
                     </label>
                 </div>
                 <div className="row">
                     <label>
                         Actions description:
-                        {/* <MDEditor
+                        <MDEditor
                             value={form.actionsDescription}
                             onChange={(e) => handleFieldChange(e, 'actionsDescription')}
-                        /> */}
+                        />
                     </label>
                 </div>
                 <div className="row">
                     <label>
                         Reactions description:
-                        {/* <MDEditor
+                        <MDEditor
                             value={form.reactionsDescription}
                             onChange={(e) => handleFieldChange(e, 'reactionsDescription')}
-                        /> */}
+                        />
                     </label>
                 </div>
                 <div className="row">
                     <label>
                         Monster characteristics description:
-                        {/* <MDEditor
+                        <MDEditor
                             value={form.monsterCharacteristicsDescription}
                             onChange={(e) => handleFieldChange(e, 'monsterCharacteristicsDescription')}
-                        /> */}
+                        />
                     </label>
                 </div>
                 <div className="row">
                     <label>
                         Bonus Actions description:
-                        {/* <MDEditor
+                        <MDEditor
                             value={form.bonusActionsDescription}
                             onChange={(e) => handleFieldChange(e, 'bonusActionsDescription')}
-                        /> */}
+                        />
                     </label>
                 </div>
                 <div className="row">
