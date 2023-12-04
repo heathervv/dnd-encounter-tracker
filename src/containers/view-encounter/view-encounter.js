@@ -7,7 +7,7 @@ import { useMonstersContext } from "../../context/monsters/monsters-context";
 import MonsterCard from '../view-monster/monster-card'
 import './view-encounter.css'
 
-const Monster = () => {
+const ViewEncounter = () => {
     const { id } = useParams()
     const navigate = useNavigate()
     const { getSingleEncounter, deleteEncounter } = useEncountersContext()
@@ -105,4 +105,4 @@ const Monster = () => {
     )
 }
 
-export default Monster
+export default ViewEncounter

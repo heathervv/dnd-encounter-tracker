@@ -1,0 +1,141 @@
+.view-combat {
+    margin-top: 32px;
+}
+
+.combat-title {
+    margin: 0;
+}
+
+.combat-description {
+    background: #fff;
+    border: 1px solid #d0d7de;
+    border-radius: 3px;
+    margin-bottom: 24px;
+    box-shadow: 2px 2px 5px -2px rgba(0, 0, 0, 0.25);
+}
+
+.combat-description .title {
+    padding: 8px;
+    border-bottom: 1px solid #d0d7de;
+}
+
+.combat-description .wmde-markdown {
+    padding: 0 8px 8px;
+}
+
+.entries-list>h3 {
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.entries-list>ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.entries-list li {
+    display: flex;
+    align-items: stretch;
+    background-color: #fff;
+    border: 1px solid #d0d7de;
+    border-radius: 3px;
+    padding: 10px;
+    margin-bottom: 8px;
+    box-shadow: 2px 2px 5px -2px rgba(0, 0, 0, 0.25);
+
+    &.selected {
+        border-color: #077306;
+        box-shadow: 2px 2px 5px -2px rgba(0, 0, 0, 0.75);
+
+        .initiative {
+            background-color: #077306;
+            color: #fff;
+        }
+    }
+}
+
+.entries-list .entry {
+    width: 100%;
+}
+
+.entries-list .initiative {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 75px;
+    padding: 10px;
+    margin: -10px 10px -10px -10px;
+    background-color: #eee;
+
+    &>p {
+        font-size: 11px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1.4;
+    }
+}
+
+.entries-list .name {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.entries-list .details {
+    column-count: 2;
+    font-size: 14px;
+    max-width: 50%;
+    color: #585958;
+
+    &>* {
+        margin-bottom: 0;
+    }
+
+    &>*:first-child {
+        margin-right: 24px;
+    }
+}
+
+.entries-list-list strong {
+    font-weight: 500;
+}
+
+.entries-list button {
+    width: calc(100% + 20px);
+    text-align: left;
+    background-color: #fff;
+    padding: 10px;
+    margin: -10px;
+
+    &:hover,
+    &.selected {
+        background-color: #eee;
+    }
+
+    &>* {
+        color: #000;
+    }
+
+    &>p:first-child {
+        font-weight: 600;
+        margin-bottom: 4px;
+        font-size: 18px;
+    }
+}
+
+.combat-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    &>* {
+        margin: 0;
+    }
+
+    &>p {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+    }
+}

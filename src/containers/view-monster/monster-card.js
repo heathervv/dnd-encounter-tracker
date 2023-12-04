@@ -2,6 +2,8 @@ import { useCallback } from 'react'
 import MDEditor from '@uiw/react-md-editor/nohighlight'
 import './monster-card.css'
 
+import { baseAbilityScoreModifier, mapProficiencyBonus } from '../../helpers'
+
 const MonsterCard = ({ monster }) => {
     const mapMovement = useCallback(() => {
         const movements = (monster.movement || []).map((type) => {
@@ -14,8 +16,6 @@ const MonsterCard = ({ monster }) => {
 
         return movements.join(', ')
     }, [monster])
-
-    const baseAbilityScoreModifier = (ability) => Math.floor((ability - 10) / 2)
 
     const mapPrettyAbilityScore = useCallback((ability) => {
         let score = baseAbilityScoreModifier(ability)
@@ -33,21 +33,17 @@ const MonsterCard = ({ monster }) => {
         return map.join(', ')
     }, [])
 
-    const mapProficiencyBonus = useCallback(() => (
-        Math.round(1 + (monster.challengeRating / 4))
-    ), [monster])
-
     const mapSavingThrowProficiencies = useCallback(() => {
         const map = (monster.savingThrowProficiencies || []).map((st) => {
             const abilityScore = monster[st.ability.toLowerCase()]
             const abilityScoreModifier = baseAbilityScoreModifier(abilityScore)
-            const totalModifier = abilityScoreModifier + mapProficiencyBonus()
+            const totalModifier = abilityScoreModifier + mapProficiencyBonus(monster.challengeRating)
 
             return `${st.ability} +${totalModifier}`
         })
 
         return map.join(', ')
-    }, [monster, mapProficiencyBonus])
+    }, [monster])
 
     return (
         <div className="monster-card">
@@ -156,7 +152,7 @@ const MonsterCard = ({ monster }) => {
                     </div>
                     <div>
                         <p className="bold">Proficiency Bonus</p>
-                        <p>+{mapProficiencyBonus()}</p>
+                        <p>+{() => mapProficiencyBonus(monster.challengeRating)}</p>
                     </div>
                 </li>
             </ul>
