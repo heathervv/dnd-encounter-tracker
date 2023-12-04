@@ -92,7 +92,7 @@ const ModifyMonster = ({ isEdit }) => {
     }, [isEdit, monster, form, createMonster, updateMonster, navigate])
 
     return (
-        <section data-color-mode="light">
+        <section className="wrapper" data-color-mode="light">
             <h1>{isEdit ? `Edit ${monster?.name}` : 'Create monster'}</h1>
             <form onSubmit={handleSave}>
                 <div className="row">

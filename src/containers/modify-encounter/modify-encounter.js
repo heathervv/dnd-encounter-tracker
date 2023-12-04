@@ -60,7 +60,7 @@ const ModifyEncounter = ({ isEdit }) => {
     }, [isEdit, encounter, name, description, selectedMonsters, createEncounter, updateEncounter, navigate])
 
     return (
-        <section data-color-mode="light">
+        <section className="wrapper" data-color-mode="light">
             <h1>{isEdit ? `Edit ${encounter?.name}` : 'Create encounter'}</h1>
             <form onSubmit={handleSave}>
                 <label>

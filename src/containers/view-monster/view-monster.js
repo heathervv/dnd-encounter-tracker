@@ -22,7 +22,7 @@ const Monster = () => {
     }, [monster, deleteMonster, navigate])
 
     return (
-        <section data-color-mode="light">
+        <section className="wrapper" data-color-mode="light">
             {monster ? (
                 <>
                     <div className="header">

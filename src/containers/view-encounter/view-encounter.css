@@ -1,0 +1,128 @@
+.view-encounter {
+    margin-top: 32px;
+}
+
+.encounter-title {
+    margin: 0;
+}
+
+.run-combat {
+    font-size: 16px;
+    padding: 8px 12px;
+    background-color: #077306;
+    margin-top: 12px;
+}
+
+.manage-buttons {
+    & button:first-child {
+        margin-right: 12px;
+    }
+}
+
+.encounter-description {
+    background: #fff;
+    border: 1px solid #d0d7de;
+    border-radius: 3px;
+    margin-bottom: 24px;
+    box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.25);
+}
+
+.encounter-description .title {
+    padding: 8px;
+    border-bottom: 1px solid #d0d7de;
+}
+
+.encounter-description .wmde-markdown {
+    padding: 8px;
+}
+
+.player-characters-list > h3,
+.monsters-list > h3 {
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.player-characters-list > ul,
+.monsters-list > ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.player-characters-list li {
+    background-color: #fff;
+    border: 1px solid #d0d7de;
+    border-radius: 3px;
+    padding: 10px;
+    margin-bottom: 8px;
+    box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.25);
+}
+
+.player-characters-list .player-name {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.player-characters-list .player-details {
+    display: flex;
+    font-size: 14px;
+    color: #585958;
+
+    & > * {
+        margin-bottom: 0;
+    }
+
+    & > *:first-child {
+        margin-right: 24px;
+    }
+}
+
+.player-characters-list strong {
+    font-weight: 500;
+}
+
+.monsters-list {
+    margin-top: 16px;
+}
+
+.monsters-list li {
+    margin-bottom: 8px;
+}
+
+.monsters-list button {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    text-align: left;
+    background-color: #fff;
+    border: 1px solid #d0d7de;
+    padding: 8px;
+    box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.25);
+
+    &:hover,
+    &.selected {
+        background-color: #eee;
+    }
+
+    & > * {
+        color: #000;
+    }
+
+    & p:first-child {
+        font-weight: 600;
+        margin-bottom: 4px;
+        font-size: 16px;
+    }
+
+    & p:last-child {
+        font-style: italic;
+        margin-bottom: 0;
+        font-size: 14px;
+    }
+}
+
+.monsters-list button .count {
+    border-left: 1px solid #d0d7de;
+    min-width: 25px;
+    padding: 10px;
+}

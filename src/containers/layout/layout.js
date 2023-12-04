@@ -13,9 +13,7 @@ const Layout = () => (
                 </li>
             </ul>
         </nav>
-        <div className="wrapper">
-            <Outlet />
-        </div>
+        <Outlet />
     </main>
 )
 

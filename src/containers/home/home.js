@@ -12,12 +12,12 @@ const Home = () => {
     }, [navigate])
 
     return (
-        <>
+        <div className="wrapper">
             <section>
                 <h1>A custom DND combat creation/tracker tool.</h1>
                 <p>Remaining work (in no particular order):</p>
                 <ul>
-                    <li>Single encounter view - UI.</li>
+                    <li>Manage number of monsters in an encounter.</li>
                     <li>Basic Combat tracker.</li>
                 </ul>
                 <p>NTH work to follow up:</p>
@@ -48,7 +48,7 @@ const Home = () => {
                     <p>No encounters added yet!</p>
                 )}
             </section>
-        </>
+        </div>
     )
 }
 

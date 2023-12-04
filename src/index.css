@@ -12,6 +12,16 @@ body {
   box-sizing: border-box;
 }
 
+.wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.wrapper-large {
+  max-width: 100%;
+  padding: 0 32px;
+}
+
 a:visited {
   color: initial;
 }
@@ -100,6 +110,18 @@ hr {
     margin-left: 4px;
     margin-right: 4px;
   }
+}
+
+.row-align-top {
+  align-items: flex-start;
+}
+
+.width-forty {
+  width: 40%;
+}
+
+.width-sixty {
+  width: 60%;
 }
 
 .helper {

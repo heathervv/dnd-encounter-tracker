@@ -12,7 +12,7 @@ const Monsters = () => {
     }, [navigate])
 
     return (
-        <section>
+        <section className="wrapper">
             <div className="header">
                 <h1>List of monsters</h1>
                 <button onClick={handleCreateNew}>Create new</button>

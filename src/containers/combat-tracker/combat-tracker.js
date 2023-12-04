@@ -1,5 +1,5 @@
 const CombatTracker = () => (
-    <section>
+    <section className="wrapper-large">
         A combat tracker will be here
     </section>
 )
