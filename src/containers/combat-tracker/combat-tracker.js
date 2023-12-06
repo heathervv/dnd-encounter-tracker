@@ -9,8 +9,7 @@ import './combat-tracker.css'
 
 import { baseAbilityScoreModifier } from '../../helpers'
 
-// 6. Add ability to modify HP of monsters
-// 7. Next button skips entries with 0 hp
+const getId = (entry) => entry.isMonster ? `${entry.kind}-${entry.id}` : entry.id
 
 const CombatTracker = () => {
     const { encounterId } = useParams()
@@ -22,6 +21,9 @@ const CombatTracker = () => {
     const [combatStarted, setCombatStarted] = useState(false)
     const [selected, setSelected] = useState(null)
     const [round, setRound] = useState(1)
+    const [health, setHealth] = useState({})
+    const [modifyHPModal, showModifyHPModal] = useState(null)
+    const [updatedHP, setUpdatedHP] = useState(0)
 
     const encounter = useMemo(() => getSingleEncounter?.(encounterId), [encounterId, getSingleEncounter])
 
@@ -84,15 +86,26 @@ const CombatTracker = () => {
     }, [encounter, players, initiative, combatStarted])
 
     const handleStart = useCallback(() => {
+        const health = {}
         const unSetInitiative = {}
         entries.forEach((entry) => {
-            if (entry.kind && !initiative[`${entry.kind}-${entry.id}`]) {
-                unSetInitiative[`${entry.kind}-${entry.id}`] = 0
-                return
+            // set health for each entry
+            if (entry.isMonster) {
+                const monster = monsters.find((m) => m.id === entry.id)
+                health[getId(entry)] = {
+                    current: parseInt(monster.averageHitPoints, 10),
+                    max: parseInt(monster.averageHitPoints, 10)
+                }
+            } else {
+                health[getId(entry)] = {
+                    current: entry.health,
+                    max: entry.health
+                }
             }
 
-            if (!entry.kind && !initiative[entry.id]) {
-                unSetInitiative[entry.id] = 0
+            // Set 0 for initiative for all entries without
+            if (!initiative[getId(entry)]) {
+                unSetInitiative[getId(entry)] = 0
                 return
             }
         })
@@ -101,9 +114,10 @@ const CombatTracker = () => {
             ...initiative,
             ...unSetInitiative
         })
+        setHealth(health)
         setCombatStarted(true)
         setSelected(0)
-    }, [setCombatStarted, initiative, entries, setInitiative, setSelected])
+    }, [setCombatStarted, monsters, initiative, entries, setInitiative, setSelected, setHealth])
 
     const handleInitiativeUpdate = useCallback((e, id) => {
         if (combatStarted) {
@@ -113,18 +127,63 @@ const CombatTracker = () => {
         setInitiative({ ...initiative, [id]: e.target.value })
     }, [combatStarted, initiative, setInitiative])
 
-    const handleNext = useCallback(() => {
-        let update = 0
+    const findNextIndex = useCallback((index) => {
+        const nextEntry = () => {
+            let update = 0
 
-        if (selected === entries.length - 1) {
-            update = 0
-            setRound(round + 1)
-        } else if (selected !== null) {
-            update = selected + 1
+            if (index === entries.length - 1) {
+                update = 0
+            } else if (index !== null) {
+                update = index + 1
+            }
+
+            return update
         }
 
-        setSelected(update)
-    }, [entries, selected, setSelected, round, setRound])
+        const nextIndex = nextEntry()
+        const idOfNextEntry = getId(entries[nextIndex])
+        const healthOfNextEntry = health[idOfNextEntry].current
+
+        if (healthOfNextEntry === 0) {
+            return findNextIndex(nextIndex)
+        } else {
+            return nextIndex
+        }
+    }, [entries, health])
+
+    const handleNext = useCallback(() => {
+        const nextIndex = findNextIndex(selected)
+
+        if (nextIndex <= selected) {
+            setRound(round + 1)
+        }
+
+        setSelected(nextIndex)
+    }, [selected, setSelected, round, setRound, findNextIndex])
+
+    const updateHealth = useCallback((healthEntry) => {
+        setUpdatedHP(0)
+        if (modifyHPModal === healthEntry) {
+            showModifyHPModal(null)
+        } else {
+            showModifyHPModal(healthEntry)
+        }
+    }, [modifyHPModal, setUpdatedHP, showModifyHPModal])
+
+    const captureUpdatedHP = useCallback(() => {
+        const healthItem = health[modifyHPModal]
+        const updatedCurrent = parseInt(healthItem.current, 10) + parseInt(updatedHP, 10)
+
+        setHealth({
+            ...health,
+            [modifyHPModal]: {
+                ...healthItem,
+                current: updatedCurrent >= 0 ? updatedCurrent : 0,
+            }
+        })
+        setUpdatedHP(0)
+        showModifyHPModal(null)
+    }, [health, modifyHPModal, updatedHP, setHealth, setUpdatedHP, showModifyHPModal])
 
     return (
         <section className="combat-tracker wrapper-large" data-color-mode="light">
@@ -139,45 +198,56 @@ const CombatTracker = () => {
                             <div className="entries-list">
                                 <ul>
                                     {(entries || []).map((entry, i) => {
+                                        let monster = null
+                                        let initBonus = null
                                         if (entry.isMonster) {
-                                            const monster = monsters.find((m) => m.id === entry.id)
-                                            const initBonus = baseAbilityScoreModifier(monster.dexterity)
-                                            const id = `${entry.kind}-${monster.id}`
-
-                                            return (
-                                                <li key={id} className={selected === i ? 'selected' : ''}>
-                                                    <div className="initiative">
-                                                        <p>Initiative</p>
-                                                        <input type="number" min="0" value={initiative[id]} disabled={combatStarted} onChange={(e) => handleInitiativeUpdate(e, id)} />
-                                                    </div>
-                                                    <button className={monsterCard?.monster.id === entry.id && monsterCard?.kind === entry.kind ? 'selected' : ''} type="button" onClick={() => showMonsterCard({ monster, kind: entry.kind })}>
-                                                        <p>{monster.name}</p>
-                                                        <div className="details">
-                                                            <p><strong>CR: </strong>{monster.challengeRating}</p>
-                                                            <p><strong>HP: </strong>{monster.averageHitPoints} ({monster.hitPointsDieCount}{monster.hitPointsDieValue}+{monster.hitPointsDieModifier})</p>
-                                                            <p><strong>AC: </strong>{monster.armorClass}</p>
-                                                            <p><strong>Init Bonus: </strong>{initBonus}</p>
-                                                        </div>
-                                                    </button>
-                                                </li>
-                                            )
+                                            monster = monsters.find((m) => m.id === entry.id)
+                                            initBonus = baseAbilityScoreModifier(monster.dexterity)
                                         }
 
                                         return (
-                                            <li key={entry.id} className={selected === i ? 'selected' : ''}>
+                                            <li key={getId(entry)} className={selected === i ? 'selected' : ''}>
                                                 <div className="initiative">
                                                     <p>Initiative</p>
-                                                    <input type="number" min="0" value={initiative[entry.id]} disabled={combatStarted} onChange={(e) => handleInitiativeUpdate(e, entry.id)} />
+                                                    <input type="number" min="0" value={initiative[getId(entry)]} disabled={combatStarted} onChange={(e) => handleInitiativeUpdate(e, getId(entry))} />
                                                 </div>
-                                                <div className="entry">
-                                                    <p className="name">{entry.name}</p>
-                                                    <div className="details">
-                                                        <p><strong>Level: </strong>{entry.level}</p>
-                                                        <p><strong>AC: </strong>{entry.armor_class}</p>
-                                                        <p><strong>Init Bonus: </strong>{entry.initiative_bonus}</p>
-                                                        <p><strong>Speed: </strong>{entry.speed}</p>
+                                                {entry.isMonster ? (
+                                                    <button className={monsterCard?.monster.id === entry.id && monsterCard?.kind === entry.kind ? 'selected' : ''} type="button" onClick={() => showMonsterCard({ monster, kind: entry.kind })}>
+                                                        <p>{monster.name}</p>
+                                                        <div className="details">
+                                                            <p><strong>AC: </strong>{monster.armorClass}</p>
+                                                            <p><strong>HP: </strong>{monster.averageHitPoints} ({monster.hitPointsDieCount}{monster.hitPointsDieValue}+{monster.hitPointsDieModifier})</p>
+                                                            <p><strong>Init Bonus: </strong>{initBonus}</p>
+                                                        </div>
+                                                    </button>
+                                                ) : (
+                                                    <div className="entry">
+                                                        <p className="name">{entry.name}</p>
+                                                        <div className="details">
+                                                            <p><strong>AC: </strong>{entry.armor_class}</p>
+                                                            <p><strong>Init Bonus: </strong>{entry.initiative_bonus}</p>
+                                                            <p><strong>Pass. Perception: </strong>{entry.passive_perception}</p>
+                                                            <p><strong>Speed: </strong>{entry.speed}</p>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                )}
+                                                {combatStarted &&
+                                                    <div className="health" onClick={() => updateHealth(getId(entry))}>
+                                                        <ul>
+                                                            <li>{health[getId(entry)].current}</li>
+                                                            <li>/</li>
+                                                            <li>{health[getId(entry)].max}</li>
+                                                        </ul>
+                                                    </div>
+                                                }
+                                                {modifyHPModal === getId(entry) && (
+                                                    <div className="hp-modal">
+                                                        <form onSubmit={captureUpdatedHP}>
+                                                            <input type="number" autoFocus value={updatedHP} onChange={(e) => setUpdatedHP(e.target.value)} />
+                                                            <button type="submit">Update</button>
+                                                        </form>
+                                                    </div>
+                                                )}
                                             </li>
                                         )
                                     })}
@@ -195,9 +265,9 @@ const CombatTracker = () => {
                             </div>
                         </div>
                         <div className="width-sixty">
-                            {monsterCard && <MonsterCard monster={monsterCard.monster} />}
+                            {monsterCard && <div className="combat-monster"><MonsterCard monster={monsterCard.monster} /></div>}
                             {encounter.description &&
-                                <div className="encounter-description">
+                                <div className="combat-description">
                                     <h3 className="title">Encounter description</h3>
                                     <MDEditor.Markdown source={encounter.description} />
                                 </div>

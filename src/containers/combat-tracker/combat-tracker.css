@@ -6,6 +6,10 @@
     margin: 0;
 }
 
+.combat-monster {
+    margin-bottom: 24px;
+}
+
 .combat-description {
     background: #fff;
     border: 1px solid #d0d7de;
@@ -34,7 +38,8 @@
     margin: 0;
 }
 
-.entries-list li {
+.entries-list>ul>li {
+    position: relative;
     display: flex;
     align-items: stretch;
     background-color: #fff;
@@ -84,7 +89,7 @@
 .entries-list .details {
     column-count: 2;
     font-size: 14px;
-    max-width: 50%;
+    max-width: 65%;
     color: #585958;
 
     &>* {
@@ -100,7 +105,7 @@
     font-weight: 500;
 }
 
-.entries-list button {
+.entries-list>ul>li>button {
     width: calc(100% + 20px);
     text-align: left;
     background-color: #fff;
@@ -120,6 +125,67 @@
         font-weight: 600;
         margin-bottom: 4px;
         font-size: 18px;
+    }
+}
+
+.entries-list .health {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #eee;
+    padding: 10px 15px;
+    margin: -10px;
+    min-width: 75px;
+
+    &>ul {
+        display: flex;
+        list-style-type: none;
+        padding-left: 0;
+    }
+}
+
+.entries-list .hp-modal {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 15px);
+    width: 125px;
+    transform: translateY(-50%);
+    background-color: #fff;
+    border: 1px solid #077306;
+    border-radius: 3px;
+    padding: 5px;
+    box-shadow: 2px 2px 5px -2px rgba(0, 0, 0, 0.25);
+
+    &:before {
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-top: 7px solid transparent;
+        border-bottom: 7px solid transparent;
+        border-right: 8px solid #077306;
+        border-left: 0;
+        position: absolute;
+        right: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    &>form {
+        margin: 0;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &>form>input {
+        margin: 0 5px 0 0;
+    }
+
+    &>form>button {
+        padding: 5px;
+        font-size: 12px;
     }
 }
 
