@@ -13,7 +13,7 @@
       "sizes": "512x512"
     }
   ],
-  "scope": "/dnd-encounter-tracker/",
+  "scope": "heathervv.github.io/dnd-encounter-tracker/",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#ffffff",
