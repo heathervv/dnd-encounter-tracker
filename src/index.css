@@ -99,6 +99,7 @@ button {
 
 select {
   appearance: none;
+  color: #000;
 }
 
 .select-wrapper {
