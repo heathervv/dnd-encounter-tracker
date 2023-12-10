@@ -58,7 +58,7 @@ const MonsterCard = ({ monster }) => {
                 </li>
                 <li>
                     <p className="bold">Hit points:</p>
-                    <p>{monster.averageHitPoints} ({monster.hitPointsDieCount}{monster.hitPointsDieValue}{monster.hitPointsDieModifier ? `+ ${monster.hitPointsDieModifier}` : ''})</p>
+                    <p>{monster.averageHitPoints} ({monster.hitPointsDieCount}{monster.hitPointsDieValue}{monster.hitPointsDieModifier > 0 ? ` + ${monster.hitPointsDieModifier}` : ''})</p>
                 </li>
                 <li>
                     <p className="bold">Speed:</p>
