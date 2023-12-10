@@ -43,7 +43,6 @@ const Home = () => {
             <section>
                 <p>Remaining work I'd like to get to (in no particular order):</p>
                 <ul>
-                    <li>iOS polish (select styling, etc)</li>
                     <li>Death saves in combat tracker</li>
                     <li>Add dynamic links to spells/conditions/other curious things</li>
                     <li>Images (for players and monsters)</li>

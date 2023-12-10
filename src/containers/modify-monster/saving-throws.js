@@ -57,15 +57,17 @@ const SavingThrows = ({ fieldKey, values, onValueChange }) => {
                 {createNew && (
                     <li>
                         <label>
-                            <select name={`${fieldKey}-new-ability`} value={newAbility} onChange={(e) => setNewAbility(e.target.value)}>
-                                <option disabled value="-">-</option>
-                                <option value="Strength">Strength</option>
-                                <option value="Dexterity">Dexterity</option>
-                                <option value="Constitution">Constitution</option>
-                                <option value="Intelligence">Intelligence</option>
-                                <option value="Wisdom">Wisdom</option>
-                                <option value="Charisma">Charisma</option>
-                            </select>
+                            <div className="select-wrapper">
+                                <select name={`${fieldKey}-new-ability`} value={newAbility} onChange={(e) => setNewAbility(e.target.value)}>
+                                    <option disabled value="-">-</option>
+                                    <option value="Strength">Strength</option>
+                                    <option value="Dexterity">Dexterity</option>
+                                    <option value="Constitution">Constitution</option>
+                                    <option value="Intelligence">Intelligence</option>
+                                    <option value="Wisdom">Wisdom</option>
+                                    <option value="Charisma">Charisma</option>
+                                </select>
+                            </div>
                         </label>
                         <div className="button-wrapper">
                             <button type="button" onClick={handleSave}>Add</button>

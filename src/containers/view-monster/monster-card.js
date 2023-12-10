@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import MDEditor from '@uiw/react-md-editor/nohighlight'
+import Markdown from '../../components/markdown'
 import './monster-card.css'
 
 import { baseAbilityScoreModifier, mapProficiencyBonus } from '../../helpers'
@@ -20,7 +20,7 @@ const MonsterCard = ({ monster }) => {
     const mapPrettyAbilityScore = useCallback((ability) => {
         let score = baseAbilityScoreModifier(ability)
 
-        if (score >= 0) {
+        if (score > 0) {
             score = `+${score}`
         }
 
@@ -28,7 +28,7 @@ const MonsterCard = ({ monster }) => {
     }, [])
 
     const mapList = useCallback((attribute) => {
-        const map = (attribute || []).map((type) => `${type.name} ${type.note}`)
+        const map = (attribute || []).map((type) => type.note ? `${type.name} ${type.note}` : type.name)
 
         return map.join(', ')
     }, [])
@@ -54,11 +54,11 @@ const MonsterCard = ({ monster }) => {
             <ul className="section stats">
                 <li>
                     <p className="bold">Armor class:</p>
-                    <p>{monster.armorClass} {monster.armorClassType}</p>
+                    <p>{monster.armorClass} {monster.armorClassType ? monster.armorClassType : ''}</p>
                 </li>
                 <li>
                     <p className="bold">Hit points:</p>
-                    <p>{monster.averageHitPoints} ({monster.hitPointsDieCount}{monster.hitPointsDieValue} + {monster.hitPointsDieModifier})</p>
+                    <p>{monster.averageHitPoints} ({monster.hitPointsDieCount}{monster.hitPointsDieValue}{monster.hitPointsDieModifier ? `+ ${monster.hitPointsDieModifier}` : ''})</p>
                 </li>
                 <li>
                     <p className="bold">Speed:</p>
@@ -93,14 +93,14 @@ const MonsterCard = ({ monster }) => {
                 </li>
             </ul>
             <ul className="section stats">
-                {monster.savingThrowProficiencies &&
+                {(monster.savingThrowProficiencies || []).length > 0 &&
                     <li>
                         <p className="bold">Saving throws</p>
                         <p>{mapSavingThrowProficiencies()}</p>
                     </li>
                 }
                 {
-                    monster.skills &&
+                    (monster.skills || []).length > 0 &&
                     <li>
                         <p className="bold">Skills</p>
                         <p>{mapList(monster.skills)}</p>
@@ -152,44 +152,43 @@ const MonsterCard = ({ monster }) => {
                     </div>
                     <div>
                         <p className="bold">Proficiency Bonus</p>
-                        <p>+{() => mapProficiencyBonus(monster.challengeRating)}</p>
+                        <p>+{mapProficiencyBonus(monster.challengeRating)}</p>
                     </div>
                 </li>
             </ul>
             {monster.specialTraits &&
                 <div>
-                    <div className="wmde-markdown-var"> </div>
-                    <MDEditor.Markdown source={monster.specialTraits} className="markdown-block" />
+                    <Markdown source={monster.specialTraits} />
                 </div>
             }
             {monster.actionsDescription &&
                 <div>
                     <h3 className="section-title">Actions</h3>
-                    <MDEditor.Markdown source={monster.actionsDescription} />
+                    <Markdown source={monster.actionsDescription} />
                 </div>
             }
             {monster.bonusActionsDescription &&
                 <div>
                     <h3 className="section-title">Bonus Actions</h3>
-                    <MDEditor.Markdown source={monster.bonusActionsDescription} />
+                    <Markdown source={monster.bonusActionsDescription} />
                 </div>
             }
             {monster.reactionsDescription &&
                 <div>
                     <h3 className="section-title">Reactions</h3>
-                    <MDEditor.Markdown source={monster.reactionsDescription} />
+                    <Markdown source={monster.reactionsDescription} />
                 </div>
             }
             {monster.isLegendary && monster.legendaryActionsDescription &&
                 <div>
                     <h3 className="section-title">Legendary Actions</h3>
-                    <MDEditor.Markdown source={monster.legendaryActionsDescription} />
+                    <Markdown source={monster.legendaryActionsDescription} />
                 </div>
             }
             {monster.isMythic && monster.mythicActionsDescription &&
                 <div>
                     <h3 className="section-title">Mythical Actions</h3>
-                    <MDEditor.Markdown source={monster.mythicActionsDescription} />
+                    <Markdown source={monster.mythicActionsDescription} />
                 </div>
             }
         </div>

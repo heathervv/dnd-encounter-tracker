@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import MDEditor from '@uiw/react-md-editor/nohighlight'
 import { useMonstersContext } from "../../context/monsters/monsters-context";
+import Markdown from '../../components/markdown'
 import MonsterCard from './monster-card'
 import './view-monster.css'
 
@@ -34,7 +34,7 @@ const Monster = () => {
                     </div>
                     {monster.monsterCharacteristicsDescription && (
                         <div className="monster-description">
-                            <MDEditor.Markdown source={monster.monsterCharacteristicsDescription} />
+                            <Markdown source={monster.monsterCharacteristicsDescription} />
                         </div>
                     )}
                     <MonsterCard monster={monster} />

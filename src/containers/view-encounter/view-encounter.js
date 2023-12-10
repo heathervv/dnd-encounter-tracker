@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import MDEditor from '@uiw/react-md-editor/nohighlight'
 import { useEncountersContext } from "../../context/encounters/encounters-context";
 import { usePlayerContext } from "../../context/players/players-context";
 import { useMonstersContext } from "../../context/monsters/monsters-context";
+import Markdown from '../../components/markdown'
 import MonsterCard from '../view-monster/monster-card'
 import './view-encounter.css'
 
@@ -91,7 +91,7 @@ const ViewEncounter = () => {
                             {encounter.description &&
                                 <div className="encounter-description">
                                     <h3 className="title">Encounter description</h3>
-                                    <MDEditor.Markdown source={encounter.description} />
+                                    <Markdown source={encounter.description} />
                                 </div>
                             }
                             {monsterCard && <MonsterCard monster={monsterCard} />}

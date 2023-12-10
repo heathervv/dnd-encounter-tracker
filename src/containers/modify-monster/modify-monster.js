@@ -105,16 +105,18 @@ const ModifyMonster = ({ isEdit }) => {
                 </div>
                 <div className="row">
                     <label>
-                        Size*: <select required name="size" value={form.size} onChange={(e) => handleFieldChange(e, 'size')}>
-                            <option disabled value="-">-</option>
-                            <option value="Gargantuan">Gargantuan</option>
-                            <option value="Huge">Huge</option>
-                            <option value="Large">Large</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Medium or small">Medium or small</option>
-                            <option value="Small">Small</option>
-                            <option value="Tiny">Tiny</option>
-                        </select>
+                        Size*: <div className="select-wrapper">
+                            <select required name="size" value={form.size} onChange={(e) => handleFieldChange(e, 'size')}>
+                                <option disabled value="-">-</option>
+                                <option value="Gargantuan">Gargantuan</option>
+                                <option value="Huge">Huge</option>
+                                <option value="Large">Large</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Medium or small">Medium or small</option>
+                                <option value="Small">Small</option>
+                                <option value="Tiny">Tiny</option>
+                            </select>
+                        </div>
                     </label>
                     <label>
                         Alignment: <input type="text" name="alignment" value={form.alignment} onChange={(e) => handleFieldChange(e, 'alignment')} />
@@ -204,7 +206,7 @@ const ModifyMonster = ({ isEdit }) => {
                         Armor Class*: <input type="number" required name="armorClass" value={form.armorClass} onChange={(e) => handleFieldChange(e, 'armorClass')} />
                     </label>
                     <label>
-                        Armor Class Type*: <input type="text" required name="armorClassType" value={form.armorClassType} onChange={(e) => handleFieldChange(e, 'armorClassType')} />
+                        Armor Class Type: <input type="text" name="armorClassType" value={form.armorClassType} onChange={(e) => handleFieldChange(e, 'armorClassType')} />
                     </label>
                     <label>
                         Passive Perception*: <input type="number" required name="passivePerception" value={form.passivePerception} onChange={(e) => handleFieldChange(e, 'passivePerception')} />
@@ -215,15 +217,17 @@ const ModifyMonster = ({ isEdit }) => {
                         Hit Points Die Count*: <input type="number" required name="hitPointsDieCount" value={form.hitPointsDieCount} onChange={(e) => handleFieldChange(e, 'hitPointsDieCount')} />
                     </label>
                     <label>
-                        Hit Points Die Value*: <select required name="hitPointsDieValue" value={form.hitPointsDieValue} onChange={(e) => handleFieldChange(e, 'hitPointsDieValue')}>
-                            <option disabled value="-">-</option>
-                            <option value="d4">d4</option>
-                            <option value="d6">d6</option>
-                            <option value="d8">d8</option>
-                            <option value="d10">d10</option>
-                            <option value="d12">d12</option>
-                            <option value="d20">d20</option>
-                        </select>
+                        Hit Points Die Value*: <div className="select-wrapper">
+                            <select required name="hitPointsDieValue" value={form.hitPointsDieValue} onChange={(e) => handleFieldChange(e, 'hitPointsDieValue')}>
+                                <option disabled value="-">-</option>
+                                <option value="d4">d4</option>
+                                <option value="d6">d6</option>
+                                <option value="d8">d8</option>
+                                <option value="d10">d10</option>
+                                <option value="d12">d12</option>
+                                <option value="d20">d20</option>
+                            </select>
+                        </div>
                     </label>
                     <label>
                         Hit Points Modifier*: <input type="number" required name="hitPointsDieModifier" value={form.hitPointsDieModifier} onChange={(e) => handleFieldChange(e, 'hitPointsDieModifier')} />

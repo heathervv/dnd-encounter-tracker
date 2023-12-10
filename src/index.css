@@ -26,7 +26,13 @@ a:visited {
   color: initial;
 }
 
-h1, h2, h3, h4, h5, h6, p {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
   margin: 0;
   margin-bottom: 0.5em;
 }
@@ -35,7 +41,11 @@ ul {
   padding-left: 16px;
 }
 
-label, input[type=text], input[type=number], textarea, select {
+label,
+input[type=text],
+input[type=number],
+textarea,
+select {
   display: block;
   width: 100%;
   margin: 0;
@@ -46,7 +56,11 @@ label {
   padding: 0;
 }
 
-input[type=text], input[type=number], textarea, select, fieldset {
+input[type=text],
+input[type=number],
+textarea,
+select,
+fieldset {
   margin-top: 4px;
   padding: 8px;
   border: 1px solid #d0d7de;
@@ -62,7 +76,7 @@ fieldset {
   margin-left: 0;
   margin-right: 0;
 
-  & > .option {
+  &>.option {
     display: flex;
     align-items: center;
     margin-bottom: 4px;
@@ -80,6 +94,23 @@ button {
 
   &:focus {
     background-color: #171717;
+  }
+}
+
+select {
+  appearance: none;
+}
+
+.select-wrapper {
+  position: relative;
+
+  &:after {
+    content: '↓';
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
   }
 }
 
@@ -106,7 +137,7 @@ hr {
   align-items: center;
   margin: 8px -4px;
 
-  & > * {
+  &>* {
     margin-left: 4px;
     margin-right: 4px;
   }
