@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useEncountersContext } from "../../context/encounters/encounters-context";
+import { EXPORT_TYPE, ManageData } from '../../components/manage-data/manage-data';
 import './home.css'
 
 const Home = () => {
     const navigate = useNavigate()
-    const { encounters } = useEncountersContext()
+    const { encounters, exportEncounters, importEncounters } = useEncountersContext()
 
     const handleCreateNew = useCallback(() => {
         navigate('/encounter/create')
@@ -39,12 +40,18 @@ const Home = () => {
                 ) : (
                     <p>No encounters added yet!</p>
                 )}
+                <hr />
+                <ManageData
+                    onExport={exportEncounters}
+                    onImport={importEncounters}
+                    type={EXPORT_TYPE.ENCOUNTERS}
+                />
             </section>
+            <hr />
             <section>
                 <p>Remaining work I'd like to get to (in no particular order):</p>
                 <ul>
-                    <li>Death saves in combat tracker</li>
-                    <li>Add dynamic links to spells/conditions/other curious things</li>
+                    <li>Death saves / polish UI when someone is down in combat tracker</li>
                     <li>Images (for players and monsters)</li>
                 </ul>
             </section>

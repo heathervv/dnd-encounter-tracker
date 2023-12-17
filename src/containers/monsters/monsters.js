@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMonstersContext } from "../../context/monsters/monsters-context";
+import { EXPORT_TYPE, ManageData } from '../../components/manage-data/manage-data';
 import './monsters.css'
 
 const Monsters = () => {
     const navigate = useNavigate()
-    const { monsters } = useMonstersContext()
+    const { monsters, exportMonsters, importMonsters } = useMonstersContext()
 
     const handleCreateNew = useCallback(() => {
         navigate('/monster/create')
@@ -33,6 +34,12 @@ const Monsters = () => {
             ) : (
                 <p>No monsters added yet!</p>
             )}
+            <hr />
+            <ManageData
+                onExport={exportMonsters}
+                onImport={importMonsters}
+                type={EXPORT_TYPE.MONSTERS}
+            />
         </section>
     )
 }

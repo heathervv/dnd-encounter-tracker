@@ -38,3 +38,20 @@ const cr_proficiency_bonus = {
 }
 
 export const mapProficiencyBonus = (challengeRating) => cr_proficiency_bonus[challengeRating]
+
+export const exportToJson = (data, fileName = 'export') => {
+    let filename = `${fileName}.json`
+    let contentType = "application/json;charset=utf-8;"
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(data)))], { type: contentType });
+        navigator.msSaveOrOpenBlob(blob, filename);
+    } else {
+        var a = document.createElement('a');
+        a.download = filename;
+        a.href = 'data:' + contentType + ',' + encodeURIComponent(JSON.stringify(data));
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+}

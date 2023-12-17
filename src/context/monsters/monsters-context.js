@@ -1,5 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
+import { exportToJson } from '../../helpers'
+
 export const MonstersContext = createContext({})
 
 const STORAGE_KEY = 'monsters'
@@ -49,5 +51,21 @@ export const useMonstersContext = () => {
         saveMonsters([...list, monster])
     }, [monsters, saveMonsters])
 
-    return { monsters, getSingleMonster, createMonster, deleteMonster, updateMonster }
+    const exportMonsters = useCallback(() => {
+        exportToJson(monsters, 'monsters')
+    }, [monsters])
+
+    const importMonsters = useCallback((data) => {
+        saveMonsters(JSON.parse(data))
+    }, [saveMonsters])
+
+    return {
+        monsters,
+        getSingleMonster,
+        createMonster,
+        deleteMonster,
+        updateMonster,
+        exportMonsters,
+        importMonsters
+    }
 }
