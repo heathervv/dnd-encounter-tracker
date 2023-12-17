@@ -205,8 +205,17 @@ const CombatTracker = () => {
                                             initBonus = baseAbilityScoreModifier(monster.dexterity)
                                         }
 
+                                        let statuses = []
+
+                                        if (selected === i) {
+                                            statuses.push('selected')
+                                        }
+                                        if (combatStarted && health[getId(entry)].current === 0) {
+                                            statuses.push('dead')
+                                        }
+
                                         return (
-                                            <li key={getId(entry)} className={selected === i ? 'selected' : ''}>
+                                            <li key={getId(entry)} className={statuses.join(' ')}>
                                                 <div className="initiative">
                                                     <p>Initiative</p>
                                                     <input type="number" min="0" value={initiative[getId(entry)]} disabled={combatStarted} onChange={(e) => handleInitiativeUpdate(e, getId(entry))} />
@@ -243,7 +252,7 @@ const CombatTracker = () => {
                                                 {modifyHPModal === getId(entry) && (
                                                     <div className="hp-modal">
                                                         <form onSubmit={captureUpdatedHP}>
-                                                            <input type="number" autoFocus value={updatedHP} onChange={(e) => setUpdatedHP(e.target.value)} />
+                                                            <input type="number" autoFocus value={updatedHP === 0 ? '' : updatedHP} onChange={(e) => setUpdatedHP(e.target.value)} />
                                                             <button type="submit">Update</button>
                                                         </form>
                                                     </div>

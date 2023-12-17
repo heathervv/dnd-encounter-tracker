@@ -51,7 +51,7 @@ const Home = () => {
             <section>
                 <p>Remaining work I'd like to get to (in no particular order):</p>
                 <ul>
-                    <li>Death saves / polish UI when someone is down in combat tracker</li>
+                    <li>Death saves in combat tracker</li>
                     <li>Images (for players and monsters)</li>
                 </ul>
             </section>

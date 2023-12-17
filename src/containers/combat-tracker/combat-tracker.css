@@ -58,6 +58,18 @@
             color: #fff;
         }
     }
+
+    &.dead {
+
+        >button,
+        .health {
+            background-color: #fcb3b3;
+
+            &:hover {
+                background-color: #fcb3b3;
+            }
+        }
+    }
 }
 
 .entries-list .entry {
