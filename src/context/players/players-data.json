@@ -25,5 +25,14 @@
         "speed": 30,
         "passive_perception": 12,
         "health": 33
+    },
+    {
+        "name": "Seelie (they/them)",
+        "level": 5,
+        "initiative_bonus": -1,
+        "armor_class": 9,
+        "speed": 30,
+        "passive_perception": 12,
+        "health": 27
     }
 ]
