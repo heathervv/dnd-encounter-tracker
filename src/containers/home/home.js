@@ -47,14 +47,6 @@ const Home = () => {
                     type={EXPORT_TYPE.ENCOUNTERS}
                 />
             </section>
-            <hr />
-            <section>
-                <p>Remaining work I'd like to get to (in no particular order):</p>
-                <ul>
-                    <li>Death saves in combat tracker</li>
-                    <li>Images (for players and monsters)</li>
-                </ul>
-            </section>
         </div>
     )
 }
