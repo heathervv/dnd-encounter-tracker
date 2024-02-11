@@ -1,29 +1,16 @@
-import { useState, useCallback } from 'react'
+import { useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import './custom-list.css'
 
 const SavingThrows = ({ fieldKey, values, onValueChange }) => {
-    const [createNew, setCreateNew] = useState(false)
-    const [newAbility, setNewAbility] = useState('-')
-
     const handleAdd = useCallback(() => {
-        setCreateNew(true)
-    }, [setCreateNew])
+        onValueChange([...values, { ability: '', id: uuidv4() }])
+    }, [values, onValueChange])
 
-    const handleReset = useCallback(() => {
-        setNewAbility('-')
-        setCreateNew(false)
-    }, [setNewAbility, setCreateNew])
-
-    const handleSave = useCallback(() => {
-        if (newAbility === '-') {
-            return
-        }
-
-        onValueChange([...values, { ability: newAbility, id: uuidv4() }])
-
-        handleReset()
-    }, [values, newAbility, onValueChange, handleReset])
+    const handleChange = useCallback((id, ability) => {
+        const updatedOptions = values.filter((value) => value.id !== id)
+        onValueChange([...updatedOptions, { ability, id }])
+    }, [values, onValueChange])
 
     const handleDelete = useCallback((id) => {
         const updatedOptions = values.filter((value) => value.id !== id)
@@ -46,20 +33,10 @@ const SavingThrows = ({ fieldKey, values, onValueChange }) => {
                 </li>
                 {values.length > 0 ? values.map((value) => (
                     <li key={value.id}>
-                        <p>{value.ability}</p>
-                        <div className="button-wrapper">
-                            <button className="delete" type="button" onClick={() => handleDelete(value.id)}>Remove</button>
-                        </div>
-                    </li>
-                )) : (
-                    <li><p>No ability added yet.</p></li>
-                )}
-                {createNew && (
-                    <li>
                         <label>
                             <div className="select-wrapper">
-                                <select name={`${fieldKey}-new-ability`} value={newAbility} onChange={(e) => setNewAbility(e.target.value)}>
-                                    <option disabled value="-">-</option>
+                                <select name={`${fieldKey}`} value={value.ability} onChange={(e) => handleChange(value.id, e.target.value)}>
+                                    <option disabled value="">-</option>
                                     <option value="Strength">Strength</option>
                                     <option value="Dexterity">Dexterity</option>
                                     <option value="Constitution">Constitution</option>
@@ -70,9 +47,11 @@ const SavingThrows = ({ fieldKey, values, onValueChange }) => {
                             </div>
                         </label>
                         <div className="button-wrapper">
-                            <button type="button" onClick={handleSave}>Add</button>
+                            <button className="delete" type="button" onClick={() => handleDelete(value.id)}>Remove</button>
                         </div>
                     </li>
+                )) : (
+                    <li><p>No ability added yet.</p></li>
                 )}
             </ul>
         </div>
