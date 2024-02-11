@@ -1,18 +1,32 @@
-import { createContext, useContext } from 'react'
-import { v4 as uuidv4 } from 'uuid'
-import basePlayers from './players-data'
+import { createContext, useCallback, useContext, useState, useEffect } from 'react'
+
+import { exportToJson } from '../../helpers'
 
 export const PlayerContext = createContext([])
 
+const STORAGE_KEY = 'players'
+
 export const PlayerProvider = ({ children }) => {
-    const players = basePlayers.map((player) => ({
-        ...player,
-        id: uuidv4()
-    }))
+    const [players, setPlayers] = useState([])
+
+    useEffect(() => {
+        const savedPlayers = localStorage.getItem(STORAGE_KEY)
+
+        if (savedPlayers) {
+            setPlayers(JSON.parse(savedPlayers))
+        }
+    }, [])
+
+    const savePlayers = useCallback((pl) => {
+        const sorted = pl.sort((a, b) => a.name.localeCompare(b.name))
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sorted))
+        setPlayers(sorted)
+    }, [setPlayers])
 
     return (
         <PlayerContext.Provider value={{
             players,
+            savePlayers
         }}>
             {children}
         </PlayerContext.Provider>
@@ -20,7 +34,41 @@ export const PlayerProvider = ({ children }) => {
 }
 
 export const usePlayerContext = () => {
-    const { players } = useContext(PlayerContext)
+    const { players, savePlayers } = useContext(PlayerContext)
 
-    return { players }
+    const getSinglePlayer = useCallback((id) => (
+        players.find((player) => player.id === id)
+    ), [players])
+
+    const createPlayer = useCallback((player) => {
+        savePlayers([...players, player])
+    }, [players, savePlayers])
+
+    const deletePlayer = useCallback((id) => {
+        const updatedList = players.filter((player) => player.id !== id)
+        savePlayers(updatedList)
+    }, [players, savePlayers])
+
+    const updatePlayer = useCallback((player) => {
+        const list = players.filter((p) => p.id !== player.id)
+        savePlayers([...list, player])
+    }, [players, savePlayers])
+
+    const exportPlayers = useCallback(() => {
+        exportToJson(players, 'players')
+    }, [players])
+
+    const importPlayers = useCallback((data) => {
+        savePlayers(JSON.parse(data))
+    }, [savePlayers])
+
+    return {
+        players,
+        getSinglePlayer,
+        createPlayer,
+        deletePlayer,
+        updatePlayer,
+        exportPlayers,
+        importPlayers
+    }
 }

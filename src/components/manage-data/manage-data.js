@@ -3,7 +3,8 @@ import './manage-data.css'
 
 export const EXPORT_TYPE = {
     MONSTERS: 'monsters',
-    ENCOUNTERS: 'encounters'
+    ENCOUNTERS: 'encounters',
+    PLAYERS: 'player characters'
 }
 
 export const ManageData = ({ onExport, onImport, type }) => {

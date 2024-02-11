@@ -11,6 +11,9 @@ const Layout = () => (
                 <li className="link">
                     <Link to="/monsters">Monsters</Link>
                 </li>
+                <li className="link">
+                    <Link to="/players">Player characters</Link>
+                </li>
             </ul>
         </nav>
         <Outlet />
