@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/dnd-encounter-tracker/static/css/main.3205813b.css",
-    "main.js": "/dnd-encounter-tracker/static/js/main.bb4b8977.js",
+    "main.css": "/dnd-encounter-tracker/static/css/main.bbc40c0b.css",
+    "main.js": "/dnd-encounter-tracker/static/js/main.5b77856b.js",
     "index.html": "/dnd-encounter-tracker/index.html",
-    "main.3205813b.css.map": "/dnd-encounter-tracker/static/css/main.3205813b.css.map",
-    "main.bb4b8977.js.map": "/dnd-encounter-tracker/static/js/main.bb4b8977.js.map"
+    "main.bbc40c0b.css.map": "/dnd-encounter-tracker/static/css/main.bbc40c0b.css.map",
+    "main.5b77856b.js.map": "/dnd-encounter-tracker/static/js/main.5b77856b.js.map"
   },
   "entrypoints": [
-    "static/css/main.3205813b.css",
-    "static/js/main.bb4b8977.js"
+    "static/css/main.bbc40c0b.css",
+    "static/js/main.5b77856b.js"
   ]
 }
