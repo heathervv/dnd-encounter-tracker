@@ -18,7 +18,7 @@ const ModifyMonster = ({ isEdit }) => {
     const [form, setForm] = useState({
         name: '',
         type: '',
-        size: '-',
+        size: '',
         aligment: '',
         challengeRating: '',
         specialTraits: '',
@@ -107,7 +107,7 @@ const ModifyMonster = ({ isEdit }) => {
                     <label>
                         Size*: <div className="select-wrapper">
                             <select required name="size" value={form.size} onChange={(e) => handleFieldChange(e, 'size')}>
-                                <option disabled value="-">-</option>
+                                <option disabled value="">-</option>
                                 <option value="Gargantuan">Gargantuan</option>
                                 <option value="Huge">Huge</option>
                                 <option value="Large">Large</option>
@@ -219,7 +219,7 @@ const ModifyMonster = ({ isEdit }) => {
                     <label>
                         Hit Points Die Value*: <div className="select-wrapper">
                             <select required name="hitPointsDieValue" value={form.hitPointsDieValue} onChange={(e) => handleFieldChange(e, 'hitPointsDieValue')}>
-                                <option disabled value="-">-</option>
+                                <option disabled value="">-</option>
                                 <option value="d4">d4</option>
                                 <option value="d6">d6</option>
                                 <option value="d8">d8</option>
