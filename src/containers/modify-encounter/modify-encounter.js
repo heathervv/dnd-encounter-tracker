@@ -2,15 +2,14 @@ import React, { useCallback, useMemo, useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import MDEditor from '@uiw/react-md-editor/nohighlight'
 import { v4 as uuidv4 } from 'uuid';
+import AddMonsters from '../../components/add-monsters/add-monsters'
 import { useEncountersContext } from "../../context/encounters/encounters-context";
-import { useMonstersContext } from "../../context/monsters/monsters-context";
 import './modify-encounter.css'
 
 const ModifyEncounter = ({ isEdit }) => {
     const { id } = useParams()
     const navigate = useNavigate()
     const { getSingleEncounter, createEncounter, updateEncounter } = useEncountersContext()
-    const { monsters } = useMonstersContext()
 
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
@@ -32,29 +31,22 @@ const ModifyEncounter = ({ isEdit }) => {
         setName(e.target.value)
     }, [setName])
 
-    const handleMonsterSelect = useCallback((e) => {
-        if (selectedMonsters.includes(e.target.value)) {
-            const updatedList = selectedMonsters.filter((monsterId) => monsterId !== e.target.value)
+    const handleMonsterSelect = useCallback((selectedMonsterId, amount) => {
+        if (selectedMonsters.includes(selectedMonsterId)) {
+            const updatedList = selectedMonsters.filter((monsterId) => monsterId !== selectedMonsterId)
             setSelectedMonsters(updatedList)
             setAmounts({
                 ...amounts,
-                [e.target.value]: 0
+                [selectedMonsterId]: 0
             })
         } else {
-            setSelectedMonsters([...selectedMonsters, e.target.value])
+            setSelectedMonsters([...selectedMonsters, selectedMonsterId])
             setAmounts({
                 ...amounts,
-                [e.target.value]: 1
+                [selectedMonsterId]: amount
             })
         }
     }, [selectedMonsters, amounts, setSelectedMonsters, setAmounts])
-
-    const handleMonsterAmount = useCallback((e, monsterId) => {
-        setAmounts({
-            ...amounts,
-            [monsterId]: e.target.value
-        })
-    }, [amounts, setAmounts])
 
     const handleSave = useCallback((e) => {
         e?.preventDefault();
@@ -79,8 +71,11 @@ const ModifyEncounter = ({ isEdit }) => {
 
     return (
         <section className="wrapper" data-color-mode="light">
-            <h1>{isEdit ? `Edit ${encounter?.name}` : 'Create encounter'}</h1>
             <form onSubmit={handleSave}>
+                <div className="header">
+                    <h1>{isEdit ? `Edit ${encounter?.name}` : 'Create encounter'}</h1>
+                    <button type="submit">{isEdit ? 'Save changes' : 'Create encounter'}</button>
+                </div>
                 <label>
                     Name*: <input required type="text" name="name" value={name} onChange={handleNameChange} />
                 </label>
@@ -91,19 +86,8 @@ const ModifyEncounter = ({ isEdit }) => {
                         onChange={setDescription}
                     />
                 </label>
-                <fieldset>
-                    <legend>Monsters</legend>
-                    {monsters.map((monster) => (
-                        <div className="option" key={monster.id}>
-                            <input type="checkbox" checked={selectedMonsters.includes(monster.id)} name={monster.name} value={monster.id} onChange={handleMonsterSelect} />{monster.name}
-                            {selectedMonsters.includes(monster.id) && (
-                                <input type="number" min="1" name={`${monster.name}-amount`} value={amounts?.[monster.id]} onChange={(e) => handleMonsterAmount(e, monster.id)} />
-                            )}
-                        </div>
-                    ))}
-                </fieldset>
-                <hr />
-                <button className="save" type="submit">{isEdit ? 'Save changes' : 'Create encounter'}</button>
+                {/* TODO(): show selected monsters? */}
+                <AddMonsters onSelect={handleMonsterSelect} />
             </form>
         </section>
     )

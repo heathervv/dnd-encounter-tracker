@@ -15,7 +15,10 @@ const Monsters = () => {
     return (
         <section className="wrapper">
             <div className="header">
-                <h1>List of monsters</h1>
+                <div>
+                    <h1>List of homebrew monsters</h1>
+                    <p>Here you can manage your own unique monsters</p>
+                </div>
                 <button onClick={handleCreateNew}>Create new</button>
             </div>
             {monsters.length > 0 ? (
