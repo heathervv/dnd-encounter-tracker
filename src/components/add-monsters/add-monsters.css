@@ -35,6 +35,15 @@
 .encounter-monster-item .drawer {
     margin-top: -10px;
     margin-bottom: 8px;
+
+    &:before {
+        content: '';
+        display: block;
+        height: 1px;
+        width: calc(100% - 40px);
+        background-color: #d0d7de;
+        margin-left: 20px;
+    }
 }
 
 .encounter-monster-item .drawer>* {
