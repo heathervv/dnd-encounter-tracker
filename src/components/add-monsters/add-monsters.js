@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, useMemo } from 'react'
 
 import { fetchMonsters, fetchSpecificMonster } from '../../api/dnd-api'
 import MonsterCard from '../../containers/view-monster/monster-card'
@@ -29,8 +29,8 @@ const MonsterItem = ({ name, homebrew, monster }) => {
             </div>
             {drawerIsOpen && (
                 <div className="drawer">
-                    {/* TODO(): ability to select/de-select monster with amount */}
-                    {/* TODO(): loading state */}
+                    {/* @TODO(): ability to select/de-select monster with amount */}
+                    {/* @TODO(): loading state */}
                     <MonsterCard monster={homebrew ? monster : monsterData} />
                 </div>
             )}
@@ -41,6 +41,25 @@ const MonsterItem = ({ name, homebrew, monster }) => {
 const AddMonster = () => {
     const { monsters: homebrewMonsters } = useMonstersContext()
     const [apiMonsters, setApiMonsters] = useState([])
+    const [searchValue, updateSearchValue] = useState('')
+
+    const listOfMonsters = useMemo(() => {
+        // It is definitely not ideal to loop through each array twice to complete this
+        // However the data set it's working with is incredibly small so this is not
+        // currently causing any performance issues. @TODO(): refactoring this would be ideal.
+        const homebrewCaptured = homebrewMonsters.map((hbm) => ({
+            ...hbm,
+            homebrew: true,
+            hidden: searchValue && !hbm.name.toLowerCase().includes(searchValue.toLowerCase())
+        }))
+
+        const apiMonstersCaptured = apiMonsters.map((am) => ({
+            ...am,
+            hidden: searchValue && !am.name.toLowerCase().includes(searchValue.toLowerCase())
+        }))
+
+        return [...homebrewCaptured, ...apiMonstersCaptured]
+    }, [homebrewMonsters, apiMonsters, searchValue])
 
     useEffect(() => {
         fetchMonsters()
@@ -49,25 +68,36 @@ const AddMonster = () => {
             })
     }, [])
 
+    const handleSearch = useCallback((e) => {
+        e.preventDefault()
+        updateSearchValue(e.target.value)
+    }, [])
+
+    const disableEnter = (e) => {
+        if (e.code === 'Enter') {
+            e.preventDefault()
+        }
+    }
+
     return (
         <div>
             <p>Monsters:</p>
-            {/* NTH TODO(): add search? */}
+            <input
+                className="encounter-monster-search-input"
+                type="text"
+                value={searchValue}
+                placeholder="Filter list of monsters..."
+                onChange={handleSearch}
+                onKeyDown={disableEnter}
+            />
+            <hr />
             <ul className="encounter-monster-list">
-                {homebrewMonsters.map((monster) => (
+                {listOfMonsters.filter((m) => !m.hidden).map((monster) => (
                     <MonsterItem
-                        key={monster.id}
-                        id={monster.id}
+                        key={monster.id || monster.index}
+                        id={monster.id || monster.index}
                         name={monster.name}
-                        homebrew
-                        monster={monster}
-                    />
-                ))}
-                {apiMonsters.map((monster) => (
-                    <MonsterItem
-                        key={monster.index}
-                        id={monster.index}
-                        name={monster.name}
+                        homebrew={monster.homebrew}
                         monster={monster}
                     />
                 ))}

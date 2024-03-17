@@ -1,3 +1,8 @@
+input[type=text].encounter-monster-search-input {
+    display: block;
+    margin-bottom: 12px;
+}
+
 .encounter-monster-list {
     list-style-type: none;
     padding-left: 0;

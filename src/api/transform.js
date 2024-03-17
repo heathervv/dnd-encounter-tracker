@@ -109,7 +109,7 @@ export const mapApiResponseToSupportedFormat = (response) => (
         damageVulnerabilities: response.damage_vulnerabilities.join(', '),
         damageResistances: response.damage_resistances.join(', '),
         damageImmunities: response.damage_immunities.join(', '),
-        conditionImmunities: response.condition_immunities.join(', '),
+        conditionImmunities: response.condition_immunities.map((ci) => ci.name).join(', '),
 
         // Action economy
         // Note: this is not all the supported options (we also support Bonus, Mythic, and Lair actions)
