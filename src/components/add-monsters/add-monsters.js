@@ -4,6 +4,8 @@ import { fetchMonsters, fetchSpecificMonster } from '../../api/dnd-api'
 import MonsterCard from '../../containers/view-monster/monster-card'
 import { useMonstersContext } from "../../context/monsters/monsters-context";
 
+import './add-monsters.css'
+
 const MonsterItem = ({ name, homebrew, monster }) => {
     const [drawerIsOpen, setDrawerIsOpen] = useState(false)
     const [monsterData, setMonsterData] = useState({})
@@ -17,15 +19,18 @@ const MonsterItem = ({ name, homebrew, monster }) => {
     }, [homebrew, drawerIsOpen, monster])
 
     return (
-        <li>
+        <li className="encounter-monster-item">
             <div className="monster-link" onClick={handleDrawer}>
-                <p className="monster-name">{name}</p>
-                {homebrew && <p>Homebrew</p>}
-                {drawerIsOpen ? 'View less' : 'View more'}
+                <div className="monster-details">
+                    <p className="monster-name">{name}</p>
+                    {homebrew && <p className="monster-tag">Homebrew</p>}
+                </div>
+                <p className="view">{drawerIsOpen ? 'View less' : 'View more'}</p>
             </div>
             {drawerIsOpen && (
-                <div>
+                <div className="drawer">
                     {/* TODO(): ability to select/de-select monster with amount */}
+                    {/* TODO(): loading state */}
                     <MonsterCard monster={homebrew ? monster : monsterData} />
                 </div>
             )}
@@ -46,9 +51,9 @@ const AddMonster = () => {
 
     return (
         <div>
-            <p>Monsters</p>
+            <p>Monsters:</p>
             {/* NTH TODO(): add search? */}
-            <ul className="monster-list">
+            <ul className="encounter-monster-list">
                 {homebrewMonsters.map((monster) => (
                     <MonsterItem
                         key={monster.id}

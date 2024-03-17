@@ -1,0 +1,44 @@
+.encounter-monster-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 0;
+}
+
+.encounter-monster-item .monster-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.encounter-monster-item .monster-details {
+    display: flex;
+    align-items: center;
+}
+
+.encounter-monster-item .monster-name {
+    margin-bottom: 0;
+}
+
+.encounter-monster-item .monster-tag {
+    font-size: 14px;
+    font-style: italic;
+    margin-left: 8px;
+    margin-bottom: -3px;
+}
+
+.encounter-monster-item .view {
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+.encounter-monster-item .drawer {
+    margin-top: -10px;
+    margin-bottom: 8px;
+}
+
+.encounter-monster-item .drawer>* {
+    border-top: 1px solid #fff;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
