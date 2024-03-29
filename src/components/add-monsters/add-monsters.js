@@ -6,7 +6,7 @@ import { useMonstersContext } from "../../context/monsters/monsters-context";
 
 import './add-monsters.css'
 
-const MonsterItem = ({ name, homebrew, monster }) => {
+const MonsterItem = ({ name, homebrew, monster, selected }) => {
     const [drawerIsOpen, setDrawerIsOpen] = useState(false)
     const [monsterData, setMonsterData] = useState({})
 
@@ -28,16 +28,20 @@ const MonsterItem = ({ name, homebrew, monster }) => {
 
     return (
         <li className="encounter-monster-item">
-            <div className="monster-link" onClick={handleDrawer}>
+            <div className={`monster-link ${selected ? 'selected' : ''}`} onClick={handleDrawer}>
                 <div className="monster-details">
-                    <p className="monster-name">{name}</p>
-                    {homebrew && <p className="monster-tag">Homebrew</p>}
+                    <div>
+                        <p className="monster-name">{name}</p>
+                        {homebrew && <p className="monster-tag">Homebrew</p>}
+                    </div>
+                    {selected && <p className="monster-amount">x {selected}</p>}
                 </div>
                 <p className="view">{drawerIsOpen ? 'View less' : 'View more'}</p>
             </div>
             {drawerIsOpen && (
                 <div className="drawer">
-                    {/* @TODO(): ability to select/de-select monster with amount */}
+                    {/* @TODO(): ability to select/de-select monster */}
+                    {/* @TODO(): ability to modify amount when selected */}
                     <MonsterCard monster={homebrew ? monster : monsterData} />
                 </div>
             )}
@@ -45,16 +49,17 @@ const MonsterItem = ({ name, homebrew, monster }) => {
     )
 }
 
-const AddMonster = () => {
+const AddMonster = ({ selectedMonsters, selectedAmount }) => {
     const { monsters: homebrewMonsters } = useMonstersContext()
     const [apiMonsters, setApiMonsters] = useState([])
     const [searchValue, updateSearchValue] = useState('')
 
     const listOfMonsters = useMemo(() => {
-        // It is definitely not ideal to loop through each array twice to complete this
-        // However the data set it's working with is incredibly small so this is not
-        // currently causing any performance issues. 
-        // @TODO(): refactoring this would be ideal.
+        // It is definitely not ideal to loop through these lists as often as I am
+        // to complete this. However the data set it's working with is incredibly
+        // small so this is not currently causing any performance issues and I care
+        // more about getting something working then it being right (for now).
+        // @TODO(): a refactor should still happen though.
         const homebrewCaptured = homebrewMonsters.map((hbm) => ({
             ...hbm,
             homebrew: true,
@@ -100,15 +105,31 @@ const AddMonster = () => {
             />
             <hr />
             <ul className="encounter-monster-list">
-                {listOfMonsters.filter((m) => !m.hidden).map((monster) => (
-                    <MonsterItem
-                        key={monster.id || monster.index}
-                        id={monster.id || monster.index}
-                        name={monster.name}
-                        homebrew={monster.homebrew}
-                        monster={monster}
-                    />
-                ))}
+                {/* Monsters that meet the search criteria AND have been added to the encounter */}
+                {listOfMonsters
+                    .filter((m) => !m.hidden && selectedMonsters.includes(m.id || m.index))
+                    .map((monster) => (
+                        <MonsterItem
+                            key={monster.id || monster.index}
+                            id={monster.id || monster.index}
+                            name={monster.name}
+                            homebrew={monster.homebrew}
+                            monster={monster}
+                            selected={selectedAmount[monster.id || monster.index]}
+                        />
+                    ))}
+                {/* Monsters that meet the search criteria and HAVE NOT been selected */}
+                {listOfMonsters
+                    .filter((m) => !m.hidden && !selectedMonsters.includes(m.id || m.index))
+                    .map((monster) => (
+                        <MonsterItem
+                            key={monster.id || monster.index}
+                            id={monster.id || monster.index}
+                            name={monster.name}
+                            homebrew={monster.homebrew}
+                            monster={monster}
+                        />
+                    ))}
             </ul>
         </div>
     )

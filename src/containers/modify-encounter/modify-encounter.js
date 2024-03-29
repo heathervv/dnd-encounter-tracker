@@ -86,8 +86,11 @@ const ModifyEncounter = ({ isEdit }) => {
                         onChange={setDescription}
                     />
                 </label>
-                {/* @TODO(): show selected monsters? */}
-                <AddMonsters onSelect={handleMonsterSelect} />
+                <AddMonsters
+                    onSelect={handleMonsterSelect}
+                    selectedMonsters={selectedMonsters}
+                    selectedAmount={amounts}
+                />
             </form>
         </section>
     )

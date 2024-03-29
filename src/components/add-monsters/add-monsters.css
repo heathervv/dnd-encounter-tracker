@@ -16,7 +16,18 @@ input[type=text].encounter-monster-search-input {
     cursor: pointer;
 }
 
+.encounter-monster-item .monster-link.selected {
+    background-color: #d0d7de;
+}
+
 .encounter-monster-item .monster-details {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 40%;
+}
+
+.encounter-monster-item .monster-details>div {
     display: flex;
     align-items: center;
 }
@@ -29,6 +40,12 @@ input[type=text].encounter-monster-search-input {
     font-size: 14px;
     font-style: italic;
     margin-left: 8px;
+    margin-bottom: -3px;
+}
+
+.encounter-monster-item .monster-amount {
+    font-size: 14px;
+    margin-left: 16px;
     margin-bottom: -3px;
 }
 
