@@ -11,10 +11,18 @@ const MonsterItem = ({ name, homebrew, monster }) => {
     const [monsterData, setMonsterData] = useState({})
 
     const handleDrawer = useCallback(() => {
-        setDrawerIsOpen(!drawerIsOpen)
+        if (drawerIsOpen) {
+            setDrawerIsOpen(false)
+            return
+        }
         if (!homebrew) {
             fetchSpecificMonster(monster.index)
-                .then((result) => setMonsterData(result))
+                .then((result) => {
+                    setMonsterData(result)
+                    setDrawerIsOpen(true)
+                })
+        } else {
+            setDrawerIsOpen(true)
         }
     }, [homebrew, drawerIsOpen, monster])
 
@@ -30,7 +38,6 @@ const MonsterItem = ({ name, homebrew, monster }) => {
             {drawerIsOpen && (
                 <div className="drawer">
                     {/* @TODO(): ability to select/de-select monster with amount */}
-                    {/* @TODO(): loading state */}
                     <MonsterCard monster={homebrew ? monster : monsterData} />
                 </div>
             )}
@@ -46,7 +53,8 @@ const AddMonster = () => {
     const listOfMonsters = useMemo(() => {
         // It is definitely not ideal to loop through each array twice to complete this
         // However the data set it's working with is incredibly small so this is not
-        // currently causing any performance issues. @TODO(): refactoring this would be ideal.
+        // currently causing any performance issues. 
+        // @TODO(): refactoring this would be ideal.
         const homebrewCaptured = homebrewMonsters.map((hbm) => ({
             ...hbm,
             homebrew: true,
