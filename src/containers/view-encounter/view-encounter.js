@@ -1,8 +1,9 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useEncountersContext } from "../../context/encounters/encounters-context";
-import { usePlayerContext } from "../../context/players/players-context";
-import { useMonstersContext } from "../../context/monsters/monsters-context";
+import { fetchSpecificMonster } from '../../api/dnd-api'
+import { useEncountersContext } from '../../context/encounters/encounters-context'
+import { usePlayerContext } from '../../context/players/players-context'
+import { useMonstersContext } from '../../context/monsters/monsters-context'
 import Markdown from '../../components/markdown'
 import MonsterCard from '../view-monster/monster-card'
 import './view-encounter.css'
@@ -13,26 +14,35 @@ const ViewEncounter = () => {
     const { getSingleEncounter, deleteEncounter } = useEncountersContext()
     const { players } = usePlayerContext()
     const { monsters: homebrewMonsters } = useMonstersContext()
+    const [monsters, setMonsters] = useState([])
     const [monsterCard, showMonsterCard] = useState(null)
 
     const encounter = useMemo(() => getSingleEncounter?.(id), [id, getSingleEncounter])
-    const monsters = useMemo(() => {
-        if (!encounter?.monsters) {
-            return []
+
+    useEffect(() => {
+        if (!encounter) {
+            return
         }
 
-        const list = []
-        encounter.monsters.forEach((monster) => {
-            const monsterIsHomebrew = homebrewMonsters.find((m) => m.id === monster)
+        let active = true
+        loadMonsterData()
+        return () => { active = false }
 
-            if (monsterIsHomebrew) {
-                list.push(monsterIsHomebrew)
-            } else {
-                // @TODO(): API monster data needs to be captured here
-            }
-        })
+        async function loadMonsterData() {
+            const res = await Promise.all(encounter.monsters.map(async (monster) => {
+                const monsterIsHomebrew = homebrewMonsters.find((m) => m.id === monster)
 
-        return list
+                if (monsterIsHomebrew) {
+                    return monsterIsHomebrew
+                } else {
+                    const external = await fetchSpecificMonster(monster)
+                    return external
+                }
+            }))
+
+            if (!active) { return }
+            setMonsters(res)
+        }
     }, [encounter, homebrewMonsters])
 
     const navigateToCombatTracker = useCallback(() => {

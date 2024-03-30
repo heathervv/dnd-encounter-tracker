@@ -11,7 +11,7 @@ const MonsterItem = ({ name, homebrew, monster, selected, onSelect }) => {
     const [drawerIsOpen, setDrawerIsOpen] = useState(false)
     const [monsterData, setMonsterData] = useState({})
 
-    const handleDrawer = useCallback((e) => {
+    const handleDrawer = useCallback(async (e) => {
         if (e.target.tagName.toLowerCase() === 'button') {
             // Drawer should not be altered if a button (add/remove) was pressed
             return
@@ -22,11 +22,10 @@ const MonsterItem = ({ name, homebrew, monster, selected, onSelect }) => {
             return
         }
         if (!homebrew) {
-            fetchSpecificMonster(monster.index)
-                .then((result) => {
-                    setMonsterData(result)
-                    setDrawerIsOpen(true)
-                })
+            const result = await fetchSpecificMonster(monster.index)
+
+            setMonsterData(result)
+            setDrawerIsOpen(true)
         } else {
             setDrawerIsOpen(true)
         }
