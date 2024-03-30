@@ -46,7 +46,7 @@ const ViewEncounter = () => {
 
     const handleDelete = useCallback(() => {
         deleteEncounter(encounter.id)
-        navigate('/encounters')
+        navigate('/')
     }, [encounter, deleteEncounter, navigate])
 
     return (
