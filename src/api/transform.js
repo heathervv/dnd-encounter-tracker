@@ -28,6 +28,7 @@ const SHORTFORM_ABILITIES = {
     STR: 'strength'
 }
 
+// @TODO(): NTH - title case would be nice here.
 const parseProficiencies = (proficiencies, type) => {
     const filtered = proficiencies.filter((skill) => skill.proficiency.index.includes(type))
     const parsed = filtered.map((skill) => {

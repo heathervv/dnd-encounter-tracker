@@ -30,7 +30,7 @@ const MonsterCard = ({ monster }) => {
     const mapList = useCallback((attribute) => {
         const map = (attribute || []).map((type) => type.note ? `${type.name} ${type.note}` : type.name)
 
-        return map.join(', ')
+        return map.length === 1 && map[0] === '' ? "None" : map.join(', ')
     }, [])
 
     const mapSavingThrowProficiencies = useCallback(() => {
