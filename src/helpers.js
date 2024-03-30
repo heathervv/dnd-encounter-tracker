@@ -1,3 +1,5 @@
+import { fetchSpecificMonster } from './api/dnd-api'
+
 export const baseAbilityScoreModifier = (ability) => Math.floor((ability - 10) / 2)
 
 const cr_proficiency_bonus = {
@@ -55,3 +57,14 @@ export const exportToJson = (data, fileName = 'export') => {
         document.body.removeChild(a);
     }
 }
+
+export const enrichMonsterData = async (encounter, homebrewMonsters) =>
+    await Promise.all(encounter.monsters.map(async (monster) => {
+        const monsterIsHomebrew = homebrewMonsters.find((m) => m.id === monster)
+
+        if (monsterIsHomebrew) {
+            return monsterIsHomebrew
+        } else {
+            return await fetchSpecificMonster(monster)
+        }
+    }))

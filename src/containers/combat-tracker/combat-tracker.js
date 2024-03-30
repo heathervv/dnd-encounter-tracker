@@ -1,9 +1,10 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useEncountersContext } from "../../context/encounters/encounters-context";
 import { usePlayerContext } from "../../context/players/players-context";
 import { useMonstersContext } from "../../context/monsters/monsters-context";
 import Markdown from '../../components/markdown'
+import { enrichMonsterData } from '../../helpers'
 import MonsterCard from '../view-monster/monster-card'
 import './combat-tracker.css'
 
@@ -15,7 +16,8 @@ const CombatTracker = () => {
     const { encounterId } = useParams()
     const { getSingleEncounter } = useEncountersContext()
     const { players } = usePlayerContext()
-    const { monsters } = useMonstersContext()
+    const { monsters: homebrewMonsters } = useMonstersContext()
+    const [monsters, setMonsters] = useState([])
     const [monsterCard, showMonsterCard] = useState(null)
     const [initiative, setInitiative] = useState({})
     const [combatStarted, setCombatStarted] = useState(false)
@@ -26,6 +28,24 @@ const CombatTracker = () => {
     const [updatedHP, setUpdatedHP] = useState(0)
 
     const encounter = useMemo(() => getSingleEncounter?.(encounterId), [encounterId, getSingleEncounter])
+    const loading = useMemo(() => !(encounter && monsters.length > 0), [encounter, monsters])
+
+    useEffect(() => {
+        if (!encounter) {
+            return
+        }
+
+        let active = true
+        loadMonsterData()
+        return () => { active = false }
+
+        async function loadMonsterData() {
+            const res = await enrichMonsterData(encounter, homebrewMonsters)
+
+            if (!active) { return }
+            setMonsters(res)
+        }
+    }, [encounter, homebrewMonsters])
 
     const entries = useMemo(() => {
         if (!encounter) {
@@ -184,6 +204,10 @@ const CombatTracker = () => {
         setUpdatedHP(0)
         showModifyHPModal(null)
     }, [health, modifyHPModal, updatedHP, setHealth, setUpdatedHP, showModifyHPModal])
+
+    if (loading) {
+        return <></>
+    }
 
     return (
         <section className="combat-tracker wrapper-large" data-color-mode="light">

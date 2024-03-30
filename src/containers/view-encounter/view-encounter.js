@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { fetchSpecificMonster } from '../../api/dnd-api'
 import { useEncountersContext } from '../../context/encounters/encounters-context'
 import { usePlayerContext } from '../../context/players/players-context'
 import { useMonstersContext } from '../../context/monsters/monsters-context'
 import Markdown from '../../components/markdown'
+import { enrichMonsterData } from '../../helpers'
 import MonsterCard from '../view-monster/monster-card'
 import './view-encounter.css'
 
@@ -29,16 +29,7 @@ const ViewEncounter = () => {
         return () => { active = false }
 
         async function loadMonsterData() {
-            const res = await Promise.all(encounter.monsters.map(async (monster) => {
-                const monsterIsHomebrew = homebrewMonsters.find((m) => m.id === monster)
-
-                if (monsterIsHomebrew) {
-                    return monsterIsHomebrew
-                } else {
-                    const external = await fetchSpecificMonster(monster)
-                    return external
-                }
-            }))
+            const res = await enrichMonsterData(encounter, homebrewMonsters)
 
             if (!active) { return }
             setMonsters(res)
