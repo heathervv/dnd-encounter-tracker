@@ -12,10 +12,28 @@ const ViewEncounter = () => {
     const navigate = useNavigate()
     const { getSingleEncounter, deleteEncounter } = useEncountersContext()
     const { players } = usePlayerContext()
-    const { monsters } = useMonstersContext()
+    const { monsters: homebrewMonsters } = useMonstersContext()
     const [monsterCard, showMonsterCard] = useState(null)
 
     const encounter = useMemo(() => getSingleEncounter?.(id), [id, getSingleEncounter])
+    const monsters = useMemo(() => {
+        if (!encounter?.monsters) {
+            return []
+        }
+
+        const list = []
+        encounter.monsters.forEach((monster) => {
+            const monsterIsHomebrew = homebrewMonsters.find((m) => m.id === monster)
+
+            if (monsterIsHomebrew) {
+                list.push(monsterIsHomebrew)
+            } else {
+                // @TODO(): API monster data needs to be captured here
+            }
+        })
+
+        return list
+    }, [encounter, homebrewMonsters])
 
     const navigateToCombatTracker = useCallback(() => {
         navigate(`/combat-tracker/${encounter.id}`)
@@ -59,10 +77,10 @@ const ViewEncounter = () => {
                             </div>
                             <div className="monsters-list">
                                 <h3>Monsters:</h3>
-                                {(encounter.monsters || []).length > 0 ? (
+                                {monsters.length > 0 ? (
                                     <ul>
-                                        {encounter.monsters.map((monsterId) => {
-                                            const monster = monsters.find((m) => m.id === monsterId)
+                                        {monsters.map((monster) => {
+                                            const monsterId = monster.id || monster.index
                                             return (
                                                 <li key={monsterId}>
                                                     <button className={monsterCard?.id === monsterId ? 'selected' : ''} type="button" onClick={() => showMonsterCard(monster)}>

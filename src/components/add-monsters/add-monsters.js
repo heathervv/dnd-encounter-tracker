@@ -2,15 +2,21 @@ import React, { useCallback, useEffect, useState, useMemo } from 'react'
 
 import { fetchMonsters, fetchSpecificMonster } from '../../api/dnd-api'
 import MonsterCard from '../../containers/view-monster/monster-card'
-import { useMonstersContext } from "../../context/monsters/monsters-context";
+import { useMonstersContext } from '../../context/monsters/monsters-context';
+import { MONSTER_ACTION } from '../../containers/modify-encounter/modify-encounter'
 
 import './add-monsters.css'
 
-const MonsterItem = ({ name, homebrew, monster, selected }) => {
+const MonsterItem = ({ name, homebrew, monster, selected, onSelect }) => {
     const [drawerIsOpen, setDrawerIsOpen] = useState(false)
     const [monsterData, setMonsterData] = useState({})
 
-    const handleDrawer = useCallback(() => {
+    const handleDrawer = useCallback((e) => {
+        if (e.target.tagName.toLowerCase() === 'button') {
+            // Drawer should not be altered if a button (add/remove) was pressed
+            return
+        }
+
         if (drawerIsOpen) {
             setDrawerIsOpen(false)
             return
@@ -26,21 +32,33 @@ const MonsterItem = ({ name, homebrew, monster, selected }) => {
         }
     }, [homebrew, drawerIsOpen, monster])
 
+    const handleAdd = useCallback((e) => {
+        e.preventDefault()
+        onSelect(MONSTER_ACTION.ADD, monster.id || monster.index, 1)
+    }, [onSelect, monster])
+
+    const handleRemove = useCallback((e) => {
+        e.preventDefault()
+        onSelect(MONSTER_ACTION.REMOVE, monster.id || monster.index)
+    }, [onSelect, monster])
+
     return (
         <li className="encounter-monster-item">
             <div className={`monster-link ${selected ? 'selected' : ''}`} onClick={handleDrawer}>
                 <div className="monster-details">
-                    <div>
-                        <p className="monster-name">{name}</p>
-                        {homebrew && <p className="monster-tag">Homebrew</p>}
-                    </div>
-                    {selected && <p className="monster-amount">x {selected}</p>}
+                    <p className="monster-name">{name}</p>
+                    {homebrew && <p className="monster-tag">Homebrew</p>}
                 </div>
-                <p className="view">{drawerIsOpen ? 'View less' : 'View more'}</p>
+                <div className="manage">
+                    {selected && <p className="monster-amount">x {selected}</p>}
+                    {selected ? (<button onClick={handleRemove}>- Remove</button>) : (
+                        <button onClick={handleAdd}>+ Add</button>
+                    )}
+                    <p className="view">{drawerIsOpen ? 'View less' : 'View more'}</p>
+                </div>
             </div>
             {drawerIsOpen && (
                 <div className="drawer">
-                    {/* @TODO(): ability to select/de-select monster */}
                     {/* @TODO(): ability to modify amount when selected */}
                     <MonsterCard monster={homebrew ? monster : monsterData} />
                 </div>
@@ -49,7 +67,7 @@ const MonsterItem = ({ name, homebrew, monster, selected }) => {
     )
 }
 
-const AddMonster = ({ selectedMonsters, selectedAmount }) => {
+const AddMonster = ({ onSelect, selectedMonsters, selectedAmount }) => {
     const { monsters: homebrewMonsters } = useMonstersContext()
     const [apiMonsters, setApiMonsters] = useState([])
     const [searchValue, updateSearchValue] = useState('')
@@ -116,6 +134,7 @@ const AddMonster = ({ selectedMonsters, selectedAmount }) => {
                             homebrew={monster.homebrew}
                             monster={monster}
                             selected={selectedAmount[monster.id || monster.index]}
+                            onSelect={onSelect}
                         />
                     ))}
                 {/* Monsters that meet the search criteria and HAVE NOT been selected */}
@@ -128,6 +147,7 @@ const AddMonster = ({ selectedMonsters, selectedAmount }) => {
                             name={monster.name}
                             homebrew={monster.homebrew}
                             monster={monster}
+                            onSelect={onSelect}
                         />
                     ))}
             </ul>

@@ -23,35 +23,37 @@ input[type=text].encounter-monster-search-input {
 .encounter-monster-item .monster-details {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 40%;
-}
-
-.encounter-monster-item .monster-details>div {
-    display: flex;
-    align-items: center;
 }
 
 .encounter-monster-item .monster-name {
-    margin-bottom: 0;
+    margin-bottom: 1px;
 }
 
 .encounter-monster-item .monster-tag {
     font-size: 14px;
     font-style: italic;
     margin-left: 8px;
-    margin-bottom: -3px;
+    margin-bottom: -2px;
 }
 
 .encounter-monster-item .monster-amount {
     font-size: 14px;
-    margin-left: 16px;
-    margin-bottom: -3px;
+    margin-right: 16px;
+    margin-bottom: -2px;
+}
+
+.encounter-monster-item .manage {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }
 
 .encounter-monster-item .view {
     font-size: 14px;
+    margin-left: 12px;
     margin-bottom: 0;
+    width: 66px;
+    text-align: right;
 }
 
 .encounter-monster-item .drawer {
@@ -69,7 +71,7 @@ input[type=text].encounter-monster-search-input {
 }
 
 .encounter-monster-item .drawer>* {
-    border-top: 1px solid #fff;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+    border-top: 1px solid #fff !important;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
 }

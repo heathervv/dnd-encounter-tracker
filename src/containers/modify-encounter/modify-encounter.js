@@ -6,6 +6,11 @@ import AddMonsters from '../../components/add-monsters/add-monsters'
 import { useEncountersContext } from "../../context/encounters/encounters-context";
 import './modify-encounter.css'
 
+export const MONSTER_ACTION = {
+    ADD: 'add',
+    REMOVE: 'remove'
+}
+
 const ModifyEncounter = ({ isEdit }) => {
     const { id } = useParams()
     const navigate = useNavigate()
@@ -31,16 +36,24 @@ const ModifyEncounter = ({ isEdit }) => {
         setName(e.target.value)
     }, [setName])
 
-    const handleMonsterSelect = useCallback((selectedMonsterId, amount) => {
-        if (selectedMonsters.includes(selectedMonsterId)) {
+    const handleMonsterSelect = useCallback((action, selectedMonsterId, amount) => {
+        // 1. Removing monster from encounter
+        // 2. Adding monster to encounter
+        // 3. Updating amounts for monster already added to encounter
+        if (action === MONSTER_ACTION.REMOVE) {
             const updatedList = selectedMonsters.filter((monsterId) => monsterId !== selectedMonsterId)
             setSelectedMonsters(updatedList)
             setAmounts({
                 ...amounts,
                 [selectedMonsterId]: 0
             })
-        } else {
+        } else if (action === MONSTER_ACTION.ADD && !selectedMonsters.includes(selectedMonsterId)) {
             setSelectedMonsters([...selectedMonsters, selectedMonsterId])
+            setAmounts({
+                ...amounts,
+                [selectedMonsterId]: amount
+            })
+        } else if (action === MONSTER_ACTION.ADD && selectedMonsters.includes(selectedMonsterId)) {
             setAmounts({
                 ...amounts,
                 [selectedMonsterId]: amount
