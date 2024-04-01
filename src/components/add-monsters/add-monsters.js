@@ -41,6 +41,11 @@ const MonsterItem = ({ name, homebrew, monster, selected, onSelect }) => {
         onSelect(MONSTER_ACTION.REMOVE, monster.id || monster.index)
     }, [onSelect, monster])
 
+    const handleAmountChange = useCallback((e, value) => {
+        e.preventDefault()
+        onSelect(MONSTER_ACTION.ADD, monster.id || monster.index, value || 1)
+    }, [onSelect, monster])
+
     return (
         <li className="encounter-monster-item">
             <div className={`monster-link ${selected ? 'selected' : ''}`} onClick={handleDrawer}>
@@ -49,7 +54,13 @@ const MonsterItem = ({ name, homebrew, monster, selected, onSelect }) => {
                     {homebrew && <p className="monster-tag">Homebrew</p>}
                 </div>
                 <div className="manage">
-                    {selected && <p className="monster-amount">x {selected}</p>}
+                    {selected && (
+                        <div className="amount">
+                            <button onClick={(e) => handleAmountChange(e, selected - 1)}>-</button>
+                            <p>{selected}</p>
+                            <button onClick={(e) => handleAmountChange(e, selected + 1)}>+</button>
+                        </div>
+                    )}
                     {selected ? (<button onClick={handleRemove}>- Remove</button>) : (
                         <button onClick={handleAdd}>+ Add</button>
                     )}
@@ -58,7 +69,6 @@ const MonsterItem = ({ name, homebrew, monster, selected, onSelect }) => {
             </div>
             {drawerIsOpen && (
                 <div className="drawer">
-                    {/* @TODO(): ability to modify amount when selected */}
                     <MonsterCard monster={homebrew ? monster : monsterData} />
                 </div>
             )}
