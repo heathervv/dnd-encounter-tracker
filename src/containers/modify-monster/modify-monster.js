@@ -10,6 +10,7 @@ import './modify-monster.css'
 
 // This component is arguably gross, and maybe I'll refactor it one day.
 // However I want a functional thing more than I want pretty code.
+// @TODO(): a refactor could go a long ways here.
 
 const ModifyMonster = ({ isEdit }) => {
     const { id } = useParams()

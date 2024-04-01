@@ -1,9 +1,10 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useEncountersContext } from "../../context/encounters/encounters-context";
-import { usePlayerContext } from "../../context/players/players-context";
-import { useMonstersContext } from "../../context/monsters/monsters-context";
+import { useEncountersContext } from '../../context/encounters/encounters-context'
+import { usePlayerContext } from '../../context/players/players-context'
+import { useMonstersContext } from '../../context/monsters/monsters-context'
 import Markdown from '../../components/markdown'
+import { enrichMonsterData } from '../../helpers'
 import MonsterCard from '../view-monster/monster-card'
 import './view-encounter.css'
 
@@ -12,10 +13,28 @@ const ViewEncounter = () => {
     const navigate = useNavigate()
     const { getSingleEncounter, deleteEncounter } = useEncountersContext()
     const { players } = usePlayerContext()
-    const { monsters } = useMonstersContext()
+    const { monsters: homebrewMonsters } = useMonstersContext()
+    const [monsters, setMonsters] = useState([])
     const [monsterCard, showMonsterCard] = useState(null)
 
     const encounter = useMemo(() => getSingleEncounter?.(id), [id, getSingleEncounter])
+
+    useEffect(() => {
+        if (!encounter) {
+            return
+        }
+
+        let active = true
+        loadMonsterData()
+        return () => { active = false }
+
+        async function loadMonsterData() {
+            const res = await enrichMonsterData(encounter, homebrewMonsters)
+
+            if (!active) { return }
+            setMonsters(res)
+        }
+    }, [encounter, homebrewMonsters])
 
     const navigateToCombatTracker = useCallback(() => {
         navigate(`/combat-tracker/${encounter.id}`)
@@ -27,7 +46,7 @@ const ViewEncounter = () => {
 
     const handleDelete = useCallback(() => {
         deleteEncounter(encounter.id)
-        navigate('/encounters')
+        navigate('/')
     }, [encounter, deleteEncounter, navigate])
 
     return (
@@ -59,10 +78,10 @@ const ViewEncounter = () => {
                             </div>
                             <div className="monsters-list">
                                 <h3>Monsters:</h3>
-                                {(encounter.monsters || []).length > 0 ? (
+                                {monsters.length > 0 ? (
                                     <ul>
-                                        {encounter.monsters.map((monsterId) => {
-                                            const monster = monsters.find((m) => m.id === monsterId)
+                                        {monsters.map((monster) => {
+                                            const monsterId = monster.id || monster.index
                                             return (
                                                 <li key={monsterId}>
                                                     <button className={monsterCard?.id === monsterId ? 'selected' : ''} type="button" onClick={() => showMonsterCard(monster)}>

@@ -16,8 +16,7 @@ const Home = () => {
         <div className="wrapper">
             <section>
                 <h1>A custom DND combat creation/tracker tool.</h1>
-                <p>Made for fun with love so that I can run encounters at my table without relying on third party vendors.</p>
-                <p>Or pen and paper, god forbid.</p>
+                <p>A free-to-use, basic encounter creation and management tool. Stores all data in your browser.</p>
             </section>
             <hr />
             <section>
