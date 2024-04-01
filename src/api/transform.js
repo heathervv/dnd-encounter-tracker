@@ -63,7 +63,21 @@ const formatUsage = (usage) => {
 const parseActionEconomy = (section) => {
     if (!section) return
 
-    const markdown = section.map((item) => `**${item.name}${item.usage ? ` (${formatUsage(item.usage)})` : ''}** ${item.desc}`)
+    const mapSpells = (item) => {
+        if (!item.spellcasting) {
+            return item.desc
+        }
+
+        let enrichedDescription = item.desc
+
+        item.spellcasting.spells.forEach((spell) => {
+            enrichedDescription = enrichedDescription.replace(spell.name.toLowerCase(), `[spell]${spell.name.toLowerCase()}[/spell]`)
+        })
+
+        return enrichedDescription
+    }
+
+    const markdown = section.map((item) => `**${item.name}${item.usage ? ` (${formatUsage(item.usage)})` : ''}** ${mapSpells(item)}`)
 
     return markdown.join('<br ><br >')
 }
@@ -116,7 +130,6 @@ export const mapApiResponseToSupportedFormat = (response) => (
         // Action economy
         // Note: this is not all the supported options (we also support Bonus, Mythic, and Lair actions)
         // but it would seem the API doesn't return those properties, so there's nothing to map.
-        // @TODO(): is it possible to map spells here into links of some sort?
         specialTraits: parseActionEconomy(response.special_abilities),
         actionsDescription: parseActionEconomy(response.actions),
         reactionsDescription: parseActionEconomy(response.reactions),
