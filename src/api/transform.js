@@ -1,3 +1,5 @@
+import { toTitleCase } from '../helpers'
+
 // Map a single monster from the API to the supported format.
 const parseSkills = (initialSkills) => {
     const parsedSenses = []
@@ -6,7 +8,7 @@ const parseSkills = (initialSkills) => {
             return
         }
         parsedSenses.push({
-            name: key,
+            name: toTitleCase(key),
             note: value
         })
     })
@@ -28,13 +30,12 @@ const SHORTFORM_ABILITIES = {
     STR: 'strength'
 }
 
-// @TODO(): NTH - title case would be nice here.
 const parseProficiencies = (proficiencies, type) => {
     const filtered = proficiencies.filter((skill) => skill.proficiency.index.includes(type))
     const parsed = filtered.map((skill) => {
         if (type === PROFICIENCY_TYPE.SAVING_THROW) {
             return ({
-                ability: SHORTFORM_ABILITIES[skill.proficiency.name.split(': ')[1]],
+                ability: toTitleCase(SHORTFORM_ABILITIES[skill.proficiency.name.split(': ')[1]]),
             })
         }
 
@@ -107,10 +108,10 @@ export const mapApiResponseToSupportedFormat = (response) => (
 
         // Proficiencies
         savingThrowProficiencies: parseProficiencies(response.proficiencies, PROFICIENCY_TYPE.SAVING_THROW),
-        damageVulnerabilities: response.damage_vulnerabilities.join(', '),
-        damageResistances: response.damage_resistances.join(', '),
-        damageImmunities: response.damage_immunities.join(', '),
-        conditionImmunities: response.condition_immunities.map((ci) => ci.name).join(', '),
+        damageVulnerabilities: toTitleCase(response.damage_vulnerabilities.join(', ')),
+        damageResistances: toTitleCase(response.damage_resistances.join(', ')),
+        damageImmunities: toTitleCase(response.damage_immunities.join(', ')),
+        conditionImmunities: toTitleCase(response.condition_immunities.map((ci) => ci.name).join(', ')),
 
         // Action economy
         // Note: this is not all the supported options (we also support Bonus, Mythic, and Lair actions)

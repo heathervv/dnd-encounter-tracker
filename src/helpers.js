@@ -58,6 +58,13 @@ export const exportToJson = (data, fileName = 'export') => {
     }
 }
 
+export const toTitleCase = (str) =>
+    str.replace(
+        /\w\S*/g,
+        (txt) =>
+            txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+    )
+
 export const enrichMonsterData = async (encounter, homebrewMonsters) =>
     await Promise.all(encounter.monsters.map(async (monster) => {
         const monsterIsHomebrew = homebrewMonsters.find((m) => m.id === monster)
