@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import Skull from '../../assets/skull'
 import { useEncountersContext } from "../../context/encounters/encounters-context";
 import { usePlayerContext } from "../../context/players/players-context";
 import { useMonstersContext } from "../../context/monsters/monsters-context";
@@ -11,6 +12,11 @@ import './combat-tracker.css'
 import { baseAbilityScoreModifier } from '../../helpers'
 
 const getId = (entry) => entry.isMonster ? `${entry.kind}-${entry.id}` : entry.id
+
+const DEATH_SAVES = {
+    SUCCESS: 'success',
+    FAILURE: 'failure'
+}
 
 const CombatTracker = () => {
     const { encounterId } = useParams()
@@ -26,6 +32,7 @@ const CombatTracker = () => {
     const [health, setHealth] = useState({})
     const [modifyHPModal, showModifyHPModal] = useState(null)
     const [updatedHP, setUpdatedHP] = useState(0)
+    const [deathSaves, setDeathSaves] = useState({})
 
     const encounter = useMemo(() => getSingleEncounter?.(encounterId), [encounterId, getSingleEncounter])
     const loading = useMemo(() => !(encounter && monsters.length > 0), [encounter, monsters])
@@ -203,7 +210,44 @@ const CombatTracker = () => {
         })
         setUpdatedHP(0)
         showModifyHPModal(null)
-    }, [health, modifyHPModal, updatedHP, setHealth, setUpdatedHP, showModifyHPModal])
+
+        if (updatedCurrent > 0 && deathSaves[modifyHPModal]) {
+            setDeathSaves({
+                ...deathSaves,
+                [modifyHPModal]: null
+            })
+        }
+    }, [
+        health,
+        modifyHPModal,
+        updatedHP,
+        deathSaves,
+        setHealth,
+        setUpdatedHP,
+        showModifyHPModal,
+        setDeathSaves
+    ])
+
+    const captureDeathSave = useCallback((id, type) => {
+        const currentFailure = (deathSaves[id]?.failure || 0)
+        const updatedFailure = type === DEATH_SAVES.FAILURE ? currentFailure + 1 : currentFailure
+        const currentSuccess = (deathSaves[id]?.success || 0)
+        const updatedSuccess = type === DEATH_SAVES.SUCCESS ? currentSuccess + 1 : currentSuccess
+
+        // No need to capture the update, we've hit the max for the type
+        if ((type === DEATH_SAVES.FAILURE && updatedFailure > 3) ||
+            (type === DEATH_SAVES.SUCESS && updatedSuccess > 3)) {
+            return
+        }
+
+        setDeathSaves({
+            ...deathSaves,
+            [id]: {
+                failure: updatedFailure,
+                success: updatedSuccess
+            }
+        })
+    }, [deathSaves, setDeathSaves])
 
     if (loading) {
         return <></>
@@ -240,36 +284,68 @@ const CombatTracker = () => {
 
                                         return (
                                             <li key={getId(entry)} className={statuses.join(' ')}>
-                                                <div className="initiative">
-                                                    <p>Initiative</p>
-                                                    <input type="number" min="0" value={initiative[getId(entry)]} disabled={combatStarted} onChange={(e) => handleInitiativeUpdate(e, getId(entry))} />
-                                                </div>
-                                                {entry.isMonster ? (
-                                                    <button className={monsterCard?.monster.id === entry.id && monsterCard?.kind === entry.kind ? 'selected' : ''} type="button" onClick={() => showMonsterCard({ monster, kind: entry.kind })}>
-                                                        <p>{monster.name}</p>
-                                                        <div className="details">
-                                                            <p><strong>AC: </strong>{monster.armorClass}</p>
-                                                            <p><strong>HP: </strong>{monster.averageHitPoints} ({monster.hitPointsDieCount}{monster.hitPointsDieValue}+{monster.hitPointsDieModifier})</p>
-                                                            <p><strong>Init Bonus: </strong>{initBonus}</p>
-                                                        </div>
-                                                    </button>
-                                                ) : (
-                                                    <div className="entry">
-                                                        <p className="name">{entry.name}</p>
-                                                        <div className="details">
-                                                            <p><strong>AC: </strong>{entry.armor_class}</p>
-                                                            <p><strong>Init Bonus: </strong>{entry.initiative_bonus}</p>
-                                                            <p><strong>Pass. Perception: </strong>{entry.passive_perception}</p>
-                                                            <p><strong>Speed: </strong>{entry.speed}</p>
-                                                        </div>
+                                                <div className="block">
+                                                    <div className="initiative">
+                                                        <p>Initiative</p>
+                                                        <input type="number" min="0" value={initiative[getId(entry)]} disabled={combatStarted} onChange={(e) => handleInitiativeUpdate(e, getId(entry))} />
                                                     </div>
-                                                )}
-                                                {combatStarted &&
-                                                    <div className="health" onClick={() => updateHealth(getId(entry))}>
-                                                        <ul>
-                                                            <li>{health[getId(entry)].current}</li>
-                                                            <li>/</li>
-                                                            <li>{health[getId(entry)].max}</li>
+                                                    <div className="entry-wrapper">
+                                                        {entry.isMonster ? (
+                                                            <button className={monsterCard?.monster.id === entry.id && monsterCard?.kind === entry.kind ? 'selected monster' : 'monster'} type="button" onClick={() => showMonsterCard({ monster, kind: entry.kind })}>
+                                                                <p>{monster.name}</p>
+                                                                <div className="details">
+                                                                    <p><strong>AC: </strong>{monster.armorClass}</p>
+                                                                    <p><strong>HP: </strong>{monster.averageHitPoints} ({monster.hitPointsDieCount}{monster.hitPointsDieValue}+{monster.hitPointsDieModifier})</p>
+                                                                    <p><strong>Init Bonus: </strong>{initBonus}</p>
+                                                                </div>
+                                                            </button>
+                                                        ) : (
+                                                            <div className="entry">
+                                                                <p className="name">{entry.name}</p>
+                                                                <div className="details">
+                                                                    <p><strong>AC: </strong>{entry.armor_class}</p>
+                                                                    <p><strong>Init Bonus: </strong>{entry.initiative_bonus}</p>
+                                                                    <p><strong>Pass. Perception: </strong>{entry.passive_perception}</p>
+                                                                    <p><strong>Speed: </strong>{entry.speed}</p>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                        {combatStarted &&
+                                                            <div className="health" onClick={() => updateHealth(getId(entry))}>
+                                                                <ul>
+                                                                    <li>{health[getId(entry)].current}</li>
+                                                                    <li>/</li>
+                                                                    <li>{health[getId(entry)].max}</li>
+                                                                </ul>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                {statuses.includes('dead') &&
+                                                    <div className="death-saves">
+                                                        <div className="icon">
+                                                            <Skull size={20} color="#333" />
+                                                        </div>
+                                                        <ul className="failure">
+                                                            {new Array(3).fill(0).map((_, o) => (
+                                                                <li key={`failure-${o}`}>
+                                                                    <button
+                                                                        className={(deathSaves[getId(entry)]?.failure || 0) >= o + 1 ? 'filled' : `o-${o}`}
+                                                                        onClick={() => captureDeathSave(getId(entry), DEATH_SAVES.FAILURE)}
+                                                                    />
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                        <div className="separator" />
+                                                        <ul className="success">
+                                                            {new Array(3).fill(0).map((_, o) => (
+                                                                <li key={`success-${o}`}>
+                                                                    <button
+                                                                        className={(deathSaves[getId(entry)]?.success || 0) >= o + 1 ? 'filled' : ''}
+                                                                        onClick={() => captureDeathSave(getId(entry), DEATH_SAVES.SUCCESS)}
+                                                                    />
+                                                                </li>
+                                                            ))}
                                                         </ul>
                                                     </div>
                                                 }
