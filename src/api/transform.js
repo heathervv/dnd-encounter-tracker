@@ -57,6 +57,10 @@ const formatUsage = (usage) => {
         return `${usage.type} ${usage.dice} min: ${usage.min_value}`
     }
 
+    if (usage.rest_types) {
+        return `Recharge after ${usage.rest_types.join(" or ")} rest`
+    }
+
     return ''
 }
 
