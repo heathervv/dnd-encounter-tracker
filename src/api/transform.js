@@ -86,6 +86,21 @@ const parseActionEconomy = (section) => {
     return markdown.join('<br ><br >')
 }
 
+const parseLegendaryActions = (name, actions) => {
+    const actionEconomy = parseActionEconomy(actions)
+
+    if (actions !== null) {
+        const header =
+            `The ${name} can take 3 legendary actions, choosing from the options below.
+            Only one legendary action can be used at a time and only at the end of another creature's turn. 
+            The ${name} regains spent legendary actions at the start of its turn.`
+
+        return `${header}<br /><br />${actionEconomy}`
+    }
+
+    return actionEconomy
+}
+
 export const mapApiResponseToSupportedFormat = (response) => (
     {
         // Base info
@@ -138,6 +153,6 @@ export const mapApiResponseToSupportedFormat = (response) => (
         actionsDescription: parseActionEconomy(response.actions),
         reactionsDescription: parseActionEconomy(response.reactions),
         isLegendary: response.legendary_actions !== null,
-        legendaryActionsDescription: parseActionEconomy(response.legendary_actions)
+        legendaryActionsDescription: parseLegendaryActions(response.name, response.legendary_actions)
     }
 )
