@@ -1,10 +1,5 @@
 .manage-data {
-    background: #eee;
-    padding: 16px;
     border-radius: 3px;
-}
-
-.manage-data>div {
     display: flex;
     align-items: center;
 }
@@ -29,4 +24,15 @@
     &:focus {
         background-color: #171717;
     }
+}
+
+.alert {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    background: green;
+    border-radius: 3px;
+    font-size: 13px;
+    padding: 8px;
+    color: #fff;
 }

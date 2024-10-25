@@ -1,12 +1,11 @@
 import { useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useEncountersContext } from "../../context/encounters/encounters-context";
-import { EXPORT_TYPE, ManageData } from '../../components/manage-data/manage-data';
 import './home.css'
 
 const Home = () => {
     const navigate = useNavigate()
-    const { encounters, exportEncounters, importEncounters } = useEncountersContext()
+    const { encounters } = useEncountersContext()
 
     const handleCreateNew = useCallback(() => {
         navigate('/encounter/create')
@@ -37,14 +36,8 @@ const Home = () => {
                         ))}
                     </ul>
                 ) : (
-                    <p>No encounters added yet!</p>
+                    <p className="empty">You have not created any encounters yet.</p>
                 )}
-                <hr />
-                <ManageData
-                    onExport={exportEncounters}
-                    onImport={importEncounters}
-                    type={EXPORT_TYPE.ENCOUNTERS}
-                />
             </section>
         </div>
     )

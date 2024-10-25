@@ -1,7 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
-import { exportToJson } from '../../helpers'
-
 export const EncountersContext = createContext({})
 
 const STORAGE_KEY = 'encounters'
@@ -51,12 +49,8 @@ export const useEncountersContext = () => {
         saveEncounters([...list, encounter])
     }, [encounters, saveEncounters])
 
-    const exportEncounters = useCallback(() => {
-        exportToJson(encounters, 'encounters')
-    }, [encounters])
-
     const importEncounters = useCallback((data) => {
-        saveEncounters(JSON.parse(data))
+        saveEncounters(data)
     }, [saveEncounters])
 
     return {
@@ -65,7 +59,6 @@ export const useEncountersContext = () => {
         createEncounter,
         deleteEncounter,
         updateEncounter,
-        exportEncounters,
         importEncounters
     }
 }

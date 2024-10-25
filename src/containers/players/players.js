@@ -1,12 +1,11 @@
 import { useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { usePlayerContext } from "../../context/players/players-context";
-import { EXPORT_TYPE, ManageData } from '../../components/manage-data/manage-data';
 import './players.css'
 
 const Players = () => {
     const navigate = useNavigate()
-    const { players, exportPlayers, importPlayers } = usePlayerContext()
+    const { players } = usePlayerContext()
 
     const handleCreateNew = useCallback(() => {
         navigate('/player/create')
@@ -15,7 +14,10 @@ const Players = () => {
     return (
         <section className="wrapper">
             <div className="header">
-                <h1>List of player characters</h1>
+                <div>
+                    <h1>List of player characters</h1>
+                    <p>Manage your tables PCs.</p>
+                </div>
                 <button onClick={handleCreateNew}>Create new</button>
             </div>
             {players.length > 0 ? (
@@ -31,14 +33,8 @@ const Players = () => {
                     ))}
                 </ul>
             ) : (
-                <p>No player characters added yet!</p>
+                <p className="empty">You have not created any player characters yet.</p>
             )}
-            <hr />
-            <ManageData
-                onExport={exportPlayers}
-                onImport={importPlayers}
-                type={EXPORT_TYPE.PLAYERS}
-            />
         </section>
     )
 }

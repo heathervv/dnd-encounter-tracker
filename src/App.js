@@ -11,6 +11,7 @@ import ViewEncounter from './containers/view-encounter/view-encounter'
 import Players from './containers/players/players'
 import ModifyPlayer from './containers/modify-player/modify-player'
 import ViewPlayer from './containers/view-player/view-player'
+import ManageData from "./containers/manage-data/manage-data"
 
 const App = () => (
   <Routes>
@@ -28,6 +29,7 @@ const App = () => (
       <Route path="/player/create" element={<ModifyPlayer />} />
       <Route path="/player/:id" element={<ViewPlayer />} />
       <Route path="/player/:id/edit" element={<ModifyPlayer isEdit />} />
+      <Route path="/manage-data" element={<ManageData />} />
     </Route>
   </Routes>
 )

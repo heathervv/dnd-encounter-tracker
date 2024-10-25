@@ -178,3 +178,10 @@ hr {
 .wmde-markdown p {
   color: #000;
 }
+
+.empty {
+  padding: 16px;
+  background-color: #eee;
+  border-radius: 3px;
+  margin: 16px 0;
+}
