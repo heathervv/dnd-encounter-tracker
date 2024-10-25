@@ -65,7 +65,7 @@ const formatUsage = (usage) => {
 }
 
 const parseActionEconomy = (section) => {
-    if (!section) return
+    if (!section || section.length === 0) return
 
     const mapSpells = (item) => {
         if (!item.spellcasting) {
@@ -89,7 +89,7 @@ const parseActionEconomy = (section) => {
 const parseLegendaryActions = (name, actions) => {
     const actionEconomy = parseActionEconomy(actions)
 
-    if (actions !== null) {
+    if (actionEconomy) {
         const header =
             `The ${name} can take 3 legendary actions, choosing from the options below.
             Only one legendary action can be used at a time and only at the end of another creature's turn. 
@@ -152,7 +152,7 @@ export const mapApiResponseToSupportedFormat = (response) => (
         specialTraits: parseActionEconomy(response.special_abilities),
         actionsDescription: parseActionEconomy(response.actions),
         reactionsDescription: parseActionEconomy(response.reactions),
-        isLegendary: response.legendary_actions !== null,
+        isLegendary: response.legendary_actions.length > 0,
         legendaryActionsDescription: parseLegendaryActions(response.name, response.legendary_actions)
     }
 )
