@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import Markdown from "../../components/markdown";
 import Modal from "../../components/modal/modal";
 import SpellModal from "./spell-modal";
@@ -8,9 +8,22 @@ import { baseAbilityScoreModifier, mapProficiencyBonus } from "../../helpers";
 
 const MonsterCard = ({ monster }) => {
   const [openModalData, setOpenModalData] = useState(null);
+  const [alert, setAlert] = useState(null);
+
+  useEffect(() => {
+    if (alert) {
+        setTimeout(() => {
+            setAlert(null)
+        }, [5000])
+    }
+}, [alert])
 
   const handleOpenModal = (data) => {
-    setOpenModalData(data);
+    if (data) {
+        setOpenModalData(data);
+    } else {
+        setAlert('Spell not found')
+    }
   };
 
   const handleCloseModal = () => {
@@ -252,6 +265,7 @@ const MonsterCard = ({ monster }) => {
       <Modal open={!!openModalData} onClose={handleCloseModal}>
         {openModalData && <SpellModal content={openModalData} />}
       </Modal>
+      {alert && <div className="alert error">{alert}</div>}
     </>
   );
 };

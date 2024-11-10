@@ -57,6 +57,11 @@
 
 .section.stats {
     & li {
+        display: grid;
+        grid-template-columns: 0.5fr 1fr;
+        grid-template-rows: 1fr;
+        grid-column-gap: 5px;
+        grid-row-gap: 0px;
         margin-bottom: 2px;
 
         & > *:first-child {

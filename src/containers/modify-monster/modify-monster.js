@@ -127,6 +127,10 @@ const ModifyMonster = ({ isEdit }) => {
                     </label>
                 </div>
                 <hr />
+                <div className="hints">
+                    <p className="bold">Helpful hints:</p>
+                    <p>Use <code>[spell]Name of spell[/spell]</code> to access the details of the spell outside of this edit view.</p>
+                </div>
                 <div className="row">
                     <label>
                         Special Traits:

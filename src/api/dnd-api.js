@@ -33,5 +33,5 @@ export const fetchSpecificMonster = async (id) => {
 export const fetchSpecificSpell = async (id) => {
     const response = await (request(`spells/${id}`))
 
-    return transformSpell.mapApiResponseToSupportedFormat(response)
+    return response ? transformSpell.mapApiResponseToSupportedFormat(response) : null
 }
