@@ -1,5 +1,6 @@
 // https://5e-bits.github.io/docs/api/
-import { mapApiResponseToSupportedFormat } from './transform'
+import * as transformMonster from './transform-monster'
+import * as transformSpell from './transform-spell'
 
 const api = 'https://www.dnd5eapi.co'
 
@@ -26,5 +27,11 @@ export const fetchMonsters = async () => (
 export const fetchSpecificMonster = async (id) => {
     const response = await request(`monsters/${id}`)
 
-    return mapApiResponseToSupportedFormat(response)
+    return transformMonster.mapApiResponseToSupportedFormat(response)
+}
+
+export const fetchSpecificSpell = async (id) => {
+    const response = await (request(`spells/${id}`))
+
+    return transformSpell.mapApiResponseToSupportedFormat(response)
 }

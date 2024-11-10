@@ -179,9 +179,21 @@ hr {
   color: #000;
 }
 
+.wmde-markdown th,
+.wmde-markdown td
+{
+  width: 100%;
+  white-space: nowrap;
+}
+
 .empty {
   padding: 16px;
   background-color: #eee;
   border-radius: 3px;
   margin: 16px 0;
+}
+
+.alignHorizontal {
+  display: flex;
+  align-items: center;   
 }

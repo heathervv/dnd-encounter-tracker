@@ -90,7 +90,8 @@ input[type=text].encounter-monster-search-input {
     }
 }
 
-.encounter-monster-item .drawer>* {
+.encounter-monster-item .drawer .monster-card,
+.encounter-monster-item .drawer .monster-card > * {
     border-top: 1px solid #fff !important;
     border-top-left-radius: 0 !important;
     border-top-right-radius: 0 !important;
