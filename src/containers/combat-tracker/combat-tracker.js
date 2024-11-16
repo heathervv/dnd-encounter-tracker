@@ -35,7 +35,14 @@ const CombatTracker = () => {
     const [deathSaves, setDeathSaves] = useState({})
 
     const encounter = useMemo(() => getSingleEncounter?.(encounterId), [encounterId, getSingleEncounter])
-    const loading = useMemo(() => !(encounter && monsters.length > 0), [encounter, monsters])
+    const completedWaitingForMonsters = useMemo(() => {
+        if (encounter.monsters.length > 0) {
+            return monsters.length > 0
+        }
+
+        return true
+    }, [encounter, monsters])
+    const loading = useMemo(() => !(encounter && completedWaitingForMonsters), [encounter, completedWaitingForMonsters])
 
     useEffect(() => {
         if (!encounter) {
@@ -366,7 +373,9 @@ const CombatTracker = () => {
                                 {combatStarted ? (
                                     <div className="combat-details">
                                         <p>Round: {round}</p>
-                                        <button type="button" className="run-combat" onClick={handleNext}>Next</button>
+                                        {entries.length > 0 && (
+                                            <button type="button" className="run-combat" onClick={handleNext}>Next</button>
+                                        )}
                                     </div>
                                 ) : (
                                     <button type="button" className="run-combat" onClick={handleStart}>Start encounter</button>
