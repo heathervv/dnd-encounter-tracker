@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState, useMemo } from 'react'
 
 import { fetchMonsters, fetchSpecificMonster } from '../../api/dnd-api'
 import MonsterCard from '../../containers/view-monster/monster-card'
-import { useMonstersContext } from '../../context/monsters/monsters-context';
+import { useMonstersContext } from '../../context/monsters/monsters-context'
 import { MONSTER_ACTION } from '../../containers/modify-encounter/modify-encounter'
 
 import './add-monsters.css'
@@ -11,44 +11,63 @@ const MonsterItem = ({ name, homebrew, monster, selected, onSelect }) => {
     const [drawerIsOpen, setDrawerIsOpen] = useState(false)
     const [monsterData, setMonsterData] = useState({})
 
-    const handleDrawer = useCallback(async (e) => {
-        if (e.target.tagName.toLowerCase() === 'button') {
-            // Drawer should not be altered if a button (add/remove) was pressed
-            return
-        }
+    const handleDrawer = useCallback(
+        async (e) => {
+            if (e.target.tagName.toLowerCase() === 'button') {
+                // Drawer should not be altered if a button (add/remove) was pressed
+                return
+            }
 
-        if (drawerIsOpen) {
-            setDrawerIsOpen(false)
-            return
-        }
-        if (!homebrew) {
-            const result = await fetchSpecificMonster(monster.index)
+            if (drawerIsOpen) {
+                setDrawerIsOpen(false)
+                return
+            }
+            if (!homebrew) {
+                const result = await fetchSpecificMonster(monster.index)
 
-            setMonsterData(result)
-            setDrawerIsOpen(true)
-        } else {
-            setDrawerIsOpen(true)
-        }
-    }, [homebrew, drawerIsOpen, monster])
+                setMonsterData(result)
+                setDrawerIsOpen(true)
+            } else {
+                setDrawerIsOpen(true)
+            }
+        },
+        [homebrew, drawerIsOpen, monster]
+    )
 
-    const handleAdd = useCallback((e) => {
-        e.preventDefault()
-        onSelect(MONSTER_ACTION.ADD, monster.id || monster.index, 1)
-    }, [onSelect, monster])
+    const handleAdd = useCallback(
+        (e) => {
+            e.preventDefault()
+            onSelect(MONSTER_ACTION.ADD, monster.id || monster.index, 1)
+        },
+        [onSelect, monster]
+    )
 
-    const handleRemove = useCallback((e) => {
-        e.preventDefault()
-        onSelect(MONSTER_ACTION.REMOVE, monster.id || monster.index)
-    }, [onSelect, monster])
+    const handleRemove = useCallback(
+        (e) => {
+            e.preventDefault()
+            onSelect(MONSTER_ACTION.REMOVE, monster.id || monster.index)
+        },
+        [onSelect, monster]
+    )
 
-    const handleAmountChange = useCallback((e, value) => {
-        e.preventDefault()
-        onSelect(MONSTER_ACTION.ADD, monster.id || monster.index, value || 1)
-    }, [onSelect, monster])
+    const handleAmountChange = useCallback(
+        (e, value) => {
+            e.preventDefault()
+            onSelect(
+                MONSTER_ACTION.ADD,
+                monster.id || monster.index,
+                value || 1
+            )
+        },
+        [onSelect, monster]
+    )
 
     return (
         <li className="encounter-monster-item">
-            <div className={`monster-link ${selected ? 'selected' : ''}`} onClick={handleDrawer}>
+            <div
+                className={`monster-link ${selected ? 'selected' : ''}`}
+                onClick={handleDrawer}
+            >
                 <div className="monster-details">
                     <p className="monster-name">{name}</p>
                     {homebrew && <p className="monster-tag">Homebrew</p>}
@@ -56,15 +75,31 @@ const MonsterItem = ({ name, homebrew, monster, selected, onSelect }) => {
                 <div className="manage">
                     {selected && (
                         <div className="amount">
-                            <button onClick={(e) => handleAmountChange(e, selected - 1)}>-</button>
+                            <button
+                                onClick={(e) =>
+                                    handleAmountChange(e, selected - 1)
+                                }
+                            >
+                                -
+                            </button>
                             <p>{selected}</p>
-                            <button onClick={(e) => handleAmountChange(e, selected + 1)}>+</button>
+                            <button
+                                onClick={(e) =>
+                                    handleAmountChange(e, selected + 1)
+                                }
+                            >
+                                +
+                            </button>
                         </div>
                     )}
-                    {selected ? (<button onClick={handleRemove}>- Remove</button>) : (
+                    {selected ? (
+                        <button onClick={handleRemove}>- Remove</button>
+                    ) : (
                         <button onClick={handleAdd}>+ Add</button>
                     )}
-                    <p className="view">{drawerIsOpen ? 'View less' : 'View more'}</p>
+                    <p className="view">
+                        {drawerIsOpen ? 'View less' : 'View more'}
+                    </p>
                 </div>
             </div>
             {drawerIsOpen && (
@@ -90,22 +125,25 @@ const AddMonster = ({ onSelect, selectedMonsters, selectedAmount }) => {
         const homebrewCaptured = homebrewMonsters.map((hbm) => ({
             ...hbm,
             homebrew: true,
-            hidden: searchValue && !hbm.name.toLowerCase().includes(searchValue.toLowerCase())
+            hidden:
+                searchValue &&
+                !hbm.name.toLowerCase().includes(searchValue.toLowerCase()),
         }))
 
         const apiMonstersCaptured = apiMonsters.map((am) => ({
             ...am,
-            hidden: searchValue && !am.name.toLowerCase().includes(searchValue.toLowerCase())
+            hidden:
+                searchValue &&
+                !am.name.toLowerCase().includes(searchValue.toLowerCase()),
         }))
 
         return [...homebrewCaptured, ...apiMonstersCaptured]
     }, [homebrewMonsters, apiMonsters, searchValue])
 
     useEffect(() => {
-        fetchMonsters()
-            .then((response) => {
-                setApiMonsters(response.results)
-            })
+        fetchMonsters().then((response) => {
+            setApiMonsters(response.results)
+        })
     }, [])
 
     const handleSearch = useCallback((e) => {
@@ -134,7 +172,11 @@ const AddMonster = ({ onSelect, selectedMonsters, selectedAmount }) => {
             <ul className="encounter-monster-list">
                 {/* Monsters that meet the search criteria AND have been added to the encounter */}
                 {listOfMonsters
-                    .filter((m) => !m.hidden && selectedMonsters.includes(m.id || m.index))
+                    .filter(
+                        (m) =>
+                            !m.hidden &&
+                            selectedMonsters.includes(m.id || m.index)
+                    )
                     .map((monster) => (
                         <MonsterItem
                             key={monster.id || monster.index}
@@ -142,13 +184,19 @@ const AddMonster = ({ onSelect, selectedMonsters, selectedAmount }) => {
                             name={monster.name}
                             homebrew={monster.homebrew}
                             monster={monster}
-                            selected={selectedAmount[monster.id || monster.index]}
+                            selected={
+                                selectedAmount[monster.id || monster.index]
+                            }
                             onSelect={onSelect}
                         />
                     ))}
                 {/* Monsters that meet the search criteria and HAVE NOT been selected */}
                 {listOfMonsters
-                    .filter((m) => !m.hidden && !selectedMonsters.includes(m.id || m.index))
+                    .filter(
+                        (m) =>
+                            !m.hidden &&
+                            !selectedMonsters.includes(m.id || m.index)
+                    )
                     .map((monster) => (
                         <MonsterItem
                             key={monster.id || monster.index}

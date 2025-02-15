@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { usePlayerContext } from "../../context/players/players-context";
+import { usePlayerContext } from '../../context/players/players-context'
 import './players.css'
 
 const Players = () => {
@@ -33,7 +33,9 @@ const Players = () => {
                     ))}
                 </ul>
             ) : (
-                <p className="empty">You have not created any player characters yet.</p>
+                <p className="empty">
+                    You have not created any player characters yet.
+                </p>
             )}
         </section>
     )

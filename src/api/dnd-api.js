@@ -10,19 +10,17 @@ headers.append('Accept', 'application/json')
 const requestOptions = {
     method: 'GET',
     redirect: 'follow',
-    headers
+    headers,
 }
 
 const request = async (endpoint) => {
     return await fetch(`${api}/api/${endpoint}`, requestOptions)
-        .then(response => response.json())
-        .then(response => response)
-        .catch(error => console.log('error', error))
+        .then((response) => response.json())
+        .then((response) => response)
+        .catch((error) => console.log('error', error))
 }
 
-export const fetchMonsters = async () => (
-    request('monsters')
-)
+export const fetchMonsters = async () => request('monsters')
 
 export const fetchSpecificMonster = async (id) => {
     const response = await request(`monsters/${id}`)
@@ -31,7 +29,9 @@ export const fetchSpecificMonster = async (id) => {
 }
 
 export const fetchSpecificSpell = async (id) => {
-    const response = await (request(`spells/${id}`))
+    const response = await request(`spells/${id}`)
 
-    return response ? transformSpell.mapApiResponseToSupportedFormat(response) : null
+    return response
+        ? transformSpell.mapApiResponseToSupportedFormat(response)
+        : null
 }

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { usePlayerContext } from "../../context/players/players-context";
+import { usePlayerContext } from '../../context/players/players-context'
 import './view-player.css'
 
 const Player = () => {
@@ -26,8 +26,16 @@ const Player = () => {
                     <div className="header">
                         <h1>{player.name}</h1>
                         <div className="buttons">
-                            <button type="button" onClick={handleEdit}>Edit</button>
-                            <button type="button" className="delete" onClick={handleDelete}>Delete</button>
+                            <button type="button" onClick={handleEdit}>
+                                Edit
+                            </button>
+                            <button
+                                type="button"
+                                className="delete"
+                                onClick={handleDelete}
+                            >
+                                Delete
+                            </button>
                         </div>
                     </div>
 

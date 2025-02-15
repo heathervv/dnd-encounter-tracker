@@ -10,10 +10,10 @@ const Modal = ({ open, onClose, children }) => {
     return (
         <div className={`modal ${open ? 'open' : ''}`}>
             <div className="inner">
-                <button className="closeButton" onClick={handleClose}>ｘ</button>
-                <div className="modalContent">
-                    {children}
-                </div>
+                <button className="closeButton" onClick={handleClose}>
+                    ｘ
+                </button>
+                <div className="modalContent">{children}</div>
             </div>
         </div>
     )

@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useEncountersContext } from "../../context/encounters/encounters-context";
+import { useEncountersContext } from '../../context/encounters/encounters-context'
 import './home.css'
 
 const Home = () => {
@@ -15,7 +15,10 @@ const Home = () => {
         <div className="wrapper">
             <section>
                 <h1>A custom DND combat creation/tracker tool.</h1>
-                <p>A free-to-use, basic encounter creation and management tool. Stores all data in your browser.</p>
+                <p>
+                    A free-to-use, basic encounter creation and management tool.
+                    Stores all data in your browser.
+                </p>
             </section>
             <hr />
             <section>
@@ -29,14 +32,18 @@ const Home = () => {
                             <li key={encounter.id}>
                                 <Link to={`/encounter/${encounter.id}`}>
                                     <div className="encounter-link">
-                                        <p className="encounter-name">{encounter.name}</p>
+                                        <p className="encounter-name">
+                                            {encounter.name}
+                                        </p>
                                     </div>
                                 </Link>
                             </li>
                         ))}
                     </ul>
                 ) : (
-                    <p className="empty">You have not created any encounters yet.</p>
+                    <p className="empty">
+                        You have not created any encounters yet.
+                    </p>
                 )}
             </section>
         </div>

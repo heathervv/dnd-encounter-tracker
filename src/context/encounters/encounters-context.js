@@ -1,4 +1,10 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import {
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
+} from 'react'
 
 export const EncountersContext = createContext({})
 
@@ -15,11 +21,16 @@ export const EncountersProvider = ({ children }) => {
         }
     }, [])
 
-    const saveEncounters = useCallback((encounters) => {
-        const sorted = encounters.sort((a, b) => a.name.localeCompare(b.name))
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(sorted))
-        setEncounters(sorted)
-    }, [setEncounters])
+    const saveEncounters = useCallback(
+        (encounters) => {
+            const sorted = encounters.sort((a, b) =>
+                a.name.localeCompare(b.name)
+            )
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(sorted))
+            setEncounters(sorted)
+        },
+        [setEncounters]
+    )
 
     return (
         <EncountersContext.Provider value={{ encounters, saveEncounters }}>
@@ -31,27 +42,42 @@ export const EncountersProvider = ({ children }) => {
 export const useEncountersContext = () => {
     const { encounters, saveEncounters } = useContext(EncountersContext)
 
-    const getSingleEncounter = useCallback((id) => (
-        encounters.find((encounter) => encounter.id === id)
-    ), [encounters])
+    const getSingleEncounter = useCallback(
+        (id) => encounters.find((encounter) => encounter.id === id),
+        [encounters]
+    )
 
-    const createEncounter = useCallback((encounter) => {
-        saveEncounters([...encounters, encounter])
-    }, [encounters, saveEncounters])
+    const createEncounter = useCallback(
+        (encounter) => {
+            saveEncounters([...encounters, encounter])
+        },
+        [encounters, saveEncounters]
+    )
 
-    const deleteEncounter = useCallback((id) => {
-        const updatedList = encounters.filter((encounter) => encounter.id !== id)
-        saveEncounters(updatedList)
-    }, [encounters, saveEncounters])
+    const deleteEncounter = useCallback(
+        (id) => {
+            const updatedList = encounters.filter(
+                (encounter) => encounter.id !== id
+            )
+            saveEncounters(updatedList)
+        },
+        [encounters, saveEncounters]
+    )
 
-    const updateEncounter = useCallback((encounter) => {
-        const list = encounters.filter((m) => m.id !== encounter.id)
-        saveEncounters([...list, encounter])
-    }, [encounters, saveEncounters])
+    const updateEncounter = useCallback(
+        (encounter) => {
+            const list = encounters.filter((m) => m.id !== encounter.id)
+            saveEncounters([...list, encounter])
+        },
+        [encounters, saveEncounters]
+    )
 
-    const importEncounters = useCallback((data) => {
-        saveEncounters(data)
-    }, [saveEncounters])
+    const importEncounters = useCallback(
+        (data) => {
+            saveEncounters(data)
+        },
+        [saveEncounters]
+    )
 
     return {
         encounters,
@@ -59,6 +85,6 @@ export const useEncountersContext = () => {
         createEncounter,
         deleteEncounter,
         updateEncounter,
-        importEncounters
+        importEncounters,
     }
 }
