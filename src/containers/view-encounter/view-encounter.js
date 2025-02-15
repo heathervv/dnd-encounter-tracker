@@ -7,6 +7,7 @@ import Markdown from '../../components/markdown'
 import { enrichMonsterData } from '../../helpers'
 import MonsterCard from '../view-monster/monster-card'
 import './view-encounter.css'
+import MonsterItem from './item-monster'
 
 const ViewEncounter = () => {
     const { id } = useParams()
@@ -110,47 +111,15 @@ const ViewEncounter = () => {
                                             const monsterId =
                                                 monster.id || monster.index
                                             return (
-                                                <li key={monsterId}>
-                                                    <button
-                                                        className={
-                                                            monsterCard?.id ===
-                                                            monsterId
-                                                                ? 'selected'
-                                                                : ''
-                                                        }
-                                                        type="button"
-                                                        onClick={() =>
-                                                            showMonsterCard(
-                                                                monster
-                                                            )
-                                                        }
-                                                    >
-                                                        <div>
-                                                            <p>
-                                                                {monster.name}
-                                                            </p>
-                                                            <p>
-                                                                {monster.size}{' '}
-                                                                {monster.type}
-                                                            </p>
-                                                        </div>
-                                                        {encounter?.amounts?.[
-                                                            monsterId
-                                                        ] > 1 && (
-                                                            <div className="count">
-                                                                <p>
-                                                                    x{' '}
-                                                                    {
-                                                                        encounter
-                                                                            ?.amounts?.[
-                                                                            monsterId
-                                                                        ]
-                                                                    }
-                                                                </p>
-                                                            </div>
-                                                        )}
-                                                    </button>
-                                                </li>
+                                                <MonsterItem
+                                                    monsterId={monsterId}
+                                                    monsterCard={monsterCard}
+                                                    showMonsterCard={
+                                                        showMonsterCard
+                                                    }
+                                                    monster={monster}
+                                                    encounter={encounter}
+                                                />
                                             )
                                         })}
                                     </ul>

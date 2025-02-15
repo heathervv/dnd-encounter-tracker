@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import Skull from '../../assets/skull'
 import { useEncountersContext } from '../../context/encounters/encounters-context'
 import { usePlayerContext } from '../../context/players/players-context'
 import { useMonstersContext } from '../../context/monsters/monsters-context'
@@ -8,8 +7,7 @@ import Markdown from '../../components/markdown'
 import { enrichMonsterData } from '../../helpers'
 import MonsterCard from '../view-monster/monster-card'
 import './combat-tracker.css'
-
-import { baseAbilityScoreModifier } from '../../helpers'
+import EntriesList from './entries-list'
 
 const getId = (entry) =>
     entry.isMonster ? `${entry.kind}-${entry.id}` : entry.id
@@ -312,321 +310,26 @@ const CombatTracker = () => {
                     <hr />
                     <div className="row row-align-top">
                         <div className="width-forty">
-                            <div className="entries-list">
-                                <ul>
-                                    {(entries || []).map((entry, i) => {
-                                        let monster = null
-                                        let initBonus = null
-                                        if (entry.isMonster) {
-                                            monster = monsters.find(
-                                                (m) => m.id === entry.id
-                                            )
-                                            initBonus =
-                                                baseAbilityScoreModifier(
-                                                    monster.dexterity
-                                                )
-                                        }
-
-                                        let statuses = []
-
-                                        if (selected === i) {
-                                            statuses.push('selected')
-                                        }
-                                        if (
-                                            combatStarted &&
-                                            health[getId(entry)].current === 0
-                                        ) {
-                                            statuses.push('dead')
-                                        }
-
-                                        return (
-                                            <li
-                                                key={getId(entry)}
-                                                className={statuses.join(' ')}
-                                            >
-                                                <div className="block">
-                                                    <div className="initiative">
-                                                        <p>Initiative</p>
-                                                        <input
-                                                            type="number"
-                                                            min="0"
-                                                            value={
-                                                                initiative[
-                                                                    getId(entry)
-                                                                ]
-                                                            }
-                                                            disabled={
-                                                                combatStarted
-                                                            }
-                                                            onChange={(e) =>
-                                                                handleInitiativeUpdate(
-                                                                    e,
-                                                                    getId(entry)
-                                                                )
-                                                            }
-                                                        />
-                                                    </div>
-                                                    <div className="entry-wrapper">
-                                                        {entry.isMonster ? (
-                                                            <button
-                                                                className={
-                                                                    monsterCard
-                                                                        ?.monster
-                                                                        .id ===
-                                                                        entry.id &&
-                                                                    monsterCard?.kind ===
-                                                                        entry.kind
-                                                                        ? 'selected monster'
-                                                                        : 'monster'
-                                                                }
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    showMonsterCard(
-                                                                        {
-                                                                            monster,
-                                                                            kind: entry.kind,
-                                                                        }
-                                                                    )
-                                                                }
-                                                            >
-                                                                <p>
-                                                                    {
-                                                                        monster.name
-                                                                    }
-                                                                </p>
-                                                                <div className="details">
-                                                                    <p>
-                                                                        <strong>
-                                                                            AC:{' '}
-                                                                        </strong>
-                                                                        {
-                                                                            monster.armorClass
-                                                                        }
-                                                                    </p>
-                                                                    <p>
-                                                                        <strong>
-                                                                            HP:{' '}
-                                                                        </strong>
-                                                                        {
-                                                                            monster.averageHitPoints
-                                                                        }{' '}
-                                                                        (
-                                                                        {
-                                                                            monster.hitPointsDieCount
-                                                                        }
-                                                                        {
-                                                                            monster.hitPointsDieValue
-                                                                        }
-                                                                        +
-                                                                        {
-                                                                            monster.hitPointsDieModifier
-                                                                        }
-                                                                        )
-                                                                    </p>
-                                                                    <p>
-                                                                        <strong>
-                                                                            Init
-                                                                            Bonus:{' '}
-                                                                        </strong>
-                                                                        {
-                                                                            initBonus
-                                                                        }
-                                                                    </p>
-                                                                </div>
-                                                            </button>
-                                                        ) : (
-                                                            <div className="entry">
-                                                                <p className="name">
-                                                                    {entry.name}
-                                                                </p>
-                                                                <div className="details">
-                                                                    <p>
-                                                                        <strong>
-                                                                            AC:{' '}
-                                                                        </strong>
-                                                                        {
-                                                                            entry.armor_class
-                                                                        }
-                                                                    </p>
-                                                                    <p>
-                                                                        <strong>
-                                                                            Init
-                                                                            Bonus:{' '}
-                                                                        </strong>
-                                                                        {
-                                                                            entry.initiative_bonus
-                                                                        }
-                                                                    </p>
-                                                                    <p>
-                                                                        <strong>
-                                                                            Pass.
-                                                                            Perception:{' '}
-                                                                        </strong>
-                                                                        {
-                                                                            entry.passive_perception
-                                                                        }
-                                                                    </p>
-                                                                    <p>
-                                                                        <strong>
-                                                                            Speed:{' '}
-                                                                        </strong>
-                                                                        {
-                                                                            entry.speed
-                                                                        }
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        )}
-                                                        {combatStarted && (
-                                                            <div
-                                                                className="health"
-                                                                onClick={() =>
-                                                                    updateHealth(
-                                                                        getId(
-                                                                            entry
-                                                                        )
-                                                                    )
-                                                                }
-                                                            >
-                                                                <ul>
-                                                                    <li>
-                                                                        {
-                                                                            health[
-                                                                                getId(
-                                                                                    entry
-                                                                                )
-                                                                            ]
-                                                                                .current
-                                                                        }
-                                                                    </li>
-                                                                    <li>/</li>
-                                                                    <li>
-                                                                        {
-                                                                            health[
-                                                                                getId(
-                                                                                    entry
-                                                                                )
-                                                                            ]
-                                                                                .max
-                                                                        }
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                {statuses.includes('dead') && (
-                                                    <div className="death-saves">
-                                                        <div className="icon">
-                                                            <Skull
-                                                                size={20}
-                                                                color="#333"
-                                                            />
-                                                        </div>
-                                                        <ul className="failure">
-                                                            {new Array(3)
-                                                                .fill(0)
-                                                                .map((_, o) => (
-                                                                    <li
-                                                                        key={`failure-${o}`}
-                                                                    >
-                                                                        <button
-                                                                            className={
-                                                                                (deathSaves[
-                                                                                    getId(
-                                                                                        entry
-                                                                                    )
-                                                                                ]
-                                                                                    ?.failure ||
-                                                                                    0) >=
-                                                                                o +
-                                                                                    1
-                                                                                    ? 'filled'
-                                                                                    : `o-${o}`
-                                                                            }
-                                                                            onClick={() =>
-                                                                                captureDeathSave(
-                                                                                    getId(
-                                                                                        entry
-                                                                                    ),
-                                                                                    DEATH_SAVES.FAILURE
-                                                                                )
-                                                                            }
-                                                                        />
-                                                                    </li>
-                                                                ))}
-                                                        </ul>
-                                                        <div className="separator" />
-                                                        <ul className="success">
-                                                            {new Array(3)
-                                                                .fill(0)
-                                                                .map((_, o) => (
-                                                                    <li
-                                                                        key={`success-${o}`}
-                                                                    >
-                                                                        <button
-                                                                            className={
-                                                                                (deathSaves[
-                                                                                    getId(
-                                                                                        entry
-                                                                                    )
-                                                                                ]
-                                                                                    ?.success ||
-                                                                                    0) >=
-                                                                                o +
-                                                                                    1
-                                                                                    ? 'filled'
-                                                                                    : ''
-                                                                            }
-                                                                            onClick={() =>
-                                                                                captureDeathSave(
-                                                                                    getId(
-                                                                                        entry
-                                                                                    ),
-                                                                                    DEATH_SAVES.SUCCESS
-                                                                                )
-                                                                            }
-                                                                        />
-                                                                    </li>
-                                                                ))}
-                                                        </ul>
-                                                    </div>
-                                                )}
-                                                {modifyHPModal ===
-                                                    getId(entry) && (
-                                                    <div className="hp-modal">
-                                                        <form
-                                                            onSubmit={
-                                                                captureUpdatedHP
-                                                            }
-                                                        >
-                                                            <input
-                                                                type="number"
-                                                                autoFocus
-                                                                value={
-                                                                    updatedHP ===
-                                                                    0
-                                                                        ? ''
-                                                                        : updatedHP
-                                                                }
-                                                                onChange={(e) =>
-                                                                    setUpdatedHP(
-                                                                        e.target
-                                                                            .value
-                                                                    )
-                                                                }
-                                                            />
-                                                            <button type="submit">
-                                                                Update
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                )}
-                                            </li>
-                                        )
-                                    })}
-                                </ul>
-                            </div>
+                            <EntriesList
+                                entries={entries}
+                                monsters={monsters}
+                                selected={selected}
+                                combatStarted={combatStarted}
+                                health={health}
+                                getId={getId}
+                                initiative={initiative}
+                                handleInitiativeUpdate={handleInitiativeUpdate}
+                                monsterCard={monsterCard}
+                                showMonsterCard={showMonsterCard}
+                                updateHealth={updateHealth}
+                                deathSaves={deathSaves}
+                                captureDeathSave={captureDeathSave}
+                                DEATH_SAVES={DEATH_SAVES}
+                                modifyHPModal={modifyHPModal}
+                                captureUpdatedHP={captureUpdatedHP}
+                                updatedHP={updatedHP}
+                                setUpdatedHP={setUpdatedHP}
+                            />
                             <div>
                                 {combatStarted ? (
                                     <div className="combat-details">
