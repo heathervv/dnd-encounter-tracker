@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigationType } from 'react-router-dom'
 import { useEncountersContext } from '../../context/encounters/encounters-context'
 import { usePlayerContext } from '../../context/players/players-context'
 import { useMonstersContext } from '../../context/monsters/monsters-context'
@@ -18,10 +18,12 @@ const DEATH_SAVES = {
 }
 
 const CombatTracker = () => {
+    const navigationType = useNavigationType()
     const { encounterId } = useParams()
     const { getSingleEncounter } = useEncountersContext()
     const { players } = usePlayerContext()
     const { monsters: homebrewMonsters } = useMonstersContext()
+    const [loadingSavedData, setLoadingSavedData] = useState(true)
     const [monsters, setMonsters] = useState([])
     const [monsterCard, showMonsterCard] = useState(null)
     const [initiative, setInitiative] = useState({})
@@ -105,6 +107,50 @@ const CombatTracker = () => {
             return groupedData
         }
     }, [encounter, players, initiative, combatStarted])
+
+    // ------ Protect from accidentally navigating away
+    const STORAGE_KEY = `combat-${encounterId}`
+
+    useEffect(() => {
+        if (!loadingSavedData) {
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify({
+                    initiative,
+                    combatStarted,
+                    selected,
+                    round,
+                    health,
+                    deathSaves,
+                })
+            )
+        }
+    }, [
+        loadingSavedData,
+        STORAGE_KEY,
+        initiative,
+        combatStarted,
+        selected,
+        round,
+        health,
+        deathSaves,
+    ])
+
+    useEffect(() => {
+        if (navigationType === 'POP') {
+            const data = JSON.parse(localStorage.getItem(STORAGE_KEY))
+            setInitiative(data.initiative)
+            setCombatStarted(data.combatStarted)
+            setSelected(data.selected)
+            setRound(data.round)
+            setHealth(data.health)
+            setDeathSaves(data.deathSaves)
+        } else {
+            localStorage.removeItem(STORAGE_KEY)
+        }
+        setLoadingSavedData(false)
+    }, [STORAGE_KEY, navigationType])
+    // ------ Protect from accidentally navigating away
 
     useEffect(() => {
         if (!encounter) {
