@@ -25,31 +25,13 @@
     border-bottom: 1px solid #d0d7de;
 }
 
-.spellModal .spellStat > *:first-child {
+.spellModal .spellStat>*:first-child {
     font-weight: 600;
     margin: 0;
 }
 
 .spellModal .concentration {
-    position: relative;
-    display: inline-block;
-    color: #fff;
-    padding: 3px;
     margin-right: 3px;
-    margin-top: -2px;
-}
-
-.spellModal .concentration:before {
-    content: "";
-    display: inline-block;
-    border-radius: 50%;
-    background-color: #000;
-    position: absolute;
-    top: 6px;
-    left: -1px;
-    width: 16px;
-    height: 16px;
-    z-index: -1;
 }
 
 .spellModal .spellContent {

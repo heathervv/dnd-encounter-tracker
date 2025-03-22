@@ -101,10 +101,11 @@
 
 .entries-list .name {
     font-weight: 500;
-    margin-bottom: 4px;
+    margin-bottom: 0;
 }
 
 .entries-list .details {
+    margin-top: 4px;
     column-count: 2;
     font-size: 14px;
     max-width: 65%;
@@ -278,4 +279,17 @@
 
 .death-saves .success button.filled {
     background-color: #077306;
+}
+
+.concentration {
+    appearance: none;
+    background: transparent;
+    border: none;
+    margin: 0 4px 0 0;
+    padding: 0;
+    line-height: 1;
+}
+
+.concentration:focus {
+    background: transparent;
 }

@@ -1,3 +1,4 @@
+import Concentrate from "../../assets/concentrate";
 import Markdown from "../../components/markdown";
 import "./spell-modal.css";
 
@@ -29,7 +30,7 @@ const SpellModal = ({ content }) => (
         <li className="spellStat">
           <p>Duration</p>
           <p className="alignHorizontal">
-            {content.concentration && <span className="concentration">c</span>}
+            <div className="concentration"><Concentrate size={20} color={content.concentration ? "#FC5454" : "#d0d7de"} /></div>
             {content.duration}
           </p>
         </li>
