@@ -59,7 +59,6 @@ const EntriesList = ({
                                         type="number"
                                         min="0"
                                         value={initiative[getId(entry)]}
-                                        disabled={combatStarted}
                                         onChange={(e) =>
                                             handleInitiativeUpdate(e, getId(entry))
                                         }

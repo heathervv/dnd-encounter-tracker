@@ -217,10 +217,6 @@ const CombatTracker = () => {
 
     const handleInitiativeUpdate = useCallback(
         (e, id) => {
-            if (combatStarted) {
-                return
-            }
-
             setInitiative({ ...initiative, [id]: e.target.value })
         },
         [combatStarted, initiative, setInitiative]
