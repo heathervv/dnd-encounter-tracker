@@ -25,9 +25,9 @@ const EntriesList = ({
 }) => {
     const [concentrating, setConcentrating] = useState({})
 
-    const handleConcentrate = (entryId) => setConcentrating({
+    const handleConcentrate = (key) => setConcentrating({
         ...concentrating,
-        [entryId]: !concentrating[entryId]
+        [key]: !concentrating[key]
     })
 
     return (
@@ -84,8 +84,8 @@ const EntriesList = ({
                                             }
                                         >
                                             <div className="alignHorizontal">
-                                                <button className="concentration" onClick={() => handleConcentrate(entry.id)}>
-                                                    <Concentrate size={20} color={concentrating[entry.id] ? '#FC5454' : '#d0d7de'} />
+                                                <button className="concentration" onClick={() => handleConcentrate(getId(entry))}>
+                                                    <Concentrate size={20} color={concentrating[getId(entry)] ? '#FC5454' : '#d0d7de'} />
                                                 </button>
                                                 <p className="name">{monster.name}</p>
                                             </div>
@@ -110,8 +110,8 @@ const EntriesList = ({
                                     ) : (
                                         <div className="entry">
                                             <div className="alignHorizontal">
-                                                <button className="concentration" onClick={() => handleConcentrate(entry.id)}>
-                                                    <Concentrate size={20} color={concentrating[entry.id] ? '#FC5454' : '#d0d7de'} />
+                                                <button className="concentration" onClick={() => handleConcentrate(getId(entry))}>
+                                                    <Concentrate size={20} color={concentrating[getId(entry)] ? '#FC5454' : '#d0d7de'} />
                                                 </button>
                                                 <p className="name">{entry.name}</p>
                                             </div>
