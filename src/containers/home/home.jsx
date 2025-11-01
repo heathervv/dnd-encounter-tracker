@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useEncountersContext } from '../../context/encounters/encounters-context'
-import './home.css'
 
 const Home = () => {
     const navigate = useNavigate()

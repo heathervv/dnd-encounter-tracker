@@ -5,8 +5,6 @@ import { useMonstersContext } from '../../context/monsters/monsters-context'
 import { usePlayerContext } from '../../context/players/players-context'
 import { useEncountersContext } from '../../context/encounters/encounters-context'
 
-import './manage-data.css'
-
 export const ManageData = () => {
     const { monsters, importMonsters } = useMonstersContext()
     const { players, importPlayers } = usePlayerContext()

@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMonstersContext } from '../../context/monsters/monsters-context'
-import './monsters.css'
 
 const Monsters = () => {
     const navigate = useNavigate()

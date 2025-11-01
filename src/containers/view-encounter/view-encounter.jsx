@@ -6,7 +6,6 @@ import { useMonstersContext } from '../../context/monsters/monsters-context'
 import Markdown from '../../components/markdown'
 import { enrichMonsterData } from '../../helpers'
 import MonsterCard from '../view-monster/monster-card'
-import './view-encounter.css'
 import MonsterItem from './item-monster'
 
 const ViewEncounter = () => {

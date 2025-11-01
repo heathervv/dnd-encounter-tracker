@@ -5,8 +5,6 @@ import MonsterCard from '../../containers/view-monster/monster-card'
 import { useMonstersContext } from '../../context/monsters/monsters-context'
 import { MONSTER_ACTION } from '../../containers/modify-encounter/modify-encounter'
 
-import './add-monsters.css'
-
 const MonsterItem = ({ name, homebrew, monster, selected, onSelect }) => {
     const [drawerIsOpen, setDrawerIsOpen] = useState(false)
     const [monsterData, setMonsterData] = useState({})

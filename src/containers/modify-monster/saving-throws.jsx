@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid';
-import './custom-list.css'
 
 const SavingThrows = ({ fieldKey, values, onValueChange }) => {
     const handleAdd = useCallback(() => {

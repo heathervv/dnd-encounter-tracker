@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useMonstersContext } from "../../context/monsters/monsters-context";
 import Markdown from '../../components/markdown'
 import MonsterCard from './monster-card'
-import './view-monster.css'
 
 const Monster = () => {
     const { id } = useParams()

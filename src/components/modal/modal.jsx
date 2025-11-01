@@ -1,7 +1,5 @@
 import React from 'react'
 
-import './modal.css'
-
 const Modal = ({ open, onClose, children }) => {
     const handleClose = (e) => {
         e.preventDefault()

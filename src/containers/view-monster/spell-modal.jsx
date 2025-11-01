@@ -1,7 +1,5 @@
 import Concentrate from "../../assets/concentrate";
 import Markdown from "../../components/markdown";
-import "./spell-modal.css";
-
 
 const SpellModal = ({ content }) => (
   <div className="spellModal">

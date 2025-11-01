@@ -6,7 +6,6 @@ import { useMonstersContext } from '../../context/monsters/monsters-context'
 import Markdown from '../../components/markdown'
 import { enrichMonsterData } from '../../helpers'
 import MonsterCard from '../view-monster/monster-card'
-import './combat-tracker.css'
 import EntriesList from './entries-list'
 
 const getId = (entry) =>

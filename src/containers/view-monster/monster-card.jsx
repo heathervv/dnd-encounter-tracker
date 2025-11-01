@@ -2,7 +2,6 @@ import { useCallback, useState, useEffect } from 'react'
 import Markdown from '../../components/markdown'
 import Modal from '../../components/modal/modal'
 import SpellModal from './spell-modal'
-import './monster-card.css'
 
 import { baseAbilityScoreModifier, mapProficiencyBonus } from '../../helpers'
 

@@ -4,7 +4,6 @@ import MDEditor from '@uiw/react-md-editor/nohighlight'
 import { v4 as uuidv4 } from 'uuid'
 import AddMonsters from '../../components/add-monsters/add-monsters'
 import { useEncountersContext } from '../../context/encounters/encounters-context'
-import './modify-encounter.css'
 
 export const MONSTER_ACTION = {
     ADD: 'add',

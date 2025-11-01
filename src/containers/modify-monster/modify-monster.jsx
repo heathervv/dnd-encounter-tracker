@@ -6,7 +6,6 @@ import { useMonstersContext } from "../../context/monsters/monsters-context";
 import CheckboxTextField from './checkbox-text-field';
 import CustomList from './custom-list';
 import SavingThrows from './saving-throws';
-import './modify-monster.css'
 
 // This component is arguably gross, and maybe I'll refactor it one day.
 // However I want a functional thing more than I want pretty code.

@@ -2,7 +2,6 @@ import { useCallback, useMemo, useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
 import { usePlayerContext } from '../../context/players/players-context'
-import './modify-player.css'
 
 const ModifyPlayer = ({ isEdit }) => {
     const { id } = useParams()

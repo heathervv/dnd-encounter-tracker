@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { usePlayerContext } from '../../context/players/players-context'
-import './players.css'
 
 const Players = () => {
     const navigate = useNavigate()

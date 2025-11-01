@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { usePlayerContext } from '../../context/players/players-context'
-import './view-player.css'
 
 const Player = () => {
     const { id } = useParams()
