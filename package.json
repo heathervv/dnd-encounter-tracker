@@ -2,6 +2,7 @@
   "name": "dnd-encounter-tracker",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "homepage": "https://heathervv.github.io/dnd-encounter-tracker/",
   "scripts": {
     "start": "vite",
@@ -11,19 +12,19 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "@uiw/react-md-editor": "^4.0.5",
-    "@vitejs/plugin-react-swc": "^3.8.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.29.0",
-    "rehype-sanitize": "^6.0.0",
-    "remark-gfm": "^4.0.1",
-    "uuid": "^11.0.5",
-    "vite": "^6.1.0",
-    "vite-plugin-svgr": "^4.3.0"
+    "@uiw/react-md-editor": "4.0.8",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-router-dom": "7.9.5",
+    "rehype-sanitize": "6.0.0",
+    "remark-gfm": "4.0.1",
+    "uuid": "13.0.0"
   },
   "devDependencies": {
-    "gh-pages": "^6.3.0"
+    "@vitejs/plugin-react": "4.7.0",
+    "vite": "7.1.12",
+    "vite-plugin-svgr": "4.5.0",
+    "gh-pages": "6.3.0"
   },
   "prettier": {
     "trailingComma": "es5",

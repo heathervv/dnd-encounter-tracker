@@ -90,12 +90,11 @@ const parseActionEconomy = (section) => {
 
     const markdown = section.map(
         (item) =>
-            `**${item.name}${
-                item.usage ? ` (${formatUsage(item.usage)})` : ''
+            `**${item.name}${item.usage ? ` (${formatUsage(item.usage)})` : ''
             }** ${mapSpells(item)}`
     )
 
-    return markdown.join('<br ><br >')
+    return markdown.join('\n\n')
 }
 
 const parseLegendaryActions = (name, actions) => {
@@ -106,7 +105,7 @@ const parseLegendaryActions = (name, actions) => {
             Only one legendary action can be used at a time and only at the end of another creature's turn. 
             The ${name} regains spent legendary actions at the start of its turn.`
 
-        return `${header}<br /><br />${actionEconomy}`
+        return `${header}\n\n${actionEconomy}`
     }
 
     return actionEconomy

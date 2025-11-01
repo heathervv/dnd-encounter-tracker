@@ -112,6 +112,7 @@ const ViewEncounter = () => {
                                                 monster.id || monster.index
                                             return (
                                                 <MonsterItem
+                                                    key={monsterId}
                                                     monsterId={monsterId}
                                                     monsterCard={monsterCard}
                                                     showMonsterCard={
