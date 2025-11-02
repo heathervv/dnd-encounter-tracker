@@ -1,20 +1,28 @@
-import React from 'react'
+import React from "react"
 
 const Modal = ({ open, onClose, children }) => {
-    const handleClose = (e) => {
-        e.preventDefault()
-        onClose()
-    }
-    return (
-        <div className={`modal ${open ? 'open' : ''}`}>
-            <div className="inner">
-                <button className="closeButton" onClick={handleClose}>
-                    ｘ
-                </button>
-                <div className="modalContent">{children}</div>
-            </div>
-        </div>
-    )
+  const handleClose = (e) => {
+    e.preventDefault()
+    onClose()
+  }
+
+  if (!open) {
+    return null
+  }
+
+  return (
+    <div className="fixed bottom-0 left-0 right-0 card bg-base-100 card-border p-2 rounded-b-none border-base-300 z-1 h-[75%]">
+      <div>
+        <button
+          className="btn btn-xs btn-neutral absolute right-2 top-2"
+          onClick={handleClose}
+        >
+          close
+        </button>
+        <div>{children}</div>
+      </div>
+    </div>
+  )
 }
 
 export default Modal
