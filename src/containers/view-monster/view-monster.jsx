@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { useMonstersContext } from "../../context/monsters/monsters-context"
+import { useThemeContext } from "../../context/theme/theme-context"
 import Markdown from "../../components/markdown"
 import MonsterCard from "./monster-card"
 
@@ -8,6 +9,7 @@ const Monster = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { getSingleMonster, deleteMonster } = useMonstersContext()
+  const { wysiwygMode } = useThemeContext()
 
   const monster = useMemo(() => getSingleMonster?.(id), [id, getSingleMonster])
 
@@ -21,7 +23,7 @@ const Monster = () => {
   }, [monster, deleteMonster, navigate])
 
   return (
-    <section className="max-w-4xl m-auto" data-color-mode="light">
+    <section className="max-w-4xl m-auto" data-color-mode={wysiwygMode}>
       {monster ? (
         <>
           <div className="flex justify-between items-end mb-2">

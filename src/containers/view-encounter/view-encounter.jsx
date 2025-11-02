@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import { useEncountersContext } from "../../context/encounters/encounters-context"
 import { usePlayerContext } from "../../context/players/players-context"
 import { useMonstersContext } from "../../context/monsters/monsters-context"
+import { useThemeContext } from "../../context/theme/theme-context"
 import Markdown from "../../components/markdown"
 import { enrichMonsterData } from "../../helpers"
 import MonsterCard from "../view-monster/monster-card"
@@ -14,6 +15,7 @@ const ViewEncounter = () => {
   const { getSingleEncounter, deleteEncounter } = useEncountersContext()
   const { players } = usePlayerContext()
   const { monsters: homebrewMonsters } = useMonstersContext()
+  const { wysiwygMode } = useThemeContext()
   const [monsters, setMonsters] = useState([])
   const [monsterCard, showMonsterCard] = useState(null)
 
@@ -57,7 +59,7 @@ const ViewEncounter = () => {
   }, [encounter, deleteEncounter, navigate])
 
   return (
-    <section data-color-mode="light">
+    <section data-color-mode={wysiwygMode}>
       {encounter ? (
         <>
           <div className="flex justify-between items-end mb-2">

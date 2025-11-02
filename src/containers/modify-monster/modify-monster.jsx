@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import MDEditor from "@uiw/react-md-editor/nohighlight"
 import { v4 as uuidv4 } from "uuid"
 import { useMonstersContext } from "../../context/monsters/monsters-context"
+import { useThemeContext } from "../../context/theme/theme-context"
 import CheckboxTextField from "./checkbox-text-field"
 import CustomList from "./custom-list"
 import SavingThrows from "./saving-throws"
@@ -16,6 +17,8 @@ const ModifyMonster = ({ isEdit }) => {
   const navigate = useNavigate()
   const { getSingleMonster, createMonster, updateMonster } =
     useMonstersContext()
+  const { wysiwygMode } = useThemeContext()
+
   const [form, setForm] = useState({
     name: "",
     type: "",
@@ -96,7 +99,7 @@ const ModifyMonster = ({ isEdit }) => {
   )
 
   return (
-    <section className="max-w-4xl m-auto" data-color-mode="light">
+    <section className="max-w-4xl m-auto" data-color-mode={wysiwygMode}>
       <h1 className="text-base-content font-semibold text-lg mb-2">
         {isEdit ? `Edit ${monster?.name}` : "Create monster"}
       </h1>

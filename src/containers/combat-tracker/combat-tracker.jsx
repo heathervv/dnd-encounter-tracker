@@ -3,6 +3,7 @@ import { useParams, useNavigationType } from "react-router-dom"
 import { useEncountersContext } from "../../context/encounters/encounters-context"
 import { usePlayerContext } from "../../context/players/players-context"
 import { useMonstersContext } from "../../context/monsters/monsters-context"
+import { useThemeContext } from "../../context/theme/theme-context"
 import Markdown from "../../components/markdown"
 import { enrichMonsterData } from "../../helpers"
 import MonsterCard from "../view-monster/monster-card"
@@ -22,6 +23,7 @@ const CombatTracker = () => {
   const { getSingleEncounter } = useEncountersContext()
   const { players } = usePlayerContext()
   const { monsters: homebrewMonsters } = useMonstersContext()
+  const { wysiwygMode } = useThemeContext()
   const [loadingSavedData, setLoadingSavedData] = useState(true)
   const [monsters, setMonsters] = useState([])
   const [monsterCard, showMonsterCard] = useState(null)
@@ -336,7 +338,7 @@ const CombatTracker = () => {
   }
 
   return (
-    <section data-color-mode="light">
+    <section data-color-mode={wysiwygMode}>
       {encounter ? (
         <>
           <h1 className="text-base-content font-semibold text-lg mb-2">

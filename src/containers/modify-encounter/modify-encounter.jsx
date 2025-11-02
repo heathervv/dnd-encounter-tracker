@@ -4,6 +4,7 @@ import MDEditor from "@uiw/react-md-editor/nohighlight"
 import { v4 as uuidv4 } from "uuid"
 import AddMonsters from "../../components/add-monsters/add-monsters"
 import { useEncountersContext } from "../../context/encounters/encounters-context"
+import { useThemeContext } from "../../context/theme/theme-context"
 
 export const MONSTER_ACTION = {
   ADD: "add",
@@ -15,6 +16,7 @@ const ModifyEncounter = ({ isEdit }) => {
   const navigate = useNavigate()
   const { getSingleEncounter, createEncounter, updateEncounter } =
     useEncountersContext()
+  const { wysiwygMode } = useThemeContext()
 
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
@@ -113,7 +115,7 @@ const ModifyEncounter = ({ isEdit }) => {
   )
 
   return (
-    <section className="max-w-4xl m-auto" data-color-mode="light">
+    <section className="max-w-4xl m-auto" data-color-mode={wysiwygMode}>
       <form onSubmit={handleSave}>
         <div className="flex justify-between items-end mb-2">
           <h1 className="text-base-content font-semibold text-lg">
