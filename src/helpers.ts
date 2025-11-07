@@ -1,6 +1,8 @@
 import { fetchSpecificMonster } from './api/dnd-api'
+import type { ENCOUNTER } from './context/encounters/encounters-context'
+import type { MONSTER } from './context/monsters/monsters-context'
 
-export const baseAbilityScoreModifier = (ability) =>
+export const baseAbilityScoreModifier = (ability: number): number =>
     Math.floor((ability - 10) / 2)
 
 const cr_proficiency_bonus = {
@@ -40,18 +42,19 @@ const cr_proficiency_bonus = {
     30: 9,
 }
 
-export const mapProficiencyBonus = (challengeRating) =>
+export const mapProficiencyBonus = (challengeRating: number): number =>
     cr_proficiency_bonus[challengeRating]
 
-export const exportToJson = (data, fileName = 'export') => {
+export const exportToJson = (data, fileName = 'export'): void => {
     let filename = `${fileName}.json`
     let contentType = 'application/json;charset=utf-8;'
-    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+    if (window.navigator && (window.navigator as any).msSaveOrOpenBlob) {
         var blob = new Blob(
             [decodeURIComponent(encodeURI(JSON.stringify(data)))],
             { type: contentType }
-        )
-        navigator.msSaveOrOpenBlob(blob, filename)
+        );
+
+        (navigator as any).msSaveOrOpenBlob(blob, filename)
     } else {
         var a = document.createElement('a')
         a.download = filename
@@ -67,13 +70,13 @@ export const exportToJson = (data, fileName = 'export') => {
     }
 }
 
-export const toTitleCase = (str) =>
+export const toTitleCase = (str: string): string =>
     str.replace(
         /\w\S*/g,
         (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
     )
 
-export const enrichMonsterData = async (encounter, homebrewMonsters) =>
+export const enrichMonsterData = async (encounter: ENCOUNTER, homebrewMonsters: MONSTER[]) =>
     await Promise.all(
         encounter.monsters.map(async (monster) => {
             const monsterIsHomebrew = homebrewMonsters.find(
