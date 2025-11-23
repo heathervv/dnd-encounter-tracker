@@ -3,13 +3,13 @@
   "name": "A custom DND combat encounter creation/tracker tool.",
   "icons": [
     {
-      "src": "favicon.jpg",
+      "src": "favicon.png",
       "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/jpg"
+      "type": "image/png"
     },
     {
-      "src": "logo.jpg",
-      "type": "image/jpg",
+      "src": "logo.png",
+      "type": "image/png",
       "sizes": "512x512"
     }
   ],
