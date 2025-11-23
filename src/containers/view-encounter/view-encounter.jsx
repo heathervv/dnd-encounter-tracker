@@ -1,62 +1,79 @@
-import { useCallback, useMemo, useState, useEffect } from "react"
-import { useParams, useNavigate } from "react-router-dom"
-import { useEncountersContext } from "../../context/encounters/encounters-context"
-import { usePlayerContext } from "../../context/players/players-context"
-import { useMonstersContext } from "../../context/monsters/monsters-context"
-import { useThemeContext } from "../../context/theme/theme-context"
-import Markdown from "../../components/markdown"
-import { enrichMonsterData } from "../../helpers"
-import MonsterCard from "../view-monster/monster-card"
-import MonsterItem from "./item-monster"
+import { useCallback, useMemo, useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useEncountersContext } from "../../context/encounters/encounters-context";
+import { usePlayerContext } from "../../context/players/players-context";
+import { useMonstersContext } from "../../context/monsters/monsters-context";
+import { useThemeContext } from "../../context/theme/theme-context";
+import Markdown from "../../components/markdown";
+import { enrichMonsterData } from "../../helpers";
+import MonsterCard from "../view-monster/monster-card";
+import MonsterItem from "./item-monster";
 
 const ViewEncounter = () => {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const { getSingleEncounter, deleteEncounter } = useEncountersContext()
-  const { players } = usePlayerContext()
-  const { monsters: homebrewMonsters } = useMonstersContext()
-  const { wysiwygMode } = useThemeContext()
-  const [monsters, setMonsters] = useState([])
-  const [monsterCard, showMonsterCard] = useState(null)
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { getSingleEncounter, deleteEncounter } = useEncountersContext();
+  const { players } = usePlayerContext();
+  const { monsters: homebrewMonsters } = useMonstersContext();
+  const { wysiwygMode } = useThemeContext();
+  const [monsters, setMonsters] = useState([]);
+  const [monsterCard, showMonsterCard] = useState(null);
+  const [showResume, setShowResume] = useState(false);
 
   const encounter = useMemo(
     () => getSingleEncounter?.(id),
     [id, getSingleEncounter]
-  )
+  );
+
+  const STORAGE_KEY = encounter ? `combat-${encounter.id}` : null;
 
   useEffect(() => {
     if (!encounter) {
-      return
+      return;
     }
 
-    let active = true
-    loadMonsterData()
+    let active = true;
+    loadMonsterData();
     return () => {
-      active = false
-    }
+      active = false;
+    };
 
     async function loadMonsterData() {
-      const res = await enrichMonsterData(encounter, homebrewMonsters)
+      const res = await enrichMonsterData(encounter, homebrewMonsters);
 
       if (!active) {
-        return
+        return;
       }
-      setMonsters(res)
+      setMonsters(res);
     }
-  }, [encounter, homebrewMonsters])
+  }, [encounter, homebrewMonsters]);
 
-  const navigateToCombatTracker = useCallback(() => {
-    navigate(`/combat-tracker/${encounter.id}`)
-  }, [encounter, navigate])
+  useEffect(() => {
+    if (STORAGE_KEY) {
+      const encounterData = localStorage.getItem(STORAGE_KEY);
+      const combatStarted = (JSON.parse(encounterData) || {}).combatStarted;
+
+      setShowResume(combatStarted);
+    }
+  }, [STORAGE_KEY]);
+
+  const navigateToCombatTracker = useCallback(
+    (resume) => {
+      navigate(`/combat-tracker/${encounter.id}`, {
+        state: { resume: resume || false },
+      });
+    },
+    [encounter, navigate]
+  );
 
   const handleEdit = useCallback(() => {
-    navigate(`/encounter/${encounter.id}/edit`)
-  }, [encounter, navigate])
+    navigate(`/encounter/${encounter.id}/edit`);
+  }, [encounter, navigate]);
 
   const handleDelete = useCallback(() => {
-    deleteEncounter(encounter.id)
-    navigate("/")
-  }, [encounter, deleteEncounter, navigate])
+    deleteEncounter(encounter.id);
+    navigate("/");
+  }, [encounter, deleteEncounter, navigate]);
 
   return (
     <section data-color-mode={wysiwygMode}>
@@ -116,7 +133,7 @@ const ViewEncounter = () => {
                 {monsters.length > 0 ? (
                   <ul>
                     {monsters.map((monster) => {
-                      const monsterId = monster.id || monster.index
+                      const monsterId = monster.id || monster.index;
                       return (
                         <MonsterItem
                           key={monsterId}
@@ -126,7 +143,7 @@ const ViewEncounter = () => {
                           monster={monster}
                           encounter={encounter}
                         />
-                      )
+                      );
                     })}
                   </ul>
                 ) : (
@@ -139,10 +156,19 @@ const ViewEncounter = () => {
               <button
                 type="button"
                 className="btn btn-sm btn-success mt-4"
-                onClick={navigateToCombatTracker}
+                onClick={() => navigateToCombatTracker(false)}
               >
                 Run encounter
               </button>
+              {showResume && (
+                <button
+                  type="button"
+                  className="btn btn-sm btn-info mt-4 ml-2"
+                  onClick={() => navigateToCombatTracker(true)}
+                >
+                  Resume encounter
+                </button>
+              )}
             </div>
             <div>
               {encounter.description && (
@@ -169,7 +195,7 @@ const ViewEncounter = () => {
         </div>
       )}
     </section>
-  )
-}
+  );
+};
 
-export default ViewEncounter
+export default ViewEncounter;
