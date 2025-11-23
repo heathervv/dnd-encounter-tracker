@@ -2,18 +2,14 @@ import { toTitleCase } from "../helpers";
 import type {
   Proficiency,
   MonsterResponse,
-  Sense,
+  Skill,
   Senses,
   Action,
   SpecialAbility,
   Spell,
   Usage,
+  TransformedMonster,
 } from "./types";
-
-type Skill = {
-  name: string;
-  note: Sense;
-};
 
 // Map a single monster from the API to the supported format.
 const parseSkills = (initialSkills: Senses): Skill[] => {
@@ -129,7 +125,7 @@ const parseLegendaryActions = (name: string, actions: []) => {
   return actionEconomy;
 };
 
-export const mapApiResponseToSupportedFormat = (response: MonsterResponse) => ({
+export const mapApiResponseToSupportedFormat = (response: MonsterResponse): TransformedMonster => ({
   // Base info
   id: response.index,
   name: response.name,

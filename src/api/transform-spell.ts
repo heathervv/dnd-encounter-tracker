@@ -1,4 +1,4 @@
-import type { SpellDc, SpellResponse } from "./types";
+import type { SpellDc, SpellResponse, TransformedSpell } from "./types";
 
 const parseLevel = (level: number): string => {
   const levels = {
@@ -70,7 +70,7 @@ const parseDescription = (response: SpellResponse) => {
     .join("");
 };
 
-export const mapApiResponseToSupportedFormat = (response: SpellResponse) => ({
+export const mapApiResponseToSupportedFormat = (response: SpellResponse): TransformedSpell => ({
   name: response.name,
   level: parseLevel(response.level),
   castingTime: response.casting_time,

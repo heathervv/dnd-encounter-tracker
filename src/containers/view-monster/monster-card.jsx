@@ -1,76 +1,76 @@
-import { useCallback, useState, useEffect } from "react"
-import Markdown from "../../components/markdown"
-import Modal from "../../components/modal/modal"
-import SpellModal from "./spell-modal"
+import { useCallback, useState, useEffect } from "react";
+import Markdown from "../../components/markdown";
+import Modal from "../../components/modal/modal";
+import SpellModal from "./spell-modal";
 
-import { baseAbilityScoreModifier, mapProficiencyBonus } from "../../helpers"
+import { baseAbilityScoreModifier, mapProficiencyBonus } from "../../helpers";
 
 const MonsterCard = ({ monster, className }) => {
-  const [openModalData, setOpenModalData] = useState(null)
-  const [alert, setAlert] = useState(null)
+  const [openModalData, setOpenModalData] = useState(null);
+  const [alert, setAlert] = useState(null);
 
   useEffect(() => {
     if (alert) {
       setTimeout(() => {
-        setAlert(null)
-      }, [5000])
+        setAlert(null);
+      }, [5000]);
     }
-  }, [alert])
+  }, [alert]);
 
   const handleOpenModal = (data) => {
     if (data) {
-      setOpenModalData(data)
+      setOpenModalData(data);
     } else {
-      setAlert("Spell not found")
+      setAlert("Spell not found");
     }
-  }
+  };
 
   const handleCloseModal = () => {
-    setOpenModalData(null)
-  }
+    setOpenModalData(null);
+  };
 
   const mapMovement = useCallback(() => {
     const movements = (monster.movement || []).map((type) => {
       if (type.name.toLowerCase() === "walk") {
-        return type.note
+        return type.note;
       }
 
-      return `${type.name} ${type.note}`
-    })
+      return `${type.name} ${type.note}`;
+    });
 
-    return movements.join(", ")
-  }, [monster])
+    return movements.join(", ");
+  }, [monster]);
 
   const mapPrettyAbilityScore = useCallback((ability) => {
-    let score = baseAbilityScoreModifier(ability)
+    let score = baseAbilityScoreModifier(ability);
 
     if (score > 0) {
-      score = `+${score}`
+      score = `+${score}`;
     }
 
-    return score
-  }, [])
+    return score;
+  }, []);
 
   const mapList = useCallback((attribute) => {
     const map = (attribute || []).map((type) =>
       type.note ? `${type.name} ${type.note}` : type.name
-    )
+    );
 
-    return map.length === 1 && map[0] === "" ? "None" : map.join(", ")
-  }, [])
+    return map.length === 1 && map[0] === "" ? "None" : map.join(", ");
+  }, []);
 
   const mapSavingThrowProficiencies = useCallback(() => {
     const map = (monster.savingThrowProficiencies || []).map((st) => {
-      const abilityScore = monster[st.ability.toLowerCase()]
-      const abilityScoreModifier = baseAbilityScoreModifier(abilityScore)
+      const abilityScore = monster[st.ability.toLowerCase()];
+      const abilityScoreModifier = baseAbilityScoreModifier(abilityScore);
       const totalModifier =
-        abilityScoreModifier + mapProficiencyBonus(monster.challengeRating)
+        abilityScoreModifier + mapProficiencyBonus(monster.challengeRating);
 
-      return `${st.ability} +${totalModifier}`
-    })
+      return `${st.ability} +${totalModifier}`;
+    });
 
-    return map.join(", ")
-  }, [monster])
+    return map.join(", ");
+  }, [monster]);
 
   return (
     <>
@@ -329,7 +329,7 @@ const MonsterCard = ({ monster, className }) => {
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
-export default MonsterCard
+export default MonsterCard;

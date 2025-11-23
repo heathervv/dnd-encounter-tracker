@@ -4,8 +4,9 @@ import remarkGfm from "remark-gfm"
 import rehypeSanitize from "rehype-sanitize"
 
 import { fetchSpecificSpell } from "../api/dnd-api"
+import type { TransformedSpell } from "../api/types"
 
-const Markdown = ({ source, openModal }) => {
+const Markdown = ({ source, openModal }: { source: string, openModal?: (value: TransformedSpell | null) => void }) => {
   const handleSpellClick = async (e, spell) => {
     e.preventDefault()
 
@@ -35,19 +36,26 @@ const Markdown = ({ source, openModal }) => {
   return (
     <MDEditor.Markdown
       source={modifiedSource}
+      // @ts-expect-error package type failing as their documentation says this exists
       previewOptions={{
         rehypePlugins: [[rehypeSanitize]],
       }}
       remarkPlugins={[remarkGfm]}
-      rehypeRewrite={(node, index, parent) => {
+      rehypeRewrite={(node) => {
+        // @ts-expect-error yes it exists
         if (node.tagName === "code") {
+          // @ts-expect-error yes it exists
           node.tagName = "button"
+          // @ts-expect-error yes it exists
           node.properties = {
+            // @ts-expect-error yes it exists
             onClick: (e) => handleSpellClick(e, node.children[0].value),
             className: "btn btn-xs",
           }
         }
+        // @ts-expect-error yes it exists
         if (node.tagName === "p" || node.tagName === "li") {
+          // @ts-expect-error yes it exists
           node.properties = {
             className: "text-base-content text-sm",
           }

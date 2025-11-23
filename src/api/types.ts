@@ -6,6 +6,11 @@ type ArmorClass = {
 export type Sense = string | number;
 export type Senses = { string: Sense; passive_perception: number };
 
+export type Skill = {
+  name: string;
+  note: Sense;
+};
+
 export type Spell = {
   name?: string;
   level?: number;
@@ -49,6 +54,12 @@ export type Proficiency = {
   };
 };
 
+type Property = {
+  ability?: string;
+  name?: string;
+  note?: string;
+};
+
 export type MonsterResponse = {
   index: string;
   name: string;
@@ -78,6 +89,49 @@ export type MonsterResponse = {
   actions: Action[];
   reactions: [];
   legendary_actions: [];
+};
+
+export type TransformedMonster = {
+  id: string;
+  name: string;
+  type: string;
+  size: string;
+  aligment: string;
+  challengeRating: number;
+  hitPointsDieCount: string;
+  hitPointsDieValue: string;
+  hitPointsDieModifier: string;
+  averageHitPoints: number;
+  strength: number;
+  dexterity: number;
+  constitution: number;
+  intelligence: number;
+  wisdom: number;
+  charisma: number;
+  armorClass: number;
+  armorClassType: string;
+  language: { name: string }[];
+  senses: Skill[];
+  passivePerception: number;
+  skills: Property[];
+  movement: { name: string; note: string }[];
+  savingThrowProficiencies: Property[];
+  damageVulnerabilities: string;
+  damageResistances: string;
+  damageImmunities: string;
+  conditionImmunities: string;
+  specialTraits: string | undefined;
+  actionsDescription: string | undefined;
+  reactionsDescription: string | undefined;
+  isLegendary: boolean;
+  legendaryActionsDescription: string | undefined;
+};
+
+export type SimpleMonsterResponse = {
+  index: string;
+  name: string;
+  url: string;
+  hidden: string;
 };
 
 export type SpellDc = {
@@ -113,4 +167,19 @@ export type SpellResponse = {
     size: number;
   };
   range: string;
+};
+
+export type TransformedSpell = {
+  name: string;
+  level: string;
+  castingTime: string;
+  concentration: boolean;
+  range: string;
+  components: string[];
+  material: string;
+  duration: string;
+  school: string;
+  attackSave: string;
+  damageType: string;
+  description: string;
 };

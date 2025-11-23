@@ -6,6 +6,7 @@ import {
 
 export type MONSTER = {
     id: string
+    name: string
 }
 
 interface MonsterContextType {
