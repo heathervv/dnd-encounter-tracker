@@ -1,24 +1,21 @@
-import { useCallback } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { usePlayerContext } from "../../context/players/players-context"
+import { useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { usePlayerContext } from "../../context/players/players-context";
 
 const Players = () => {
-  const navigate = useNavigate()
-  const { players } = usePlayerContext()
+  const navigate = useNavigate();
+  const { players } = usePlayerContext();
 
   const handleCreateNew = useCallback(() => {
-    navigate("/player/create")
-  }, [navigate])
+    navigate("/player/create");
+  }, [navigate]);
 
   return (
     <section className="max-w-4xl m-auto">
       <div className="flex justify-between items-end">
-        <div>
-          <h1 className="text-base-content font-semibold text-lg">
-            List of player characters
-          </h1>
-          <p className="text-base-content">Manage your tables PCs.</p>
-        </div>
+        <h1 className="text-base-content font-semibold text-lg">
+          Player characters
+        </h1>
         <button className="btn btn-xs btn-primary" onClick={handleCreateNew}>
           Create new
         </button>
@@ -46,7 +43,7 @@ const Players = () => {
         </div>
       )}
     </section>
-  )
-}
+  );
+};
 
-export default Players
+export default Players;

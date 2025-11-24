@@ -1,6 +1,6 @@
 {
-  "short_name": "Combat Tracker / Encounter Builder",
-  "name": "A custom DND combat encounter creation/tracker tool.",
+  "short_name": "A DND encounter management tool.",
+  "name": "Combat",
   "icons": [
     {
       "src": "favicon.png",
