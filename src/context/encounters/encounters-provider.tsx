@@ -4,22 +4,23 @@ import {
     useState,
 } from 'react'
 import { EncountersContext } from './encounters-context'
+import type { ENCOUNTER } from './encounters-context'
 
 const STORAGE_KEY = 'encounters'
 
-export const EncountersProvider = ({ children }) => {
-    const [encounters, setEncounters] = useState([])
+export const EncountersProvider = ({ children }: { children: React.ReactNode }) => {
+    const [encounters, setEncounters] = useState<ENCOUNTER[]>([])
 
     useEffect(() => {
         const savedEncounters = localStorage.getItem(STORAGE_KEY)
 
         if (savedEncounters) {
-            setEncounters(JSON.parse(savedEncounters))
+            setEncounters(JSON.parse(savedEncounters) as ENCOUNTER[])
         }
     }, [])
 
     const saveEncounters = useCallback(
-        (encounters) => {
+        (encounters: ENCOUNTER[]) => {
             const sorted = encounters.sort((a, b) =>
                 a.name.localeCompare(b.name)
             )

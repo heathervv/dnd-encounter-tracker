@@ -3,53 +3,56 @@ import {
     useCallback,
     useContext,
 } from 'react'
+import type { Player } from '../../types/domain'
 
-export type PLAYER = {
-    id: string
-}
+export type PLAYER = Player
 
 interface PlayerContextType {
-    players?: PLAYER[]
-    savePlayers?: (value: PLAYER[]) => void
+    players: PLAYER[]
+    savePlayers: (value: PLAYER[]) => void
 }
 
 
-export const PlayerContext = createContext<PlayerContextType>({})
+export const PlayerContext = createContext<PlayerContextType | null>(null)
 
 export const usePlayerContext = () => {
-    const { players, savePlayers } = useContext(PlayerContext)
+    const context = useContext(PlayerContext)
+    if (!context) {
+        throw new Error('usePlayerContext must be used within PlayerProvider')
+    }
+    const { players, savePlayers } = context
 
     const getSinglePlayer = useCallback(
-        (id) => players?.find((player) => player.id === id),
+        (id: string | undefined) => players.find((player) => player.id === id),
         [players]
     )
 
     const createPlayer = useCallback(
-        (player) => {
-            savePlayers?.([...(players || []), player])
+        (player: PLAYER) => {
+            savePlayers([...players, player])
         },
         [players, savePlayers]
     )
 
     const deletePlayer = useCallback(
-        (id) => {
-            const updatedList = players?.filter((player) => player.id !== id) || []
-            savePlayers?.(updatedList)
+        (id: string) => {
+            const updatedList = players.filter((player) => player.id !== id)
+            savePlayers(updatedList)
         },
         [players, savePlayers]
     )
 
     const updatePlayer = useCallback(
-        (player) => {
-            const list = players?.filter((p) => p.id !== player.id) || []
-            savePlayers?.([...list, player])
+        (player: PLAYER) => {
+            const list = players.filter((p) => p.id !== player.id)
+            savePlayers([...list, player])
         },
         [players, savePlayers]
     )
 
     const importPlayers = useCallback(
-        (data) => {
-            savePlayers?.(data)
+        (data: PLAYER[]) => {
+            savePlayers(data)
         },
         [savePlayers]
     )

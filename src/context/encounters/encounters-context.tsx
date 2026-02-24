@@ -3,55 +3,57 @@ import {
     useCallback,
     useContext,
 } from 'react'
+import type { Encounter } from '../../types/domain'
 
-export type ENCOUNTER = {
-    id: string
-    monsters: string[]
-}
+export type ENCOUNTER = Encounter
 
 interface EncounterContextType {
-    encounters?: ENCOUNTER[]
-    saveEncounters?: (value: ENCOUNTER[]) => void
+    encounters: ENCOUNTER[]
+    saveEncounters: (value: ENCOUNTER[]) => void
 }
 
-export const EncountersContext = createContext<EncounterContextType>({})
+export const EncountersContext = createContext<EncounterContextType | null>(null)
 
 export const useEncountersContext = () => {
-    const { encounters, saveEncounters } = useContext(EncountersContext)
+    const context = useContext(EncountersContext)
+    if (!context) {
+        throw new Error('useEncountersContext must be used within EncountersProvider')
+    }
+    const { encounters, saveEncounters } = context
 
     const getSingleEncounter = useCallback(
-        (id) => encounters?.find((encounter) => encounter.id === id),
+        (id: string | undefined) => encounters.find((encounter) => encounter.id === id),
         [encounters]
     )
 
     const createEncounter = useCallback(
-        (encounter) => {
-            saveEncounters?.([...(encounters || []), encounter])
+        (encounter: ENCOUNTER) => {
+            saveEncounters([...encounters, encounter])
         },
         [encounters, saveEncounters]
     )
 
     const deleteEncounter = useCallback(
-        (id) => {
-            const updatedList = encounters?.filter(
+        (id: string) => {
+            const updatedList = encounters.filter(
                 (encounter) => encounter.id !== id
-            ) || []
-            saveEncounters?.(updatedList)
+            )
+            saveEncounters(updatedList)
         },
         [encounters, saveEncounters]
     )
 
     const updateEncounter = useCallback(
-        (encounter) => {
-            const list = encounters?.filter((m) => m.id !== encounter.id) || []
-            saveEncounters?.([...list, encounter])
+        (encounter: ENCOUNTER) => {
+            const list = encounters.filter((m) => m.id !== encounter.id)
+            saveEncounters([...list, encounter])
         },
         [encounters, saveEncounters]
     )
 
     const importEncounters = useCallback(
-        (data) => {
-            saveEncounters?.(data)
+        (data: ENCOUNTER[]) => {
+            saveEncounters(data)
         },
         [saveEncounters]
     )
