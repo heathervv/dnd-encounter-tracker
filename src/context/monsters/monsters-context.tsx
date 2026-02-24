@@ -5,11 +5,9 @@ import {
 } from 'react'
 import type { Monster } from '../../types/domain'
 
-export type MONSTER = Monster
-
 interface MonsterContextType {
-    monsters: MONSTER[]
-    saveMonsters: (value: MONSTER[]) => void
+    monsters: Monster[]
+    saveMonsters: (value: Monster[]) => void
 }
 
 export const MonstersContext = createContext<MonsterContextType | null>(null)
@@ -27,7 +25,7 @@ export const useMonstersContext = () => {
     )
 
     const createMonster = useCallback(
-        (monster: MONSTER) => {
+        (monster: Monster) => {
             saveMonsters([...monsters, monster])
         },
         [monsters, saveMonsters]
@@ -42,7 +40,7 @@ export const useMonstersContext = () => {
     )
 
     const updateMonster = useCallback(
-        (monster: MONSTER) => {
+        (monster: Monster) => {
             const list = monsters.filter((m) => m.id !== monster.id)
             saveMonsters([...list, monster])
         },
@@ -50,7 +48,7 @@ export const useMonstersContext = () => {
     )
 
     const importMonsters = useCallback(
-        (data: MONSTER[]) => {
+        (data: Monster[]) => {
             saveMonsters(data)
         },
         [saveMonsters]

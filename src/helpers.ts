@@ -1,6 +1,5 @@
 import { fetchSpecificMonster } from './api/dnd-api'
-import type { ENCOUNTER } from './context/encounters/encounters-context'
-import type { MONSTER } from './context/monsters/monsters-context'
+import type { Encounter, Monster } from './types/domain'
 
 export const baseAbilityScoreModifier = (ability: number): number =>
     Math.floor((ability - 10) / 2)
@@ -76,7 +75,7 @@ export const toTitleCase = (str: string): string =>
         (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
     )
 
-export const enrichMonsterData = async (encounter: ENCOUNTER, homebrewMonsters: MONSTER[]) =>
+export const enrichMonsterData = async (encounter: Encounter, homebrewMonsters: Monster[]) =>
     await Promise.all(
         encounter.monsters.map(async (monster) => {
             const monsterIsHomebrew = homebrewMonsters.find(

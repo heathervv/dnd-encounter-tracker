@@ -5,11 +5,9 @@ import {
 } from 'react'
 import type { Encounter } from '../../types/domain'
 
-export type ENCOUNTER = Encounter
-
 interface EncounterContextType {
-    encounters: ENCOUNTER[]
-    saveEncounters: (value: ENCOUNTER[]) => void
+    encounters: Encounter[]
+    saveEncounters: (value: Encounter[]) => void
 }
 
 export const EncountersContext = createContext<EncounterContextType | null>(null)
@@ -27,7 +25,7 @@ export const useEncountersContext = () => {
     )
 
     const createEncounter = useCallback(
-        (encounter: ENCOUNTER) => {
+        (encounter: Encounter) => {
             saveEncounters([...encounters, encounter])
         },
         [encounters, saveEncounters]
@@ -44,7 +42,7 @@ export const useEncountersContext = () => {
     )
 
     const updateEncounter = useCallback(
-        (encounter: ENCOUNTER) => {
+        (encounter: Encounter) => {
             const list = encounters.filter((m) => m.id !== encounter.id)
             saveEncounters([...list, encounter])
         },
@@ -52,7 +50,7 @@ export const useEncountersContext = () => {
     )
 
     const importEncounters = useCallback(
-        (data: ENCOUNTER[]) => {
+        (data: Encounter[]) => {
             saveEncounters(data)
         },
         [saveEncounters]

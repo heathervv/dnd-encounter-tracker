@@ -5,11 +5,9 @@ import {
 } from 'react'
 import type { Player } from '../../types/domain'
 
-export type PLAYER = Player
-
 interface PlayerContextType {
-    players: PLAYER[]
-    savePlayers: (value: PLAYER[]) => void
+    players: Player[]
+    savePlayers: (value: Player[]) => void
 }
 
 
@@ -28,7 +26,7 @@ export const usePlayerContext = () => {
     )
 
     const createPlayer = useCallback(
-        (player: PLAYER) => {
+        (player: Player) => {
             savePlayers([...players, player])
         },
         [players, savePlayers]
@@ -43,7 +41,7 @@ export const usePlayerContext = () => {
     )
 
     const updatePlayer = useCallback(
-        (player: PLAYER) => {
+        (player: Player) => {
             const list = players.filter((p) => p.id !== player.id)
             savePlayers([...list, player])
         },
@@ -51,7 +49,7 @@ export const usePlayerContext = () => {
     )
 
     const importPlayers = useCallback(
-        (data: PLAYER[]) => {
+        (data: Player[]) => {
             savePlayers(data)
         },
         [savePlayers]

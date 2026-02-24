@@ -2,14 +2,15 @@ import { useCallback, useEffect, useState, useMemo } from "react"
 
 import { fetchMonsters, fetchSpecificMonster } from "../../api/dnd-api"
 import MonsterCard from "../../containers/view-monster/monster-card"
-import { useMonstersContext, type MONSTER } from "../../context/monsters/monsters-context"
+import { useMonstersContext } from "../../context/monsters/monsters-context"
 import { MONSTER_ACTION } from "../../containers/modify-encounter/modify-encounter"
 import type { SimpleMonsterResponse } from "../../api/types"
+import type { Monster } from "../../types/domain"
 
 type Props = {
   name: string,
   homebrew: boolean,
-  monster: SimpleMonsterResponse | MONSTER,
+  monster: SimpleMonsterResponse | Monster,
   selected?: number,
   onSelect?: (arg1: MONSTER_ACTION, arg2: string, arg3?: number) => void
 }
