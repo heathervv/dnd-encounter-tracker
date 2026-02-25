@@ -1,23 +1,51 @@
-import { useCallback, useMemo, useState, useEffect } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import type { ChangeEvent, FormEvent } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { v4 as uuidv4 } from "uuid"
-import { usePlayerContext } from "../../context/players/players-context"
 
-const ModifyPlayer = ({ isEdit }) => {
+import { usePlayerContext } from "../../context/players/players-context"
+import type { Player } from "../../types/domain"
+
+type ModifyPlayerProps = {
+  isEdit?: boolean
+}
+
+type PlayerNumericField =
+  | "level"
+  | "initiative_bonus"
+  | "armor_class"
+  | "speed"
+  | "passive_perception"
+  | "health"
+
+type PlayerForm = Omit<Player, "id"> & { id?: string }
+
+const defaultForm: PlayerForm = {
+  name: "",
+  level: null,
+  initiative_bonus: null,
+  armor_class: null,
+  speed: null,
+  passive_perception: null,
+  health: null,
+}
+
+const numericFields: PlayerNumericField[] = [
+  "level",
+  "initiative_bonus",
+  "armor_class",
+  "speed",
+  "passive_perception",
+  "health",
+]
+
+const ModifyPlayer = ({ isEdit = false }: ModifyPlayerProps) => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { getSinglePlayer, createPlayer, updatePlayer } = usePlayerContext()
-  const [form, setForm] = useState({
-    name: "",
-    level: null,
-    initiative_bonus: null,
-    armor_class: null,
-    speed: null,
-    passive_perception: null,
-    health: null,
-  })
+  const [form, setForm] = useState<PlayerForm>(defaultForm)
 
-  const player = useMemo(() => getSinglePlayer?.(id), [id, getSinglePlayer])
+  const player = useMemo(() => getSinglePlayer(id), [id, getSinglePlayer])
 
   useEffect(() => {
     if (player) {
@@ -25,19 +53,38 @@ const ModifyPlayer = ({ isEdit }) => {
     }
   }, [player])
 
-  const handleFieldChange = (e, name) => {
-    const value = e?.target ? e?.target.value : e
-    setForm({ ...form, [name]: value })
-  }
+  const handleFieldChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>, name: keyof PlayerForm) => {
+      const rawValue = e.target.value
+
+      if (numericFields.includes(name as PlayerNumericField)) {
+        setForm((prev) => ({
+          ...prev,
+          [name]: rawValue === "" ? null : Number(rawValue),
+        }))
+        return
+      }
+
+      setForm((prev) => ({
+        ...prev,
+        [name]: rawValue,
+      }))
+    },
+    []
+  )
 
   const handleSave = useCallback(
-    (e) => {
-      e?.preventDefault()
-      const id = isEdit ? player.id : uuidv4()
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      const playerId = isEdit ? player?.id : uuidv4()
 
-      const playerData = {
+      if (!playerId) {
+        return
+      }
+
+      const playerData: Player = {
         ...form,
-        id,
+        id: playerId,
       }
 
       if (isEdit) {
@@ -46,7 +93,7 @@ const ModifyPlayer = ({ isEdit }) => {
         createPlayer(playerData)
       }
 
-      navigate(`/player/${id}`)
+      navigate(`/player/${playerId}`)
     },
     [isEdit, player, form, createPlayer, updatePlayer, navigate]
   )
@@ -78,7 +125,7 @@ const ModifyPlayer = ({ isEdit }) => {
               type="number"
               required
               name="level"
-              value={form.level}
+              value={form.level ?? ""}
               onChange={(e) => handleFieldChange(e, "level")}
             />
           </label>
@@ -91,7 +138,7 @@ const ModifyPlayer = ({ isEdit }) => {
               type="number"
               required
               name="initiative_bonus"
-              value={form.initiative_bonus}
+              value={form.initiative_bonus ?? ""}
               onChange={(e) => handleFieldChange(e, "initiative_bonus")}
             />
           </label>
@@ -106,7 +153,7 @@ const ModifyPlayer = ({ isEdit }) => {
               type="number"
               required
               name="armor_class"
-              value={form.armor_class}
+              value={form.armor_class ?? ""}
               onChange={(e) => handleFieldChange(e, "armor_class")}
             />
           </label>
@@ -117,7 +164,7 @@ const ModifyPlayer = ({ isEdit }) => {
               type="number"
               required
               name="speed"
-              value={form.speed}
+              value={form.speed ?? ""}
               onChange={(e) => handleFieldChange(e, "speed")}
             />
           </label>
@@ -132,7 +179,7 @@ const ModifyPlayer = ({ isEdit }) => {
               type="number"
               required
               name="passive_perception"
-              value={form.passive_perception}
+              value={form.passive_perception ?? ""}
               onChange={(e) => handleFieldChange(e, "passive_perception")}
             />
           </label>
@@ -145,7 +192,7 @@ const ModifyPlayer = ({ isEdit }) => {
               type="number"
               required
               name="health"
-              value={form.health}
+              value={form.health ?? ""}
               onChange={(e) => handleFieldChange(e, "health")}
             />
           </label>

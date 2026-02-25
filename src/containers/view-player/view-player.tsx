@@ -7,13 +7,19 @@ const Player = () => {
   const navigate = useNavigate()
   const { getSinglePlayer, deletePlayer } = usePlayerContext()
 
-  const player = useMemo(() => getSinglePlayer?.(id), [id, getSinglePlayer])
+  const player = useMemo(() => getSinglePlayer(id), [id, getSinglePlayer])
 
   const handleEdit = useCallback(() => {
+    if (!player) {
+      return
+    }
     navigate(`/player/${player.id}/edit`)
   }, [player, navigate])
 
   const handleDelete = useCallback(() => {
+    if (!player) {
+      return
+    }
     deletePlayer(player.id)
     navigate("/players")
   }, [player, deletePlayer, navigate])

@@ -1,66 +1,85 @@
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react"
+import type { ChangeEvent, MouseEvent } from "react"
+import { exportToJson } from "../../helpers"
+import { useMonstersContext } from "../../context/monsters/monsters-context"
+import { usePlayerContext } from "../../context/players/players-context"
+import { useEncountersContext } from "../../context/encounters/encounters-context"
+import type { Encounter, Monster, Player } from "../../types/domain"
 
-import { exportToJson } from "../../helpers";
-import { useMonstersContext } from "../../context/monsters/monsters-context";
-import { usePlayerContext } from "../../context/players/players-context";
-import { useEncountersContext } from "../../context/encounters/encounters-context";
+type ImportData = {
+  monsters?: Monster[]
+  players?: Player[]
+  encounters?: Encounter[]
+}
 
 export const Settings = () => {
-  const { monsters, importMonsters } = useMonstersContext();
-  const { players, importPlayers } = usePlayerContext();
-  const { encounters, importEncounters } = useEncountersContext();
+  const { monsters, importMonsters } = useMonstersContext()
+  const { players, importPlayers } = usePlayerContext()
+  const { encounters, importEncounters } = useEncountersContext()
 
-  const [alert, setAlert] = useState(null);
+  const [alert, setAlert] = useState<string | null>(null)
 
   useEffect(() => {
     if (alert) {
       setTimeout(() => {
-        setAlert(null);
-      }, [5000]);
+        setAlert(null)
+      }, 5000)
     }
-  }, [alert]);
+  }, [alert])
 
   const handleExport = useCallback(
-    (event) => {
-      event.preventDefault();
+    (event: MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault()
 
       const data = {
         monsters,
         players,
         encounters,
-      };
+      }
 
-      exportToJson(data, "combat");
+      exportToJson(data, "combat")
 
-      setAlert("Data successfully exported");
+      setAlert("Data successfully exported")
     },
     [monsters, players, encounters]
-  );
+  )
 
   const handleImport = useCallback(
-    (event) => {
-      const fileReader = new FileReader();
-      fileReader.readAsText(event.target.files[0], "UTF-8");
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0]
+
+      if (!file) {
+        return
+      }
+
+      const fileReader = new FileReader()
+      fileReader.readAsText(file, "UTF-8")
       fileReader.onload = (e) => {
-        const fileData = JSON.parse(e.target.result);
+        const content = e.target?.result
+
+        if (typeof content !== "string") {
+          return
+        }
+
+        const fileData = JSON.parse(content) as ImportData
 
         if (fileData.monsters) {
-          importMonsters(fileData.monsters);
+          importMonsters(fileData.monsters)
         }
         if (fileData.players) {
-          importPlayers(fileData.players);
+          importPlayers(fileData.players)
         }
         if (fileData.encounters) {
-          importEncounters(fileData.encounters);
+          importEncounters(fileData.encounters)
         }
 
-        setAlert("Data successfully uploaded");
+        setAlert("Data successfully uploaded")
 
-        event.target.value = null;
-      };
+        event.target.value = ""
+      }
     },
     [importMonsters, importPlayers, importEncounters]
-  );
+  )
 
   return (
     <>
@@ -97,13 +116,13 @@ export const Settings = () => {
             Export all data
           </button>
           <div className="btn btn-xs btn-error">
-            <label onChange={handleImport} htmlFor="file">
+            <label htmlFor="file">
               <input
-                name=""
                 type="file"
                 accept="application/json"
                 id="file"
                 hidden
+                onChange={handleImport}
               />
               Import data <em>(destructive)</em>
             </label>
@@ -118,6 +137,7 @@ export const Settings = () => {
             className="link"
             target="_blank"
             href="https://5e-bits.github.io/docs/"
+            rel="noreferrer"
           >
             link to website
           </a>
@@ -138,6 +158,7 @@ export const Settings = () => {
               className="link"
               target="_blank"
               href="mailto:heathervandervecht@gmail.com"
+              rel="noreferrer"
             >
               heathervandervecht@gmail.com
             </a>
@@ -151,7 +172,7 @@ export const Settings = () => {
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default Settings;
+export default Settings

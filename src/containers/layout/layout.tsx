@@ -1,17 +1,18 @@
-import { Link, Outlet } from "react-router-dom";
-import { THEMES, useThemeContext } from "../../context/theme/theme-context";
-import Toggle from "../../components/Toggle";
-import Sun from "../../assets/sun";
-import Moon from "../../assets/moon";
+import { Link, Outlet } from "react-router-dom"
+import { THEMES, useThemeContext } from "../../context/theme/theme-context"
+import Toggle from "../../components/toggle"
+import Sun from "../../assets/sun"
+import Moon from "../../assets/moon"
 
 const Layout = () => {
-  const { activeTheme, saveActiveTheme } = useThemeContext();
+  const { activeTheme, saveActiveTheme } = useThemeContext()
 
-  const isDarkMode = activeTheme === THEMES.DARK;
+  const isDarkMode = activeTheme === THEMES.DARK
 
   const handleToggle = () => {
-    saveActiveTheme?.(isDarkMode ? THEMES.LIGHT : THEMES.DARK);
-  };
+    saveActiveTheme?.(isDarkMode ? THEMES.LIGHT : THEMES.DARK)
+  }
+
   return (
     <main className="bg-base-200 h-screen overflow-scroll">
       <nav className="flex justify-end px-4 py-2 border-b border-base-content/10 gap-4">
@@ -41,7 +42,7 @@ const Layout = () => {
         <Outlet />
       </div>
     </main>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout
