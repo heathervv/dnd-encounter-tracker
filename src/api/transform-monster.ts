@@ -1,4 +1,5 @@
 import { toTitleCase } from "../helpers";
+import type { Monster } from "../types/domain";
 import type {
   Proficiency,
   MonsterResponse,
@@ -7,8 +8,6 @@ import type {
   Action,
   SpecialAbility,
   Spell,
-  Usage,
-  TransformedMonster,
 } from "./types";
 
 // Map a single monster from the API to the supported format.
@@ -30,7 +29,7 @@ const parseSkills = (initialSkills: Senses): Skill[] => {
 const PROFICIENCY_TYPE = {
   SKILL: "skill",
   SAVING_THROW: "saving-throw",
-};
+} as const;
 
 const SHORTFORM_ABILITIES = {
   DEX: "dexterity",
@@ -41,29 +40,29 @@ const SHORTFORM_ABILITIES = {
   STR: "strength",
 };
 
-const parseProficiencies = (proficiencies: Proficiency[], type: string) => {
-  const filtered = proficiencies.filter((skill) =>
-    skill.proficiency.index.includes(type)
-  );
-  const parsed = filtered.map((skill) => {
-    if (type === PROFICIENCY_TYPE.SAVING_THROW) {
-      return {
-        ability: toTitleCase(
-          SHORTFORM_ABILITIES[skill.proficiency.name.split(": ")[1]]
-        ),
-      };
-    }
-
-    return {
+const parseSkillProficiencies = (proficiencies: Proficiency[]) =>
+  proficiencies
+    .filter((skill) => skill.proficiency.index.includes(PROFICIENCY_TYPE.SKILL))
+    .map((skill) => ({
       name: skill.proficiency.name.split(": ")[1],
       note: `+${skill.value}`,
-    };
-  });
+    }));
 
-  return parsed;
-};
+const parseSavingThrowProficiencies = (proficiencies: Proficiency[]) =>
+  proficiencies
+    .filter((skill) =>
+      skill.proficiency.index.includes(PROFICIENCY_TYPE.SAVING_THROW),
+    )
+    .map((skill) => {
+      const ability = skill.proficiency.name.split(
+        ": ",
+      )[1] as keyof typeof SHORTFORM_ABILITIES;
+      return {
+        ability: toTitleCase(SHORTFORM_ABILITIES[ability]),
+      };
+    });
 
-const formatUsage = (usage: Usage) => {
+const formatUsage = (usage: NonNullable<SpecialAbility["usage"]>) => {
   if (usage.times) {
     return `${usage.times} ${usage.type}`;
   }
@@ -79,7 +78,9 @@ const formatUsage = (usage: Usage) => {
   return "";
 };
 
-const parseActionEconomy = (section: SpecialAbility[] | Action[]) => {
+const parseActionEconomy = (
+  section: SpecialAbility[] | Action[],
+): string | undefined => {
   if (!section || section.length === 0) return;
 
   const mapSpells = (item: SpecialAbility | Action) => {
@@ -93,7 +94,7 @@ const parseActionEconomy = (section: SpecialAbility[] | Action[]) => {
       if (spell.name) {
         enrichedDescription = enrichedDescription?.replace(
           spell.name?.toLowerCase(),
-          `[spell]${spell.name?.toLowerCase()}[/spell]`
+          `[spell]${spell.name?.toLowerCase()}[/spell]`,
         );
       }
     });
@@ -105,13 +106,16 @@ const parseActionEconomy = (section: SpecialAbility[] | Action[]) => {
     (item) =>
       `**${item.name}${
         item.usage ? ` (${formatUsage(item.usage)})` : ""
-      }** ${mapSpells(item)}`
+      }** ${mapSpells(item)}`,
   );
 
   return markdown.join("\n\n");
 };
 
-const parseLegendaryActions = (name: string, actions: []) => {
+const parseLegendaryActions = (
+  name: string,
+  actions: Action[],
+): string | undefined => {
   const actionEconomy = parseActionEconomy(actions);
 
   if (actionEconomy) {
@@ -125,18 +129,20 @@ const parseLegendaryActions = (name: string, actions: []) => {
   return actionEconomy;
 };
 
-export const mapApiResponseToSupportedFormat = (response: MonsterResponse): TransformedMonster => ({
+export const mapApiResponseToSupportedFormat = (
+  response: MonsterResponse,
+): Monster => ({
   // Base info
   id: response.index,
   name: response.name,
   type: response.type,
   size: response.size,
-  aligment: response.alignment,
+  alignment: response.alignment,
   challengeRating: response.challenge_rating,
 
   // HP
-  hitPointsDieCount: response.hit_dice.split("d")[0],
-  hitPointsDieValue: `d${response.hit_dice.split("d")[1]}`,
+  hitPointsDieCount: response.hit_dice.split("d")[0] || "0",
+  hitPointsDieValue: `d${response.hit_dice.split("d")[1] || "0"}`,
   hitPointsDieModifier: response.hit_points_roll.split("+")[1],
   averageHitPoints: response.hit_points,
 
@@ -149,31 +155,34 @@ export const mapApiResponseToSupportedFormat = (response: MonsterResponse): Tran
   charisma: response.charisma,
 
   // Armor
-  armorClass: response.armor_class[0]?.value,
-  armorClassType: `(${response.armor_class[0]?.type})`,
+  armorClass: response.armor_class[0]?.value ?? 0,
+  armorClassType: response.armor_class[0]?.type
+    ? `(${response.armor_class[0]?.type})`
+    : "",
 
   // Base abilities
-  language: response.languages.split(", ").map((lang) => ({ name: lang })),
+  language: response.languages
+    ? response.languages.split(", ").map((lang) => ({ name: lang }))
+    : [],
   senses: parseSkills(response.senses),
   passivePerception: response.senses?.passive_perception,
-  skills: parseProficiencies(response.proficiencies, PROFICIENCY_TYPE.SKILL),
+  skills: parseSkillProficiencies(response.proficiencies),
   movement: Object.entries(response.speed).map(([key, value]) => ({
     name: key,
     note: value,
   })),
 
   // Proficiencies
-  savingThrowProficiencies: parseProficiencies(
+  savingThrowProficiencies: parseSavingThrowProficiencies(
     response.proficiencies,
-    PROFICIENCY_TYPE.SAVING_THROW
   ),
   damageVulnerabilities: toTitleCase(
-    response.damage_vulnerabilities.join(", ")
+    response.damage_vulnerabilities.join(", "),
   ),
   damageResistances: toTitleCase(response.damage_resistances.join(", ")),
   damageImmunities: toTitleCase(response.damage_immunities.join(", ")),
   conditionImmunities: toTitleCase(
-    response.condition_immunities.map((ci) => ci.name).join(", ")
+    response.condition_immunities.map((ci) => ci.name).join(", "),
   ),
 
   // Action economy
@@ -185,6 +194,6 @@ export const mapApiResponseToSupportedFormat = (response: MonsterResponse): Tran
   isLegendary: response.legendary_actions.length > 0,
   legendaryActionsDescription: parseLegendaryActions(
     response.name,
-    response.legendary_actions
+    response.legendary_actions,
   ),
 });

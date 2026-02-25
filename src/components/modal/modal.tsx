@@ -1,5 +1,13 @@
-const Modal = ({ open, onClose, children }) => {
-  const handleClose = (e) => {
+import type { MouseEvent, ReactNode } from 'react'
+
+type ModalProps = {
+  open: boolean
+  onClose: () => void
+  children: ReactNode
+}
+
+const Modal = ({ open, onClose, children }: ModalProps) => {
+  const handleClose = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     onClose()
   }

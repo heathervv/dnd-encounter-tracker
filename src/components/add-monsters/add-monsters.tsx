@@ -1,26 +1,49 @@
-import { useCallback, useEffect, useState, useMemo } from "react"
-
+import { useCallback, useEffect, useMemo, useState } from "react"
+import type { ChangeEvent, KeyboardEvent, MouseEvent } from "react"
 import { fetchMonsters, fetchSpecificMonster } from "../../api/dnd-api"
 import MonsterCard from "../../containers/view-monster/monster-card"
-import { useMonstersContext, type MONSTER } from "../../context/monsters/monsters-context"
-import { MONSTER_ACTION } from "../../containers/modify-encounter/modify-encounter"
+import { useMonstersContext } from "../../context/monsters/monsters-context"
+import { MONSTER_ACTION } from "../../containers/modify-encounter/constants"
+import type { MonsterAction } from "../../containers/modify-encounter/constants"
 import type { SimpleMonsterResponse } from "../../api/types"
+import type { Monster } from "../../types/domain"
 
 type Props = {
   name: string,
-  homebrew: boolean,
-  monster: SimpleMonsterResponse | MONSTER,
+  monster: MonsterListItem,
   selected?: number,
-  onSelect?: (arg1: MONSTER_ACTION, arg2: string, arg3?: number) => void
+  onSelect?: (arg1: MonsterAction, arg2: string, arg3?: number) => void
 }
 
-const MonsterItem = ({ name, homebrew, monster, selected = 0, onSelect }: Props) => {
+type HomebrewMonsterListItem = Monster & {
+  homebrew: true
+  hidden: boolean
+}
+
+type ApiMonsterListItem = SimpleMonsterResponse & {
+  homebrew: false
+  hidden: boolean
+}
+
+type MonsterListItem = HomebrewMonsterListItem | ApiMonsterListItem
+
+type AddMonsterProps = {
+  onSelect?: (arg1: MonsterAction, arg2: string, arg3?: number) => void
+  selectedMonsters: string[]
+  selectedAmount: Record<string, number>
+}
+
+const getMonsterId = (monster: MonsterListItem): string =>
+  monster.homebrew ? monster.id : monster.index
+
+const MonsterItem = ({ name, monster, selected = 0, onSelect }: Props) => {
   const [drawerIsOpen, setDrawerIsOpen] = useState(false)
-  const [monsterData, setMonsterData] = useState({})
+  const [monsterData, setMonsterData] = useState<Monster | null>(null)
+  const homebrew = monster.homebrew
 
   const handleDrawer = useCallback(
-    async (e) => {
-      if (e.target.tagName.toLowerCase() === "button") {
+    async (e: MouseEvent<HTMLDivElement>) => {
+      if (e.target instanceof HTMLElement && e.target.tagName.toLowerCase() === "button") {
         // Drawer should not be altered if a button (add/remove) was pressed
         return
       }
@@ -30,8 +53,7 @@ const MonsterItem = ({ name, homebrew, monster, selected = 0, onSelect }: Props)
         return
       }
       if (!homebrew) {
-        const data = monster as SimpleMonsterResponse
-        const result = await fetchSpecificMonster(data.index)
+        const result = await fetchSpecificMonster(getMonsterId(monster))
 
         setMonsterData(result)
         setDrawerIsOpen(true)
@@ -43,25 +65,25 @@ const MonsterItem = ({ name, homebrew, monster, selected = 0, onSelect }: Props)
   )
 
   const handleAdd = useCallback(
-    (e) => {
+    (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
-      onSelect?.(MONSTER_ACTION.ADD, monster.id || monster.index, 1)
+      onSelect?.(MONSTER_ACTION.ADD, getMonsterId(monster), 1)
     },
     [onSelect, monster]
   )
 
   const handleRemove = useCallback(
-    (e) => {
+    (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
-      onSelect?.(MONSTER_ACTION.REMOVE, monster.id || monster.index)
+      onSelect?.(MONSTER_ACTION.REMOVE, getMonsterId(monster))
     },
     [onSelect, monster]
   )
 
   const handleAmountChange = useCallback(
-    (e, value) => {
+    (e: MouseEvent<HTMLButtonElement>, value: number) => {
       e.preventDefault()
-      onSelect?.(MONSTER_ACTION.ADD, monster.id || monster.index, value || 1)
+      onSelect?.(MONSTER_ACTION.ADD, getMonsterId(monster), value || 1)
     },
     [onSelect, monster]
   )
@@ -115,39 +137,51 @@ const MonsterItem = ({ name, homebrew, monster, selected = 0, onSelect }: Props)
         </div>
       </div>
       {drawerIsOpen && (
-        <MonsterCard
-          monster={homebrew ? monster : monsterData}
-          className="border-t border-base-content/10 pt-1"
-        />
+        homebrew ? (
+          <MonsterCard
+            monster={monster}
+            className="border-t border-base-content/10 pt-1"
+          />
+        ) : (
+          monsterData && (
+            <MonsterCard
+              monster={monsterData}
+              className="border-t border-base-content/10 pt-1"
+            />
+          )
+        )
       )}
     </li>
   )
 }
 
-const AddMonster = ({ onSelect, selectedMonsters, selectedAmount }) => {
+const AddMonster = ({ onSelect, selectedMonsters, selectedAmount }: AddMonsterProps) => {
   const { monsters: homebrewMonsters } = useMonstersContext()
   const [apiMonsters, setApiMonsters] = useState<SimpleMonsterResponse[]>([])
   const [searchValue, updateSearchValue] = useState("")
 
-  const listOfMonsters = useMemo(() => {
+  const listOfMonsters = useMemo<MonsterListItem[]>(() => {
     // It is definitely not ideal to loop through these lists as often as I am
     // to complete this. However the data set it's working with is incredibly
     // small so this is not currently causing any performance issues and I care
     // more about getting something working then it being right (for now).
     // @TODO(): a refactor should still happen though.
-    const homebrewCaptured = homebrewMonsters?.map((hbm) => ({
+    const homebrewCaptured = homebrewMonsters?.map<HomebrewMonsterListItem>((hbm) => ({
       ...hbm,
-      homebrew: true,
-      hidden:
+      homebrew: true as const,
+      hidden: Boolean(
         searchValue &&
-        !hbm.name.toLowerCase().includes(searchValue.toLowerCase()),
+        !hbm.name.toLowerCase().includes(searchValue.toLowerCase())
+      ),
     }))
 
     const apiMonstersCaptured = apiMonsters.map((am) => ({
       ...am,
-      hidden:
+      homebrew: false as const,
+      hidden: Boolean(
         searchValue &&
-        !am.name.toLowerCase().includes(searchValue.toLowerCase()),
+        !am.name.toLowerCase().includes(searchValue.toLowerCase())
+      ),
     }))
 
     return [...(homebrewCaptured || []), ...apiMonstersCaptured]
@@ -159,12 +193,12 @@ const AddMonster = ({ onSelect, selectedMonsters, selectedAmount }) => {
     })
   }, [])
 
-  const handleSearch = useCallback((e) => {
+  const handleSearch = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
     updateSearchValue(e.target.value)
   }, [])
 
-  const disableEnter = (e) => {
+  const disableEnter = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.code === "Enter") {
       e.preventDefault()
     }
@@ -186,28 +220,26 @@ const AddMonster = ({ onSelect, selectedMonsters, selectedAmount }) => {
         {/* Monsters that meet the search criteria AND have been added to the encounter */}
         {listOfMonsters
           .filter(
-            (m) => !m.hidden && selectedMonsters.includes(m.id || m.index)
+            (m) => !m.hidden && selectedMonsters.includes(getMonsterId(m))
           )
           .map((monster) => (
             <MonsterItem
-              key={monster.id || monster.index}
+              key={getMonsterId(monster)}
               name={monster.name}
-              homebrew={monster.homebrew}
               monster={monster}
-              selected={selectedAmount[monster.id || monster.index]}
+              selected={selectedAmount[getMonsterId(monster)] || 0}
               onSelect={onSelect}
             />
           ))}
         {/* Monsters that meet the search criteria and HAVE NOT been selected */}
         {listOfMonsters
           .filter(
-            (m) => !m.hidden && !selectedMonsters.includes(m.id || m.index)
+            (m) => !m.hidden && !selectedMonsters.includes(getMonsterId(m))
           )
           .map((monster) => (
             <MonsterItem
-              key={monster.id || monster.index}
+              key={getMonsterId(monster)}
               name={monster.name}
-              homebrew={monster.homebrew}
               monster={monster}
               onSelect={onSelect}
             />

@@ -1,17 +1,19 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import type { ChangeEvent, FormEvent } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import MDEditor from "@uiw/react-md-editor/nohighlight"
 import { v4 as uuidv4 } from "uuid"
 import AddMonsters from "../../components/add-monsters/add-monsters"
 import { useEncountersContext } from "../../context/encounters/encounters-context"
 import { useThemeContext } from "../../context/theme/theme-context"
+import { MONSTER_ACTION } from './constants'
+import type { MonsterAction } from './constants'
 
-export const MONSTER_ACTION = {
-  ADD: "add",
-  REMOVE: "remove",
+type ModifyEncounterProps = {
+  isEdit?: boolean
 }
 
-const ModifyEncounter = ({ isEdit }) => {
+const ModifyEncounter = ({ isEdit = false }: ModifyEncounterProps) => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { getSingleEncounter, createEncounter, updateEncounter } =
@@ -20,13 +22,10 @@ const ModifyEncounter = ({ isEdit }) => {
 
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
-  const [selectedMonsters, setSelectedMonsters] = useState([])
-  const [amounts, setAmounts] = useState({}) // encounter?.amounts?.[monsterId]
+  const [selectedMonsters, setSelectedMonsters] = useState<string[]>([])
+  const [amounts, setAmounts] = useState<Record<string, number>>({})
 
-  const encounter = useMemo(
-    () => getSingleEncounter?.(id),
-    [id, getSingleEncounter]
-  )
+  const encounter = useMemo(() => getSingleEncounter(id), [id, getSingleEncounter])
 
   useEffect(() => {
     if (encounter) {
@@ -37,15 +36,12 @@ const ModifyEncounter = ({ isEdit }) => {
     }
   }, [encounter])
 
-  const handleNameChange = useCallback(
-    (e) => {
-      setName(e.target.value)
-    },
-    [setName]
-  )
+  const handleNameChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value)
+  }, [])
 
   const handleMonsterSelect = useCallback(
-    (action, selectedMonsterId, amount) => {
+    (action: MonsterAction, selectedMonsterId: string, amount?: number) => {
       // 1. Removing monster from encounter
       // 2. Adding monster to encounter
       // 3. Updating amounts for monster already added to encounter
@@ -65,7 +61,7 @@ const ModifyEncounter = ({ isEdit }) => {
         setSelectedMonsters([...selectedMonsters, selectedMonsterId])
         setAmounts({
           ...amounts,
-          [selectedMonsterId]: amount,
+          [selectedMonsterId]: amount || 1,
         })
       } else if (
         action === MONSTER_ACTION.ADD &&
@@ -73,20 +69,24 @@ const ModifyEncounter = ({ isEdit }) => {
       ) {
         setAmounts({
           ...amounts,
-          [selectedMonsterId]: amount,
+          [selectedMonsterId]: amount || 1,
         })
       }
     },
-    [selectedMonsters, amounts, setSelectedMonsters, setAmounts]
+    [selectedMonsters, amounts]
   )
 
   const handleSave = useCallback(
-    (e) => {
-      e?.preventDefault()
-      const id = isEdit ? encounter.id : uuidv4()
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      const encounterId = isEdit ? encounter?.id : uuidv4()
+
+      if (!encounterId) {
+        return
+      }
 
       const encounterData = {
-        id,
+        id: encounterId,
         name,
         description,
         monsters: selectedMonsters,
@@ -99,7 +99,7 @@ const ModifyEncounter = ({ isEdit }) => {
         createEncounter(encounterData)
       }
 
-      navigate(`/encounter/${id}`)
+      navigate(`/encounter/${encounterId}`)
     },
     [
       isEdit,
@@ -140,7 +140,7 @@ const ModifyEncounter = ({ isEdit }) => {
           <span className="block text-sm text-base-content mb-2">
             Description:
           </span>
-          <MDEditor value={description} onChange={setDescription} />
+          <MDEditor value={description} onChange={(value) => setDescription(value || "")} />
         </label>
         <AddMonsters
           onSelect={handleMonsterSelect}

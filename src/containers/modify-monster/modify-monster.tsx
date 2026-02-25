@@ -1,4 +1,5 @@
-import { useCallback, useMemo, useState, useEffect } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import type { ChangeEvent, FormEvent } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import MDEditor from "@uiw/react-md-editor/nohighlight"
 import { v4 as uuidv4 } from "uuid"
@@ -7,84 +8,220 @@ import { useThemeContext } from "../../context/theme/theme-context"
 import CheckboxTextField from "./checkbox-text-field"
 import CustomList from "./custom-list"
 import SavingThrows from "./saving-throws"
+import type { Monster } from "../../types/domain"
 
 // This component is arguably gross, and maybe I'll refactor it one day.
 // However I want a functional thing more than I want pretty code.
 // @TODO(): a refactor could go a long ways here.
 
-const ModifyMonster = ({ isEdit }) => {
+type ModifyMonsterProps = {
+  isEdit?: boolean
+}
+
+type MonsterFormListItem = {
+  id: string
+  name: string
+  note: string
+}
+
+type MonsterFormSavingThrow = {
+  id: string
+  ability: string
+}
+
+type MonsterForm = {
+  name: string
+  type: string
+  size: string
+  alignment: string
+  challengeRating: number | string
+  specialTraits: string
+  actionsDescription: string
+  reactionsDescription: string
+  monsterCharacteristicsDescription: string
+  bonusActionsDescription: string
+  isLegendary: boolean
+  legendaryActionsDescription: string
+  isMythic: boolean
+  mythicActionsDescription: string
+  hasLair: boolean
+  lairActionsDescription: string
+  armorClass: number | string
+  armorClassType: string
+  passivePerception: number | string
+  hitPointsDieCount: number | string
+  hitPointsDieValue: string
+  hitPointsDieModifier: number | string
+  averageHitPoints: number | string
+  strength: number | string
+  dexterity: number | string
+  constitution: number | string
+  intelligence: number | string
+  wisdom: number | string
+  charisma: number | string
+  savingThrowProficiencies: MonsterFormSavingThrow[]
+  damageVulnerabilities: string
+  damageResistances: string
+  damageImmunities: string
+  conditionImmunities: string
+  language: MonsterFormListItem[]
+  senses: MonsterFormListItem[]
+  skills: MonsterFormListItem[]
+  movement: MonsterFormListItem[]
+}
+
+const defaultForm: MonsterForm = {
+  name: "",
+  type: "",
+  size: "",
+  alignment: "",
+  challengeRating: "",
+  specialTraits: "",
+  actionsDescription: "",
+  reactionsDescription: "",
+  monsterCharacteristicsDescription: "",
+  bonusActionsDescription: "",
+  isLegendary: false,
+  legendaryActionsDescription: "",
+  isMythic: false,
+  mythicActionsDescription: "",
+  hasLair: false,
+  lairActionsDescription: "",
+  armorClass: "",
+  armorClassType: "",
+  passivePerception: "",
+  hitPointsDieCount: "",
+  hitPointsDieValue: "",
+  hitPointsDieModifier: "",
+  averageHitPoints: "",
+  strength: "",
+  dexterity: "",
+  constitution: "",
+  intelligence: "",
+  wisdom: "",
+  charisma: "",
+  savingThrowProficiencies: [],
+  damageVulnerabilities: "",
+  damageResistances: "",
+  damageImmunities: "",
+  conditionImmunities: "",
+  language: [],
+  senses: [],
+  skills: [],
+  movement: [],
+}
+
+const toFormList = (values: Monster["language"] | Monster["senses"] | Monster["skills"] | Monster["movement"]): MonsterFormListItem[] =>
+  (values || []).map((value) => ({
+    id: value.id || uuidv4(),
+    name: value.name || "",
+    note: String(value.note || ""),
+  }))
+
+const toSavingThrows = (values: Monster["savingThrowProficiencies"]): MonsterFormSavingThrow[] =>
+  (values || []).map((value) => ({
+    id: value.id || uuidv4(),
+    ability: value.ability || "",
+  }))
+
+const mapMonsterToForm = (monster: Monster): MonsterForm => ({
+  name: monster.name,
+  type: monster.type,
+  size: monster.size,
+  alignment: monster.alignment || "",
+  challengeRating: monster.challengeRating,
+  specialTraits: monster.specialTraits || "",
+  actionsDescription: monster.actionsDescription || "",
+  reactionsDescription: monster.reactionsDescription || "",
+  monsterCharacteristicsDescription: monster.monsterCharacteristicsDescription || "",
+  bonusActionsDescription: monster.bonusActionsDescription || "",
+  isLegendary: monster.isLegendary,
+  legendaryActionsDescription: monster.legendaryActionsDescription || "",
+  isMythic: monster.isMythic || false,
+  mythicActionsDescription: monster.mythicActionsDescription || "",
+  hasLair: monster.hasLair || false,
+  lairActionsDescription: monster.lairActionsDescription || "",
+  armorClass: monster.armorClass,
+  armorClassType: monster.armorClassType || "",
+  passivePerception: monster.passivePerception,
+  hitPointsDieCount: monster.hitPointsDieCount,
+  hitPointsDieValue: monster.hitPointsDieValue,
+  hitPointsDieModifier: monster.hitPointsDieModifier,
+  averageHitPoints: monster.averageHitPoints,
+  strength: monster.strength,
+  dexterity: monster.dexterity,
+  constitution: monster.constitution,
+  intelligence: monster.intelligence,
+  wisdom: monster.wisdom,
+  charisma: monster.charisma,
+  savingThrowProficiencies: toSavingThrows(monster.savingThrowProficiencies),
+  damageVulnerabilities: monster.damageVulnerabilities || "",
+  damageResistances: monster.damageResistances || "",
+  damageImmunities: monster.damageImmunities || "",
+  conditionImmunities: monster.conditionImmunities || "",
+  language: toFormList(monster.language),
+  senses: toFormList(monster.senses),
+  skills: toFormList(monster.skills),
+  movement: toFormList(monster.movement),
+})
+
+const ModifyMonster = ({ isEdit = false }: ModifyMonsterProps) => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { getSingleMonster, createMonster, updateMonster } =
     useMonstersContext()
   const { wysiwygMode } = useThemeContext()
 
-  const [form, setForm] = useState({
-    name: "",
-    type: "",
-    size: "",
-    aligment: "",
-    challengeRating: "",
-    specialTraits: "",
-    actionsDescription: "",
-    reactionsDescription: "",
-    monsterCharacteristicsDescription: "",
-    bonusActionsDescription: "",
-    isLegendary: false,
-    legendaryActionsDescription: "",
-    isMythic: false,
-    mythicActionsDescription: "",
-    hasLair: false,
-    lairActionsDescription: "",
-    armorClass: "",
-    armorClassType: "",
-    passivePerception: "",
-    hitPointsDieCount: "",
-    hitPointsDieValue: "",
-    hitPointsDieModifier: "",
-    averageHitPoints: "",
-    strength: "",
-    dexterity: "",
-    constitution: "",
-    intelligence: "",
-    wisdom: "",
-    charisma: "",
-    savingThrowProficiencies: [],
-    damageVulnerabilities: "",
-    damageResistances: "",
-    damageImmunities: "",
-    conditionImmunities: "",
-    language: "",
-    senses: [],
-    skills: [],
-    movement: [],
-  })
+  const [form, setForm] = useState<MonsterForm>(defaultForm)
 
-  const monster = useMemo(() => getSingleMonster?.(id), [id, getSingleMonster])
+  const monster = useMemo(() => getSingleMonster(id), [id, getSingleMonster])
 
   useEffect(() => {
     if (monster) {
-      setForm(monster)
+      setForm(mapMonsterToForm(monster))
     }
   }, [monster])
 
-  const handleFieldChange = (e, name) => {
-    const value = e?.target ? e?.target.value : e
-    setForm({ ...form, [name]: value })
+  const handleFieldChange = (
+    value:
+      | ChangeEvent<HTMLInputElement | HTMLSelectElement>
+      | string
+      | boolean
+      | undefined,
+    name: keyof MonsterForm
+  ) => {
+    const nextValue =
+      typeof value === "object" && value && "target" in value
+        ? value.target.value
+        : (value ?? "")
+
+    setForm({ ...form, [name]: nextValue } as MonsterForm)
   }
 
-  const handleListChange = (e, name) => {
-    setForm({ ...form, [name]: e })
+  const handleListChange = (
+    value: MonsterFormListItem[] | MonsterFormSavingThrow[],
+    name:
+      | "savingThrowProficiencies"
+      | "language"
+      | "senses"
+      | "skills"
+      | "movement"
+  ) => {
+    setForm({ ...form, [name]: value } as MonsterForm)
   }
 
   const handleSave = useCallback(
-    (e) => {
-      e?.preventDefault()
-      const id = isEdit ? monster.id : uuidv4()
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      const monsterId = isEdit ? monster?.id : uuidv4()
 
-      const monsterData = {
+      if (!monsterId) {
+        return
+      }
+
+      const monsterData: Monster = {
         ...form,
-        id,
+        id: monsterId,
       }
 
       if (isEdit) {
@@ -93,7 +230,7 @@ const ModifyMonster = ({ isEdit }) => {
         createMonster(monsterData)
       }
 
-      navigate(`/monster/${id}`)
+      navigate(`/monster/${monsterId}`)
     },
     [isEdit, monster, form, createMonster, updateMonster, navigate]
   )

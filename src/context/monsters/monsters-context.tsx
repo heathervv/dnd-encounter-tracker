@@ -3,53 +3,53 @@ import {
     useCallback,
     useContext,
 } from 'react'
-
-export type MONSTER = {
-    id: string
-    name: string
-}
+import type { Monster } from '../../types/domain'
 
 interface MonsterContextType {
-    monsters?: MONSTER[]
-    saveMonsters?: (value: MONSTER[]) => void
+    monsters: Monster[]
+    saveMonsters: (value: Monster[]) => void
 }
 
-export const MonstersContext = createContext<MonsterContextType>({})
+export const MonstersContext = createContext<MonsterContextType | null>(null)
 
 export const useMonstersContext = () => {
-    const { monsters, saveMonsters } = useContext(MonstersContext)
+    const context = useContext(MonstersContext)
+    if (!context) {
+        throw new Error('useMonstersContext must be used within MonstersProvider')
+    }
+    const { monsters, saveMonsters } = context
 
     const getSingleMonster = useCallback(
-        (id) => monsters?.find((monster) => monster.id === id),
+        (id: string | undefined) => monsters.find((monster) => monster.id === id),
         [monsters]
     )
 
     const createMonster = useCallback(
-        (monster) => {
-            saveMonsters?.([...(monsters || []), monster])
+        (monster: Monster) => {
+            saveMonsters([...monsters, monster])
         },
         [monsters, saveMonsters]
     )
 
     const deleteMonster = useCallback(
-        (id) => {
-            const updatedList = monsters?.filter((monster) => monster.id !== id) || []
-            saveMonsters?.(updatedList)
+        (id: string) => {
+            const updatedList = monsters.filter((monster) => monster.id !== id)
+            saveMonsters(updatedList)
         },
         [monsters, saveMonsters]
     )
 
     const updateMonster = useCallback(
-        (monster) => {
-            const list = monsters?.filter((m) => m.id !== monster.id) || []
-            saveMonsters?.([...list, monster])
+        (monster: Monster) => {
+            const list = monsters.filter((m) => m.id !== monster.id)
+            saveMonsters([...list, monster])
         },
         [monsters, saveMonsters]
     )
 
     const importMonsters = useCallback(
-        (data) => {
-            saveMonsters?.(data)
+        (data: Monster[]) => {
+            saveMonsters(data)
         },
         [saveMonsters]
     )

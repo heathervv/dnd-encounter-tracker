@@ -1,14 +1,14 @@
-import { useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useMonstersContext } from "../../context/monsters/monsters-context";
+import { useCallback } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import { useMonstersContext } from "../../context/monsters/monsters-context"
 
 const Monsters = () => {
-  const navigate = useNavigate();
-  const { monsters } = useMonstersContext();
+  const navigate = useNavigate()
+  const { monsters } = useMonstersContext()
 
   const handleCreateNew = useCallback(() => {
-    navigate("/monster/create");
-  }, [navigate]);
+    navigate("/monster/create")
+  }, [navigate])
 
   return (
     <section className="max-w-4xl m-auto">
@@ -47,7 +47,7 @@ const Monsters = () => {
         </div>
       )}
     </section>
-  );
-};
+  )
+}
 
-export default Monsters;
+export default Monsters

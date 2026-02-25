@@ -1,7 +1,12 @@
 import Concentrate from "../../assets/concentrate"
 import Markdown from "../../components/markdown"
+import type { TransformedSpell } from "../../api/types"
 
-const SpellModal = ({ content }) => (
+type SpellModalProps = {
+  content: TransformedSpell
+}
+
+const SpellModal = ({ content }: SpellModalProps) => (
   <div>
     <h2 className="text-base-content font-semibold text-lg">{content.name}</h2>
     <ul className="grid grid-cols-4 grid-rows-2 border-b border-base-content/10 pb-2 mb-2">

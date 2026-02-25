@@ -1,76 +1,95 @@
-import { useCallback, useState, useEffect } from "react";
-import Markdown from "../../components/markdown";
-import Modal from "../../components/modal/modal";
-import SpellModal from "./spell-modal";
+import { useCallback, useEffect, useState } from "react"
+import Markdown from "../../components/markdown"
+import Modal from "../../components/modal/modal"
+import SpellModal from "./spell-modal"
+import { baseAbilityScoreModifier, mapProficiencyBonus, toNumber } from "../../helpers"
+import type { TransformedSpell } from "../../api/types"
+import type { Monster, ListItem } from "../../types/domain"
 
-import { baseAbilityScoreModifier, mapProficiencyBonus } from "../../helpers";
+type MonsterCardProps = {
+  monster: Monster
+  className?: string
+}
 
-const MonsterCard = ({ monster, className }) => {
-  const [openModalData, setOpenModalData] = useState(null);
-  const [alert, setAlert] = useState(null);
+type AbilityScoreKey =
+  | "strength"
+  | "dexterity"
+  | "constitution"
+  | "intelligence"
+  | "wisdom"
+  | "charisma"
+
+const ABILITY_KEY_MAP: Record<string, AbilityScoreKey> = {
+  strength: "strength",
+  dexterity: "dexterity",
+  constitution: "constitution",
+  intelligence: "intelligence",
+  wisdom: "wisdom",
+  charisma: "charisma",
+}
+
+const MonsterCard = ({ monster, className }: MonsterCardProps) => {
+  const [openModalData, setOpenModalData] = useState<TransformedSpell | null>(null)
+  const [alert, setAlert] = useState<string | null>(null)
 
   useEffect(() => {
     if (alert) {
       setTimeout(() => {
-        setAlert(null);
-      }, [5000]);
+        setAlert(null)
+      }, 5000)
     }
-  }, [alert]);
+  }, [alert])
 
-  const handleOpenModal = (data) => {
+  const handleOpenModal = (data: TransformedSpell | null) => {
     if (data) {
-      setOpenModalData(data);
+      setOpenModalData(data)
     } else {
-      setAlert("Spell not found");
+      setAlert("Spell not found")
     }
-  };
+  }
 
   const handleCloseModal = () => {
-    setOpenModalData(null);
-  };
+    setOpenModalData(null)
+  }
 
   const mapMovement = useCallback(() => {
     const movements = (monster.movement || []).map((type) => {
       if (type.name.toLowerCase() === "walk") {
-        return type.note;
+        return String(type.note || "")
       }
 
-      return `${type.name} ${type.note}`;
-    });
+      return `${type.name} ${String(type.note || "")}`
+    })
 
-    return movements.join(", ");
-  }, [monster]);
+    return movements.join(", ")
+  }, [monster])
 
-  const mapPrettyAbilityScore = useCallback((ability) => {
-    let score = baseAbilityScoreModifier(ability);
+  const mapPrettyAbilityScore = useCallback((ability: number | string) => {
+    const score = baseAbilityScoreModifier(toNumber(ability))
+    return score > 0 ? `+${score}` : `${score}`
+  }, [])
 
-    if (score > 0) {
-      score = `+${score}`;
-    }
+  const mapList = useCallback((attribute: ListItem[]) => {
+    const mapped = (attribute || []).map((type) =>
+      type.note ? `${type.name} ${String(type.note)}` : type.name
+    )
 
-    return score;
-  }, []);
-
-  const mapList = useCallback((attribute) => {
-    const map = (attribute || []).map((type) =>
-      type.note ? `${type.name} ${type.note}` : type.name
-    );
-
-    return map.length === 1 && map[0] === "" ? "None" : map.join(", ");
-  }, []);
+    return mapped.length === 1 && mapped[0] === "" ? "None" : mapped.join(", ")
+  }, [])
 
   const mapSavingThrowProficiencies = useCallback(() => {
-    const map = (monster.savingThrowProficiencies || []).map((st) => {
-      const abilityScore = monster[st.ability.toLowerCase()];
-      const abilityScoreModifier = baseAbilityScoreModifier(abilityScore);
+    const mapped = (monster.savingThrowProficiencies || []).map((st) => {
+      const key = ABILITY_KEY_MAP[st.ability.toLowerCase()]
+      const abilityScore = key ? monster[key] : 0
+      const abilityScoreModifier = baseAbilityScoreModifier(toNumber(abilityScore))
       const totalModifier =
-        abilityScoreModifier + mapProficiencyBonus(monster.challengeRating);
+        abilityScoreModifier + mapProficiencyBonus(toNumber(monster.challengeRating))
 
-      return `${st.ability} +${totalModifier}`;
-    });
+      return `${st.ability} +${totalModifier}`
+    })
 
-    return map.join(", ");
-  }, [monster]);
+    return mapped.join(", ")
+  }, [monster])
 
   return (
     <>
@@ -107,7 +126,7 @@ const MonsterCard = ({ monster, className }) => {
               <p className="text-sm text-base-content">
                 {monster.averageHitPoints} ({monster.hitPointsDieCount}
                 {monster.hitPointsDieValue}
-                {monster.hitPointsDieModifier > 0
+                {toNumber(monster.hitPointsDieModifier) > 0
                   ? ` + ${monster.hitPointsDieModifier}`
                   : ""}
                 )
@@ -250,7 +269,7 @@ const MonsterCard = ({ monster, className }) => {
                   Proficiency Bonus
                 </p>
                 <p className="text-sm text-base-content">
-                  +{mapProficiencyBonus(monster.challengeRating)}
+                  +{mapProficiencyBonus(toNumber(monster.challengeRating))}
                 </p>
               </div>
             </li>
@@ -329,7 +348,7 @@ const MonsterCard = ({ monster, className }) => {
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default MonsterCard;
+export default MonsterCard

@@ -1,7 +1,7 @@
 import type { SpellDc, SpellResponse, TransformedSpell } from "./types";
 
 const parseLevel = (level: number): string => {
-  const levels = {
+  const levels: Record<number, string> = {
     0: "Cantrip",
     1: "1st",
     2: "2nd",
@@ -14,7 +14,7 @@ const parseLevel = (level: number): string => {
     9: "9th",
   };
 
-  return levels[level];
+  return levels[level] || "";
 };
 
 const parseRange = (response: SpellResponse) => {
@@ -25,7 +25,7 @@ const parseRange = (response: SpellResponse) => {
   return response.range;
 };
 
-const parseSave = (dc: SpellDc) => {
+const parseSave = (dc?: SpellDc) => {
   if (!dc) {
     return "None";
   }
@@ -38,7 +38,7 @@ const parseDamageType = (response: SpellResponse) => {
     return "Healing";
   }
 
-  if (response.damage) {
+  if (response.damage?.damage_type) {
     return response.damage.damage_type.name;
   }
 
@@ -49,7 +49,7 @@ const parseDescription = (response: SpellResponse) => {
   const description = [...response.desc];
   if (response.higher_level && response.higher_level.length > 0) {
     description.push(
-      `**Using a higher-level spell slot.** ${response.higher_level.join("\n")}`
+      `**Using a higher-level spell slot.** ${response.higher_level.join("\n")}`,
     );
   }
 
@@ -70,7 +70,9 @@ const parseDescription = (response: SpellResponse) => {
     .join("");
 };
 
-export const mapApiResponseToSupportedFormat = (response: SpellResponse): TransformedSpell => ({
+export const mapApiResponseToSupportedFormat = (
+  response: SpellResponse,
+): TransformedSpell => ({
   name: response.name,
   level: parseLevel(response.level),
   castingTime: response.casting_time,

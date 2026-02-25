@@ -1,7 +1,37 @@
 import { useState } from "react"
+import type { Dispatch, FormEvent, MouseEvent, SetStateAction } from "react"
 import Concentrate from "../../assets/concentrate"
 import Skull from "../../assets/skull"
 import { baseAbilityScoreModifier } from "../../helpers"
+import type { Monster } from "../../types/domain"
+import type {
+  CombatEntry,
+  DeathSaveState,
+  DeathSaveType,
+  HealthState,
+  InitiativeState,
+  MonsterCardData,
+} from "./types"
+
+type EntriesListProps = {
+  entries: CombatEntry[]
+  monsters: Monster[]
+  selected: number | null
+  combatStarted: boolean
+  health: HealthState
+  getId: (entry: CombatEntry) => string
+  initiative: InitiativeState
+  handleInitiativeUpdate: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void
+  showMonsterCard: Dispatch<SetStateAction<MonsterCardData | null>>
+  updateHealth: (id: string) => void
+  deathSaves: DeathSaveState
+  captureDeathSave: (id: string, type: DeathSaveType) => void
+  DEATH_SAVES: { SUCCESS: DeathSaveType; FAILURE: DeathSaveType }
+  modifyHPModal: string | null
+  captureUpdatedHP: (e: FormEvent<HTMLFormElement>) => void
+  updatedHP: number
+  setUpdatedHP: Dispatch<SetStateAction<number>>
+}
 
 const EntriesList = ({
   entries,
@@ -21,31 +51,35 @@ const EntriesList = ({
   captureUpdatedHP,
   updatedHP,
   setUpdatedHP,
-}) => {
-  const [concentrating, setConcentrating] = useState({})
+}: EntriesListProps) => {
+  const [concentrating, setConcentrating] = useState<Record<string, boolean>>({})
 
-  const handleConcentrate = (key) =>
-    setConcentrating({
-      ...concentrating,
-      [key]: !concentrating[key],
-    })
+  const handleConcentrate = (key: string, e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    setConcentrating((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }))
+  }
 
   return (
     <ul>
       {(entries || []).map((entry, i) => {
-        let monster = null
-        let initBonus = null
+        let monster: Monster | null = null
+        let initBonus: number | null = null
         if (entry.isMonster) {
-          monster = monsters.find((m) => m.id === entry.id)
-          initBonus = baseAbilityScoreModifier(monster.dexterity)
+          monster = monsters.find((m) => m.id === entry.id) || null
+          initBonus = monster
+            ? baseAbilityScoreModifier(Number(monster.dexterity))
+            : 0
         }
 
-        let statuses = []
+        const statuses: string[] = []
 
         if (selected === i) {
           statuses.push("selected")
         }
-        if (combatStarted && health[getId(entry)].current === 0) {
+        if (combatStarted && health[getId(entry)]?.current === 0) {
           statuses.push("dead")
         }
 
@@ -53,10 +87,9 @@ const EntriesList = ({
           <li key={getId(entry)} className="relative">
             <div
               className={`
-                ${
-                  !statuses.includes("selected") &&
-                  statuses.includes("dead") &&
-                  "border-base-300 "
+                ${!statuses.includes("selected") &&
+                statuses.includes("dead") &&
+                "border-base-300 "
                 }
                 ${statuses.includes("selected") && "border-success "}
                 ${statuses.includes("dead") && "border-error/50 "}
@@ -73,7 +106,7 @@ const EntriesList = ({
                       id={`initiative-${getId(entry)}`}
                       type="number"
                       min="0"
-                      value={initiative[getId(entry)]}
+                      value={initiative[getId(entry)] ?? 0}
                       onChange={(e) => handleInitiativeUpdate(e, getId(entry))}
                     />
                   </div>
@@ -83,16 +116,20 @@ const EntriesList = ({
                         <button
                           className="block w-full text-left"
                           type="button"
-                          onClick={() =>
+                          onClick={() => {
+                            if (!monster) {
+                              return
+                            }
                             showMonsterCard({
                               monster,
                               kind: entry.kind,
                             })
-                          }
+                          }}
                         >
                           <div className="flex mb-1">
                             <button
-                              onClick={() => handleConcentrate(getId(entry))}
+                              type="button"
+                              onClick={(e) => handleConcentrate(getId(entry), e)}
                             >
                               <Concentrate
                                 size={20}
@@ -104,13 +141,13 @@ const EntriesList = ({
                               />
                             </button>
                             <p className="pl-1 text-base-content font-semibold text-sm">
-                              {monster.name}
+                              {monster?.name || "Unknown monster"}
                             </p>
                           </div>
                           <div className="grid grid-cols-2 gap-x-2">
                             <p className="text-base-content text-sm">
                               <span className="font-semibold">AC: </span>
-                              {monster.armorClass}
+                              {monster?.armorClass}
                             </p>
                             <p className="text-base-content text-sm">
                               <span className="font-semibold">
@@ -120,10 +157,10 @@ const EntriesList = ({
                             </p>
                             <p className="text-base-content text-sm">
                               <span className="font-semibold">HP: </span>
-                              {monster.averageHitPoints} (
-                              {monster.hitPointsDieCount}
-                              {monster.hitPointsDieValue}+
-                              {monster.hitPointsDieModifier})
+                              {monster?.averageHitPoints} (
+                              {monster?.hitPointsDieCount}
+                              {monster?.hitPointsDieValue}+
+                              {monster?.hitPointsDieModifier})
                             </p>
                           </div>
                         </button>
@@ -131,7 +168,8 @@ const EntriesList = ({
                         <div>
                           <div className="flex mb-1">
                             <button
-                              onClick={() => handleConcentrate(getId(entry))}
+                              type="button"
+                              onClick={(e) => handleConcentrate(getId(entry), e)}
                             >
                               <Concentrate
                                 size={20}
@@ -178,11 +216,11 @@ const EntriesList = ({
                       >
                         <ul className="flex flex-row">
                           <li className="text-sm text-base-content">
-                            {health[getId(entry)].current}
+                            {health[getId(entry)]?.current ?? 0}
                           </li>
                           <li className="text-sm text-base-content">/</li>
                           <li className="text-sm text-base-content">
-                            {health[getId(entry)].max}
+                            {health[getId(entry)]?.max ?? 0}
                           </li>
                         </ul>
                       </div>
@@ -196,11 +234,11 @@ const EntriesList = ({
                       {new Array(3).fill(0).map((_, o) => (
                         <li className="h-4" key={`failure-${o}`}>
                           <button
-                            className={`w-4 h-4 rounded-full border ${
-                              (deathSaves[getId(entry)]?.failure || 0) >= o + 1
+                            type="button"
+                            className={`w-4 h-4 rounded-full border ${(deathSaves[getId(entry)]?.failure || 0) >= o + 1
                                 ? "bg-error"
-                                : `o-${o}`
-                            }`}
+                                : ""
+                              }`}
                             onClick={() =>
                               captureDeathSave(
                                 getId(entry),
@@ -216,12 +254,12 @@ const EntriesList = ({
                       {new Array(3).fill(0).map((_, o) => (
                         <li className="h-4" key={`success-${o}`}>
                           <button
+                            type="button"
                             className={`w-4 h-4 rounded-full border 
-                              ${
-                                (deathSaves[getId(entry)]?.success || 0) >=
+                              ${(deathSaves[getId(entry)]?.success || 0) >=
                                 o + 1
-                                  ? "bg-success"
-                                  : ""
+                                ? "bg-success"
+                                : ""
                               }`}
                             onClick={() =>
                               captureDeathSave(
@@ -247,7 +285,7 @@ const EntriesList = ({
                     type="number"
                     autoFocus
                     value={updatedHP === 0 ? "" : updatedHP}
-                    onChange={(e) => setUpdatedHP(e.target.value)}
+                    onChange={(e) => setUpdatedHP(Number(e.target.value) || 0)}
                     className="input input-xs input-border w-full items-center"
                   />
                   <button className="btn btn-xs btn-accent" type="submit">

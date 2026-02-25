@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import type { MouseEvent } from "react"
 import MDEditor from "@uiw/react-md-editor/nohighlight"
 import remarkGfm from "remark-gfm"
 import rehypeSanitize from "rehype-sanitize"
@@ -7,7 +8,7 @@ import { fetchSpecificSpell } from "../api/dnd-api"
 import type { TransformedSpell } from "../api/types"
 
 const Markdown = ({ source, openModal }: { source: string, openModal?: (value: TransformedSpell | null) => void }) => {
-  const handleSpellClick = async (e, spell) => {
+  const handleSpellClick = async (e: MouseEvent<HTMLElement>, spell: string) => {
     e.preventDefault()
 
     const spellUrl = spell
@@ -27,7 +28,7 @@ const Markdown = ({ source, openModal }: { source: string, openModal?: (value: T
     if (spellRegex.test(source)) {
       value = source.replace(
         spellRegex,
-        (m, _, spellName) => `\`${spellName}\``
+        (_match, _prefix, spellName) => `\`${spellName}\``
       )
     }
     return value

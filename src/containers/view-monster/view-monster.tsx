@@ -11,13 +11,19 @@ const Monster = () => {
   const { getSingleMonster, deleteMonster } = useMonstersContext()
   const { wysiwygMode } = useThemeContext()
 
-  const monster = useMemo(() => getSingleMonster?.(id), [id, getSingleMonster])
+  const monster = useMemo(() => getSingleMonster(id), [id, getSingleMonster])
 
   const handleEdit = useCallback(() => {
+    if (!monster) {
+      return
+    }
     navigate(`/monster/${monster.id}/edit`)
   }, [monster, navigate])
 
   const handleDelete = useCallback(() => {
+    if (!monster) {
+      return
+    }
     deleteMonster(monster.id)
     navigate("/monsters")
   }, [monster, deleteMonster, navigate])

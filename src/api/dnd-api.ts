@@ -1,8 +1,8 @@
 // https://5e-bits.github.io/docs/api/
 import * as transformMonster from "./transform-monster";
 import * as transformSpell from "./transform-spell";
+import type { Monster } from "../types/domain";
 import type {
-  TransformedMonster,
   MonsterResponse,
   SimpleMonsterResponse,
   SpellResponse,
@@ -33,7 +33,7 @@ export const fetchMonsters = async (): Promise<{
 
 export const fetchSpecificMonster = async (
   id: string
-): Promise<TransformedMonster> => {
+): Promise<Monster> => {
   const response: MonsterResponse = await request(`monsters/${id}`);
 
   return transformMonster.mapApiResponseToSupportedFormat(response);
