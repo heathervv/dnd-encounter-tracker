@@ -1,10 +1,12 @@
+import type { Monster } from "../types/domain";
+
 type ArmorClass = {
   type: string;
   value: number;
 };
 
 export type Sense = string | number;
-export type Senses = { string: Sense; passive_perception: number };
+export type Senses = Record<string, Sense> & { passive_perception: number };
 
 export type Skill = {
   name: string;
@@ -18,14 +20,14 @@ export type Spell = {
 
 export type Usage = {
   type: string;
-  times: number;
-  rest_types: [];
-  dice: string;
-  min_value: number;
+  times?: number;
+  rest_types?: string[];
+  dice?: string;
+  min_value?: number;
 };
 
 export type SpecialAbility = {
-  damage?: [];
+  damage?: unknown[];
   desc?: string;
   name: string;
   usage?: Usage;
@@ -35,11 +37,11 @@ export type SpecialAbility = {
 };
 
 export type Action = {
-  name?: string;
+  name: string;
   desc?: string;
   attack_bonus?: number;
-  action_options?: {}[];
-  actions: {}[];
+  action_options?: Array<Record<string, unknown>>;
+  actions?: Array<Record<string, unknown>>;
   usage?: Usage;
   spellcasting?: {
     spells?: Spell[];
@@ -52,12 +54,6 @@ export type Proficiency = {
     index: string;
     name: string;
   };
-};
-
-type Property = {
-  ability?: string;
-  name?: string;
-  note?: string;
 };
 
 export type MonsterResponse = {
@@ -80,62 +76,28 @@ export type MonsterResponse = {
   languages: string;
   senses: Senses;
   proficiencies: Proficiency[];
-  speed: { string: string };
+  speed: Record<string, string>;
   damage_vulnerabilities: string[];
   damage_resistances: string[];
   damage_immunities: string[];
-  condition_immunities: { index: string; name: string }[];
+  condition_immunities: Array<{ index: string; name: string }>;
   special_abilities: SpecialAbility[];
   actions: Action[];
-  reactions: [];
-  legendary_actions: [];
+  reactions: Action[];
+  legendary_actions: Action[];
 };
 
-export type TransformedMonster = {
-  id: string;
-  name: string;
-  type: string;
-  size: string;
-  aligment: string;
-  challengeRating: number;
-  hitPointsDieCount: string;
-  hitPointsDieValue: string;
-  hitPointsDieModifier: string;
-  averageHitPoints: number;
-  strength: number;
-  dexterity: number;
-  constitution: number;
-  intelligence: number;
-  wisdom: number;
-  charisma: number;
-  armorClass: number;
-  armorClassType: string;
-  language: { name: string }[];
-  senses: Skill[];
-  passivePerception: number;
-  skills: Property[];
-  movement: { name: string; note: string }[];
-  savingThrowProficiencies: Property[];
-  damageVulnerabilities: string;
-  damageResistances: string;
-  damageImmunities: string;
-  conditionImmunities: string;
-  specialTraits: string | undefined;
-  actionsDescription: string | undefined;
-  reactionsDescription: string | undefined;
-  isLegendary: boolean;
-  legendaryActionsDescription: string | undefined;
-};
+export type TransformedMonster = Monster;
 
 export type SimpleMonsterResponse = {
   index: string;
   name: string;
   url: string;
-  hidden: string;
+  hidden?: boolean;
 };
 
 export type SpellDc = {
-  dc_success: string;
+  dc_success?: string;
   dc_type: {
     index: string;
     name: string;
@@ -149,20 +111,20 @@ export type SpellResponse = {
   casting_time: string;
   concentration: boolean;
   components: string[];
-  material: string;
+  material?: string;
   duration: string;
-  higher_level: string[];
-  heal_at_slot_level: number;
+  higher_level?: string[];
+  heal_at_slot_level?: Record<string, string>;
   school: {
     name: string;
   };
-  dc: SpellDc;
-  damage: {
-    damage_type: {
+  dc?: SpellDc;
+  damage?: {
+    damage_type?: {
       name: string;
     };
   };
-  area_of_effect: {
+  area_of_effect?: {
     type: string;
     size: number;
   };
@@ -176,7 +138,7 @@ export type TransformedSpell = {
   concentration: boolean;
   range: string;
   components: string[];
-  material: string;
+  material?: string;
   duration: string;
   school: string;
   attackSave: string;
