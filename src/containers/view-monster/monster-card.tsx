@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import Markdown from "../../components/markdown"
 import Modal from "../../components/modal/modal"
 import SpellModal from "./spell-modal"
-import { baseAbilityScoreModifier, mapProficiencyBonus } from "../../helpers"
+import { baseAbilityScoreModifier, mapProficiencyBonus, toNumber } from "../../helpers"
 import type { TransformedSpell } from "../../api/types"
 import type { Monster, ListItem } from "../../types/domain"
 
@@ -27,8 +27,6 @@ const ABILITY_KEY_MAP: Record<string, AbilityScoreKey> = {
   wisdom: "wisdom",
   charisma: "charisma",
 }
-
-const toNumber = (value: number | string | undefined): number => Number(value || 0)
 
 const MonsterCard = ({ monster, className }: MonsterCardProps) => {
   const [openModalData, setOpenModalData] = useState<TransformedSpell | null>(null)

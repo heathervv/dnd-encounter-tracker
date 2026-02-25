@@ -89,3 +89,6 @@ export const enrichMonsterData = async (encounter: Encounter, homebrewMonsters: 
             }
         })
     )
+
+export const toNumber = (value: number | string | null | undefined): number =>
+  Number(value || 0)
