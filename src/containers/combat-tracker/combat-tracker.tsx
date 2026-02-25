@@ -72,7 +72,7 @@ const CombatTracker = () => {
 
   // @FIX(): there's a bug - when the requested encounter doesn't exist loading will never resolve
   const loading = useMemo(
-    () => !Boolean(encounter && completedWaitingForMonsters),
+    () => !(encounter && completedWaitingForMonsters),
     [encounter, completedWaitingForMonsters]
   )
 

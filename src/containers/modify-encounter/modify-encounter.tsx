@@ -6,13 +6,8 @@ import { v4 as uuidv4 } from "uuid"
 import AddMonsters from "../../components/add-monsters/add-monsters"
 import { useEncountersContext } from "../../context/encounters/encounters-context"
 import { useThemeContext } from "../../context/theme/theme-context"
-
-export const MONSTER_ACTION = {
-  ADD: "add",
-  REMOVE: "remove",
-} as const
-
-export type MonsterAction = (typeof MONSTER_ACTION)[keyof typeof MONSTER_ACTION]
+import { MONSTER_ACTION } from './constants'
+import type { MonsterAction } from './constants'
 
 type ModifyEncounterProps = {
   isEdit?: boolean
