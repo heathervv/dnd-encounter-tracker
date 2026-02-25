@@ -1,19 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import type { ChangeEvent, KeyboardEvent, MouseEvent } from "react"
-
 import { fetchMonsters, fetchSpecificMonster } from "../../api/dnd-api"
 import MonsterCard from "../../containers/view-monster/monster-card"
 import { useMonstersContext } from "../../context/monsters/monsters-context"
 import { MONSTER_ACTION } from "../../containers/modify-encounter/modify-encounter"
+import type { MonsterAction } from "../../containers/modify-encounter/modify-encounter"
 import type { SimpleMonsterResponse } from "../../api/types"
 import type { Monster } from "../../types/domain"
 
 type Props = {
   name: string,
-  homebrew: boolean,
   monster: MonsterListItem,
   selected?: number,
-  onSelect?: (arg1: MONSTER_ACTION, arg2: string, arg3?: number) => void
+  onSelect?: (arg1: MonsterAction, arg2: string, arg3?: number) => void
 }
 
 type HomebrewMonsterListItem = Monster & {
@@ -29,7 +28,7 @@ type ApiMonsterListItem = SimpleMonsterResponse & {
 type MonsterListItem = HomebrewMonsterListItem | ApiMonsterListItem
 
 type AddMonsterProps = {
-  onSelect?: (arg1: MONSTER_ACTION, arg2: string, arg3?: number) => void
+  onSelect?: (arg1: MonsterAction, arg2: string, arg3?: number) => void
   selectedMonsters: string[]
   selectedAmount: Record<string, number>
 }
@@ -37,9 +36,10 @@ type AddMonsterProps = {
 const getMonsterId = (monster: MonsterListItem): string =>
   monster.homebrew ? monster.id : monster.index
 
-const MonsterItem = ({ name, homebrew, monster, selected = 0, onSelect }: Props) => {
+const MonsterItem = ({ name, monster, selected = 0, onSelect }: Props) => {
   const [drawerIsOpen, setDrawerIsOpen] = useState(false)
   const [monsterData, setMonsterData] = useState<Monster | null>(null)
+  const homebrew = monster.homebrew
 
   const handleDrawer = useCallback(
     async (e: MouseEvent<HTMLDivElement>) => {
@@ -137,10 +137,19 @@ const MonsterItem = ({ name, homebrew, monster, selected = 0, onSelect }: Props)
         </div>
       </div>
       {drawerIsOpen && (
-        <MonsterCard
-          monster={homebrew ? monster : monsterData}
-          className="border-t border-base-content/10 pt-1"
-        />
+        homebrew ? (
+          <MonsterCard
+            monster={monster}
+            className="border-t border-base-content/10 pt-1"
+          />
+        ) : (
+          monsterData && (
+            <MonsterCard
+              monster={monsterData}
+              className="border-t border-base-content/10 pt-1"
+            />
+          )
+        )
       )}
     </li>
   )
@@ -217,7 +226,6 @@ const AddMonster = ({ onSelect, selectedMonsters, selectedAmount }: AddMonsterPr
             <MonsterItem
               key={getMonsterId(monster)}
               name={monster.name}
-              homebrew={monster.homebrew}
               monster={monster}
               selected={selectedAmount[getMonsterId(monster)] || 0}
               onSelect={onSelect}
@@ -232,7 +240,6 @@ const AddMonster = ({ onSelect, selectedMonsters, selectedAmount }: AddMonsterPr
             <MonsterItem
               key={getMonsterId(monster)}
               name={monster.name}
-              homebrew={monster.homebrew}
               monster={monster}
               onSelect={onSelect}
             />

@@ -1,79 +1,92 @@
-import { useCallback, useMemo, useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useEncountersContext } from "../../context/encounters/encounters-context";
-import { usePlayerContext } from "../../context/players/players-context";
-import { useMonstersContext } from "../../context/monsters/monsters-context";
-import { useThemeContext } from "../../context/theme/theme-context";
-import Markdown from "../../components/markdown";
-import { enrichMonsterData } from "../../helpers";
-import MonsterCard from "../view-monster/monster-card";
-import MonsterItem from "./item-monster";
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { useParams, useNavigate } from "react-router-dom"
+import { useEncountersContext } from "../../context/encounters/encounters-context"
+import { usePlayerContext } from "../../context/players/players-context"
+import { useMonstersContext } from "../../context/monsters/monsters-context"
+import { useThemeContext } from "../../context/theme/theme-context"
+import Markdown from "../../components/markdown"
+import { enrichMonsterData } from "../../helpers"
+import MonsterCard from "../view-monster/monster-card"
+import MonsterItem from "./item-monster"
+import type { Monster } from "../../types/domain"
+
+type CombatStorage = {
+  combatStarted?: boolean
+}
 
 const ViewEncounter = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const { getSingleEncounter, deleteEncounter } = useEncountersContext();
-  const { players } = usePlayerContext();
-  const { monsters: homebrewMonsters } = useMonstersContext();
-  const { wysiwygMode } = useThemeContext();
-  const [monsters, setMonsters] = useState([]);
-  const [monsterCard, showMonsterCard] = useState(null);
-  const [showResume, setShowResume] = useState(false);
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const { getSingleEncounter, deleteEncounter } = useEncountersContext()
+  const { players } = usePlayerContext()
+  const { monsters: homebrewMonsters } = useMonstersContext()
+  const { wysiwygMode } = useThemeContext()
+  const [monsters, setMonsters] = useState<Monster[]>([])
+  const [monsterCard, showMonsterCard] = useState<Monster | null>(null)
+  const [showResume, setShowResume] = useState(false)
 
-  const encounter = useMemo(
-    () => getSingleEncounter?.(id),
-    [id, getSingleEncounter]
-  );
+  const encounter = useMemo(() => getSingleEncounter(id), [id, getSingleEncounter])
 
-  const STORAGE_KEY = encounter ? `combat-${encounter.id}` : null;
+  const STORAGE_KEY = encounter ? `combat-${encounter.id}` : null
 
   useEffect(() => {
     if (!encounter) {
-      return;
+      return
     }
 
-    let active = true;
-    loadMonsterData();
+    const currentEncounter = encounter
+    let active = true
+    loadMonsterData()
     return () => {
-      active = false;
-    };
+      active = false
+    }
 
     async function loadMonsterData() {
-      const res = await enrichMonsterData(encounter, homebrewMonsters);
+      const res = await enrichMonsterData(currentEncounter, homebrewMonsters)
 
       if (!active) {
-        return;
+        return
       }
-      setMonsters(res);
+      setMonsters(res)
     }
-  }, [encounter, homebrewMonsters]);
+  }, [encounter, homebrewMonsters])
 
   useEffect(() => {
     if (STORAGE_KEY) {
-      const encounterData = localStorage.getItem(STORAGE_KEY);
-      const combatStarted = (JSON.parse(encounterData) || {}).combatStarted;
+      const encounterData = localStorage.getItem(STORAGE_KEY)
+      const parsedData = encounterData ? (JSON.parse(encounterData) as CombatStorage) : null
 
-      setShowResume(combatStarted);
+      setShowResume(Boolean(parsedData?.combatStarted))
     }
-  }, [STORAGE_KEY]);
+  }, [STORAGE_KEY])
 
   const navigateToCombatTracker = useCallback(
-    (resume) => {
+    (resume: boolean) => {
+      if (!encounter) {
+        return
+      }
+
       navigate(`/combat-tracker/${encounter.id}`, {
-        state: { resume: resume || false },
-      });
+        state: { resume },
+      })
     },
     [encounter, navigate]
-  );
+  )
 
   const handleEdit = useCallback(() => {
-    navigate(`/encounter/${encounter.id}/edit`);
-  }, [encounter, navigate]);
+    if (!encounter) {
+      return
+    }
+    navigate(`/encounter/${encounter.id}/edit`)
+  }, [encounter, navigate])
 
   const handleDelete = useCallback(() => {
-    deleteEncounter(encounter.id);
-    navigate("/");
-  }, [encounter, deleteEncounter, navigate]);
+    if (!encounter) {
+      return
+    }
+    deleteEncounter(encounter.id)
+    navigate("/")
+  }, [encounter, deleteEncounter, navigate])
 
   return (
     <section data-color-mode={wysiwygMode}>
@@ -133,7 +146,7 @@ const ViewEncounter = () => {
                 {monsters.length > 0 ? (
                   <ul>
                     {monsters.map((monster) => {
-                      const monsterId = monster.id || monster.index;
+                      const monsterId = monster.id
                       return (
                         <MonsterItem
                           key={monsterId}
@@ -143,7 +156,7 @@ const ViewEncounter = () => {
                           monster={monster}
                           encounter={encounter}
                         />
-                      );
+                      )
                     })}
                   </ul>
                 ) : (
@@ -195,7 +208,7 @@ const ViewEncounter = () => {
         </div>
       )}
     </section>
-  );
-};
+  )
+}
 
-export default ViewEncounter;
+export default ViewEncounter

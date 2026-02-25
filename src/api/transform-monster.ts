@@ -137,7 +137,7 @@ export const mapApiResponseToSupportedFormat = (
   name: response.name,
   type: response.type,
   size: response.size,
-  aligment: response.alignment,
+  alignment: response.alignment,
   challengeRating: response.challenge_rating,
 
   // HP
