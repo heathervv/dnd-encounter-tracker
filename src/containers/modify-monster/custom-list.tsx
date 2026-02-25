@@ -1,19 +1,33 @@
 import { useCallback } from "react"
 import { v4 as uuidv4 } from "uuid"
 
+type CustomListValue = {
+  id: string
+  name: string
+  note: string
+}
+
+type CustomListProps = {
+  title: string
+  description: string
+  fieldKey: string
+  values: CustomListValue[]
+  onValueChange: (values: CustomListValue[]) => void
+}
+
 const CustomList = ({
   title,
   description,
   fieldKey,
   values,
   onValueChange,
-}) => {
+}: CustomListProps) => {
   const handleAdd = useCallback(() => {
     onValueChange([...values, { name: "", note: "", id: uuidv4() }])
   }, [values, onValueChange])
 
   const handleChange = useCallback(
-    (id, name, note) => {
+    (id: string, name: string, note: string) => {
       const updatedOptions = values.filter((value) => value.id !== id)
       onValueChange([...updatedOptions, { name, note, id }])
     },
@@ -21,7 +35,7 @@ const CustomList = ({
   )
 
   const handleDelete = useCallback(
-    (id) => {
+    (id: string) => {
       const updatedOptions = values.filter((value) => value.id !== id)
       onValueChange(updatedOptions)
     },

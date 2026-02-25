@@ -1,14 +1,14 @@
-import { useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { usePlayerContext } from "../../context/players/players-context";
+import { useCallback } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import { usePlayerContext } from "../../context/players/players-context"
 
 const Players = () => {
-  const navigate = useNavigate();
-  const { players } = usePlayerContext();
+  const navigate = useNavigate()
+  const { players } = usePlayerContext()
 
   const handleCreateNew = useCallback(() => {
-    navigate("/player/create");
-  }, [navigate]);
+    navigate("/player/create")
+  }, [navigate])
 
   return (
     <section className="max-w-4xl m-auto">
@@ -43,7 +43,7 @@ const Players = () => {
         </div>
       )}
     </section>
-  );
-};
+  )
+}
 
-export default Players;
+export default Players

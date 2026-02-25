@@ -1,13 +1,24 @@
 import { useCallback } from "react"
 import { v4 as uuidv4 } from "uuid"
 
-const SavingThrows = ({ fieldKey, values, onValueChange }) => {
+type SavingThrowValue = {
+  id: string
+  ability: string
+}
+
+type SavingThrowsProps = {
+  fieldKey: string
+  values: SavingThrowValue[]
+  onValueChange: (values: SavingThrowValue[]) => void
+}
+
+const SavingThrows = ({ fieldKey, values, onValueChange }: SavingThrowsProps) => {
   const handleAdd = useCallback(() => {
     onValueChange([...values, { ability: "", id: uuidv4() }])
   }, [values, onValueChange])
 
   const handleChange = useCallback(
-    (id, ability) => {
+    (id: string, ability: string) => {
       const updatedOptions = values.filter((value) => value.id !== id)
       onValueChange([...updatedOptions, { ability, id }])
     },
@@ -15,7 +26,7 @@ const SavingThrows = ({ fieldKey, values, onValueChange }) => {
   )
 
   const handleDelete = useCallback(
-    (id) => {
+    (id: string) => {
       const updatedOptions = values.filter((value) => value.id !== id)
       onValueChange(updatedOptions)
     },

@@ -1,14 +1,14 @@
-import { useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useEncountersContext } from "../../context/encounters/encounters-context";
+import { useCallback } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import { useEncountersContext } from "../../context/encounters/encounters-context"
 
 const Home = () => {
-  const navigate = useNavigate();
-  const { encounters } = useEncountersContext();
+  const navigate = useNavigate()
+  const { encounters } = useEncountersContext()
 
   const handleCreateNew = useCallback(() => {
-    navigate("/encounter/create");
-  }, [navigate]);
+    navigate("/encounter/create")
+  }, [navigate])
 
   return (
     <div className="max-w-4xl m-auto">
@@ -47,7 +47,7 @@ const Home = () => {
         )}
       </section>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
