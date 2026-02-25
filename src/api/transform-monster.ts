@@ -1,4 +1,5 @@
 import { toTitleCase } from "../helpers";
+import type { Monster } from "../types/domain";
 import type {
   Proficiency,
   MonsterResponse,
@@ -7,7 +8,6 @@ import type {
   Action,
   SpecialAbility,
   Spell,
-  TransformedMonster,
 } from "./types";
 
 // Map a single monster from the API to the supported format.
@@ -131,7 +131,7 @@ const parseLegendaryActions = (
 
 export const mapApiResponseToSupportedFormat = (
   response: MonsterResponse,
-): TransformedMonster => ({
+): Monster => ({
   // Base info
   id: response.index,
   name: response.name,

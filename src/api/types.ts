@@ -1,5 +1,3 @@
-import type { Monster } from "../types/domain";
-
 type ArmorClass = {
   type: string;
   value: number;
@@ -86,8 +84,6 @@ export type MonsterResponse = {
   reactions: Action[];
   legendary_actions: Action[];
 };
-
-export type TransformedMonster = Monster;
 
 export type SimpleMonsterResponse = {
   index: string;
