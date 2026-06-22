@@ -3,8 +3,7 @@ import type { ChangeEvent, KeyboardEvent, MouseEvent } from "react"
 import { fetchMonsters, fetchSpecificMonster } from "../../api/dnd-api"
 import MonsterCard from "../../containers/view-monster/monster-card"
 import { useMonstersContext } from "../../context/monsters/monsters-context"
-import { MONSTER_ACTION } from "../../containers/modify-encounter/constants"
-import type { MonsterAction } from "../../containers/modify-encounter/constants"
+import { ENCOUNTER_ACTION, type EncounterAction } from "../../containers/modify-encounter/constants"
 import type { SimpleMonsterResponse } from "../../api/types"
 import type { Monster } from "../../types/domain"
 
@@ -12,7 +11,7 @@ type Props = {
   name: string,
   monster: MonsterListItem,
   selected?: number,
-  onSelect?: (arg1: MonsterAction, arg2: string, arg3?: number) => void
+  onSelect?: (arg1: EncounterAction, arg2: string, arg3?: number) => void
 }
 
 type HomebrewMonsterListItem = Monster & {
@@ -28,7 +27,7 @@ type ApiMonsterListItem = SimpleMonsterResponse & {
 type MonsterListItem = HomebrewMonsterListItem | ApiMonsterListItem
 
 type AddMonsterProps = {
-  onSelect?: (arg1: MonsterAction, arg2: string, arg3?: number) => void
+  onSelect?: (arg1: EncounterAction, arg2: string, arg3?: number) => void
   selectedMonsters: string[]
   selectedAmount: Record<string, number>
 }
@@ -67,7 +66,7 @@ const MonsterItem = ({ name, monster, selected = 0, onSelect }: Props) => {
   const handleAdd = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
-      onSelect?.(MONSTER_ACTION.ADD, getMonsterId(monster), 1)
+      onSelect?.(ENCOUNTER_ACTION.ADD, getMonsterId(monster), 1)
     },
     [onSelect, monster]
   )
@@ -75,7 +74,7 @@ const MonsterItem = ({ name, monster, selected = 0, onSelect }: Props) => {
   const handleRemove = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
-      onSelect?.(MONSTER_ACTION.REMOVE, getMonsterId(monster))
+      onSelect?.(ENCOUNTER_ACTION.REMOVE, getMonsterId(monster))
     },
     [onSelect, monster]
   )
@@ -83,7 +82,7 @@ const MonsterItem = ({ name, monster, selected = 0, onSelect }: Props) => {
   const handleAmountChange = useCallback(
     (e: MouseEvent<HTMLButtonElement>, value: number) => {
       e.preventDefault()
-      onSelect?.(MONSTER_ACTION.ADD, getMonsterId(monster), value || 1)
+      onSelect?.(ENCOUNTER_ACTION.ADD, getMonsterId(monster), value || 1)
     },
     [onSelect, monster]
   )

@@ -67,5 +67,6 @@ export interface Encounter {
   name: string;
   description?: string;
   monsters: string[];
+  players?: string[];
   amounts: Record<string, number>;
 }

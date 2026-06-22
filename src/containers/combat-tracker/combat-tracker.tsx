@@ -97,7 +97,9 @@ const CombatTracker = () => {
       }
     })
 
-    const groupedData: CombatEntry[] = [...players, ...data]
+    const encounterPlayers = (encounter.players || []).length > 0 ? players.filter((p) => (encounter.players || []).includes(p.id)) : players
+
+    const groupedData: CombatEntry[] = [...encounterPlayers, ...data]
 
     if (combatStarted) {
       const compare = (a: CombatEntry, b: CombatEntry) => {

@@ -6,8 +6,8 @@ import { v4 as uuidv4 } from "uuid"
 import AddMonsters from "../../components/add-monsters/add-monsters"
 import { useEncountersContext } from "../../context/encounters/encounters-context"
 import { useThemeContext } from "../../context/theme/theme-context"
-import { MONSTER_ACTION } from './constants'
-import type { MonsterAction } from './constants'
+import { ENCOUNTER_ACTION, type EncounterAction } from './constants'
+import AddPlayers from "../../components/add-players/add-players"
 
 type ModifyEncounterProps = {
   isEdit?: boolean
@@ -22,6 +22,7 @@ const ModifyEncounter = ({ isEdit = false }: ModifyEncounterProps) => {
 
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
+  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([])
   const [selectedMonsters, setSelectedMonsters] = useState<string[]>([])
   const [amounts, setAmounts] = useState<Record<string, number>>({})
 
@@ -31,6 +32,7 @@ const ModifyEncounter = ({ isEdit = false }: ModifyEncounterProps) => {
     if (encounter) {
       setName(encounter.name)
       setDescription(encounter.description || "")
+      setSelectedPlayers(encounter.players || [])
       setSelectedMonsters(encounter.monsters || [])
       setAmounts(encounter.amounts || {})
     }
@@ -40,12 +42,31 @@ const ModifyEncounter = ({ isEdit = false }: ModifyEncounterProps) => {
     setName(e.target.value)
   }, [])
 
+  const handlePlayerSelect = useCallback(
+    (action: EncounterAction, selectedPlayerId: string) => {
+      // 1. Removing player from encounter
+      // 2. Adding player to encounter
+      if (action === ENCOUNTER_ACTION.REMOVE) {
+        const updatedList = selectedPlayers.filter(
+          (playerId) => playerId !== selectedPlayerId
+        )
+        setSelectedPlayers(updatedList)
+      } else if (
+        action === ENCOUNTER_ACTION.ADD &&
+        !selectedPlayers.includes(selectedPlayerId)
+      ) {
+        setSelectedPlayers([...selectedPlayers, selectedPlayerId])
+      }
+    },
+    [selectedPlayers]
+  )
+
   const handleMonsterSelect = useCallback(
-    (action: MonsterAction, selectedMonsterId: string, amount?: number) => {
+    (action: EncounterAction, selectedMonsterId: string, amount?: number) => {
       // 1. Removing monster from encounter
       // 2. Adding monster to encounter
       // 3. Updating amounts for monster already added to encounter
-      if (action === MONSTER_ACTION.REMOVE) {
+      if (action === ENCOUNTER_ACTION.REMOVE) {
         const updatedList = selectedMonsters.filter(
           (monsterId) => monsterId !== selectedMonsterId
         )
@@ -55,7 +76,7 @@ const ModifyEncounter = ({ isEdit = false }: ModifyEncounterProps) => {
           [selectedMonsterId]: 0,
         })
       } else if (
-        action === MONSTER_ACTION.ADD &&
+        action === ENCOUNTER_ACTION.ADD &&
         !selectedMonsters.includes(selectedMonsterId)
       ) {
         setSelectedMonsters([...selectedMonsters, selectedMonsterId])
@@ -64,7 +85,7 @@ const ModifyEncounter = ({ isEdit = false }: ModifyEncounterProps) => {
           [selectedMonsterId]: amount || 1,
         })
       } else if (
-        action === MONSTER_ACTION.ADD &&
+        action === ENCOUNTER_ACTION.ADD &&
         selectedMonsters.includes(selectedMonsterId)
       ) {
         setAmounts({
@@ -90,6 +111,7 @@ const ModifyEncounter = ({ isEdit = false }: ModifyEncounterProps) => {
         name,
         description,
         monsters: selectedMonsters,
+        players: selectedPlayers,
         amounts,
       }
 
@@ -107,6 +129,7 @@ const ModifyEncounter = ({ isEdit = false }: ModifyEncounterProps) => {
       name,
       description,
       selectedMonsters,
+      selectedPlayers,
       amounts,
       createEncounter,
       updateEncounter,
@@ -142,6 +165,10 @@ const ModifyEncounter = ({ isEdit = false }: ModifyEncounterProps) => {
           </span>
           <MDEditor value={description} onChange={(value) => setDescription(value || "")} />
         </label>
+        <AddPlayers
+          onSelect={handlePlayerSelect}
+          selectedPlayers={selectedPlayers}
+        />
         <AddMonsters
           onSelect={handleMonsterSelect}
           selectedMonsters={selectedMonsters}

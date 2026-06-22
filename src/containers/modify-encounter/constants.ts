@@ -1,6 +1,6 @@
-export const MONSTER_ACTION = {
+export const ENCOUNTER_ACTION = {
   ADD: 'add',
   REMOVE: 'remove',
 } as const
 
-export type MonsterAction = (typeof MONSTER_ACTION)[keyof typeof MONSTER_ACTION]
+export type EncounterAction = (typeof ENCOUNTER_ACTION)[keyof typeof ENCOUNTER_ACTION]

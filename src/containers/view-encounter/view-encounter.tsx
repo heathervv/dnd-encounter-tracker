@@ -8,7 +8,7 @@ import Markdown from "../../components/markdown"
 import { enrichMonsterData } from "../../helpers"
 import MonsterCard from "../view-monster/monster-card"
 import MonsterItem from "./item-monster"
-import type { Monster } from "../../types/domain"
+import type { Monster, Player } from "../../types/domain"
 
 type CombatStorage = {
   combatStarted?: boolean
@@ -21,6 +21,7 @@ const ViewEncounter = () => {
   const { players } = usePlayerContext()
   const { monsters: homebrewMonsters } = useMonstersContext()
   const { wysiwygMode } = useThemeContext()
+  const [encounterPlayers, setEncounterPlayers] = useState<Player[]>([])
   const [monsters, setMonsters] = useState<Monster[]>([])
   const [monsterCard, showMonsterCard] = useState<Monster | null>(null)
   const [showResume, setShowResume] = useState(false)
@@ -37,6 +38,13 @@ const ViewEncounter = () => {
     const currentEncounter = encounter
     let active = true
     loadMonsterData()
+
+    setEncounterPlayers(
+      (currentEncounter.players || []).length > 0
+        ? players.filter((p) => (currentEncounter.players || []).includes(p.id))
+        : players
+    )
+
     return () => {
       active = false
     }
@@ -116,7 +124,7 @@ const ViewEncounter = () => {
           <div className="grid grid-cols-[0.5fr_1fr] gap-2">
             <div>
               <ul>
-                {players.map((player) => (
+                {encounterPlayers.map((player) => (
                   <li
                     key={player.id}
                     className="card bg-base-100 card-border border-base-300 card-sm mb-2 shadow-xs"
